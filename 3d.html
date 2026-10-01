@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>3D-Ansicht · Punktwolken betrachten</title>
+<style>
+:root{--bg:#0a0c14;--bg2:#111527;--card:#161b31;--line:#252c44;
+ --txt:#eef1fb;--txt2:#a7b0d0;--txt3:#6d7699;
+ --acc:#6d8bff;--acc2:#b06dff;--ok:#38d39f;--warn:#ffb74d;--err:#ff6b8a;
+ --mono:'SF Mono',Menlo,Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--txt);font:15px/1.55 system-ui,-apple-system,'Segoe UI',sans-serif;
+ -webkit-font-smoothing:antialiased;height:100dvh;overflow:hidden}
+.app{display:grid;grid-template-columns:1fr 310px;height:100dvh}
+@media(max-width:860px){.app{grid-template-columns:1fr;grid-template-rows:1fr auto}}
+.buehne{position:relative;background:#05070f}
+canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+canvas:active{cursor:grabbing}
+.kopf{position:absolute;left:14px;top:14px;display:flex;align-items:center;gap:10px;
+ pointer-events:none}
+.logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--acc),var(--acc2));
+ display:grid;place-items:center;font-size:17px}
+.kopf h1{font-size:15px;font-weight:700}
+.kopf .u{font-size:11.5px;color:var(--txt2)}
+.hud{position:absolute;right:14px;top:14px;display:flex;flex-direction:column;gap:6px;
+ align-items:flex-end;pointer-events:none}
+.chip{background:rgba(8,11,22,.8);border:1px solid var(--line);border-radius:999px;
+ padding:5px 12px;font-size:11.5px;font-family:var(--mono);backdrop-filter:blur(8px)}
+.leer{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:30px}
+.leer .ic{font-size:44px;display:block;margin-bottom:14px}
+.leer b{font-size:17px}
+.leer p{color:var(--txt2);font-size:13.5px;margin-top:8px;max-width:44ch}
+.seite{background:var(--card);border-left:1px solid var(--line);overflow-y:auto;padding:16px}
+@media(max-width:860px){.seite{border-left:0;border-top:1px solid var(--line);max-height:46vh}}
+h2{font-size:13px;letter-spacing:.11em;text-transform:uppercase;color:var(--acc);
+ font-weight:700;margin:18px 0 9px}
+h2:first-child{margin-top:0}
+button{font:inherit;font-size:13.5px;cursor:pointer;border:0;border-radius:10px;padding:9px 14px;
+ font-weight:650;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;transition:.15s;
+ width:100%}
+button:hover{filter:brightness(1.1)}button:active{transform:translateY(1px)}
+button.sec{background:var(--bg2);border:1px solid var(--line);color:var(--txt)}
+button.sec:hover{border-color:var(--acc);filter:none}
+button.sec.on{background:var(--acc);border-color:var(--acc);color:#fff}
+button:disabled{opacity:.4;cursor:not-allowed}
+.reihe{display:flex;gap:7px}.reihe>*{flex:1}
+.mt{margin-top:9px}
+label{display:block;font-size:12px;color:var(--txt2);margin-bottom:5px;font-weight:600}
+input[type=range]{width:100%;accent-color:var(--acc)}
+.werte{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.werte div{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.werte b{display:block;font-size:16px;font-family:var(--mono)}
+.werte span{font-size:10.5px;color:var(--txt3)}
+.note{font-size:12px;color:var(--txt2);background:rgba(109,139,255,.08);
+ border-left:3px solid var(--acc);padding:10px 12px;border-radius:0 10px 10px 0;margin-top:12px}
+.note.warn{background:rgba(255,183,77,.09);border-color:var(--warn)}
+.hilfe{font-size:11.5px;color:var(--txt3);line-height:1.8;margin-top:10px}
+.hilfe b{color:var(--txt2);font-family:var(--mono)}
+a{color:var(--acc)}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(90px);
+ background:var(--txt);color:var(--bg);padding:10px 18px;border-radius:10px;font-size:13.5px;
+ font-weight:600;transition:.3s cubic-bezier(.22,1,.36,1);z-index:99}
+.toast.on{transform:translateX(-50%)}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="buehne">
+    <canvas id="bild"></canvas>
+    <div class="kopf"><div class="logo">🧊</div>
+      <div><h1>3D-Ansicht</h1><div class="u" id="titel">keine Punktwolke geladen</div></div></div>
+    <div class="hud">
+      <span class="chip" id="cPunkte">0 Punkte</span>
+      <span class="chip" id="cBilder">– fps</span>
+      <span class="chip" id="cKamera">–</span>
+    </div>
+    <div class="leer" id="leer">
+      <div><span class="ic">🧊</span>
+        <b>Punktwolke öffnen</b>
+        <p>Eine <b>.ply</b>-Datei aus LingBot-Map laden — oder rechts die
+           Beispielszene starten, um die Bedienung auszuprobieren.</p></div>
+    </div>
+  </div>
+
+  <div class="seite">
+    <h2>Laden</h2>
+    <button id="dateiBtn">Punktwolke öffnen (.ply / .xyz)</button>
+    <input type="file" id="dateiIn" accept=".ply,.xyz,.txt,.obj" hidden>
+    <button class="sec mt" id="demoBtn">Beispielszene erzeugen</button>
+    <div class="werte">
+      <div><b id="wPunkte">0</b><span>Punkte</span></div>
+      <div><b id="wGroesse">–</b><span>Ausdehnung</span></div>
+    </div>
+
+    <h2>Darstellung</h2>
+    <label>Punktgröße <b id="lGroesse" style="color:var(--acc)">2.0</b></label>
+    <input type="range" id="rGroesse" min="1" max="12" step="0.5" value="2">
+    <label class="mt">Einfärbung</label>
+    <div class="reihe">
+      <button class="sec on" data-farbe="rgb">Original</button>
+      <button class="sec" data-farbe="hoehe">Höhe</button>
+      <button class="sec" data-farbe="tiefe">Abstand</button>
+    </div>
+    <div class="reihe mt">
+      <button class="sec" id="achsenBtn">Achsen</button>
+      <button class="sec" id="pfadBtn" disabled>Kamerapfad</button>
+    </div>
+
+    <h2>Blick</h2>
+    <div class="reihe">
+      <button class="sec" data-blick="vorn">Vorn</button>
+      <button class="sec" data-blick="oben">Oben</button>
+      <button class="sec" data-blick="seite">Seite</button>
+    </div>
+    <button class="sec mt" id="zentrierBtn">Auf Objekt einpassen</button>
+    <button class="sec mt" id="drehBtn">Automatisch drehen</button>
+
+    <div class="hilfe">
+      <b>Ziehen</b> — drehen<br>
+      <b>Rechte Taste</b> oder <b>zwei Finger</b> — verschieben<br>
+      <b>Mausrad</b> oder <b>Kneifen</b> — heranholen<br>
+      <b>Doppelklick</b> — einpassen
+    </div>
+
+    <div class="note" id="hinweis">
+      Diese Ansicht <b>rechnet nichts aus</b> — sie zeigt an, was LingBot-Map auf
+      einem Rechner mit Grafikkarte berechnet hat. Der
+      <a href="kamera.html">Kamera-Scan</a> erzeugt die Aufnahme dafür.
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+const $=s=>document.querySelector(s);
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');
+  clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),2400);}
+
+/* ═══════════════ Kleine Matrizenrechnung (ohne Fremdbibliothek) ═══════════════ */
+const M={
+  einheit:()=>new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]),
+  mal:(a,b)=>{const o=new Float32Array(16);
+    for(let i=0;i<4;i++)for(let j=0;j<4;j++){let s=0;
+      for(let k=0;k<4;k++)s+=a[k*4+j]*b[i*4+k]; o[i*4+j]=s;} return o;},
+  perspektive:(fov,ar,nah,fern)=>{const f=1/Math.tan(fov/2),o=new Float32Array(16);
+    o[0]=f/ar;o[5]=f;o[10]=(fern+nah)/(nah-fern);o[11]=-1;o[14]=2*fern*nah/(nah-fern);return o;},
+  blick:(auge,ziel,oben)=>{
+    const sub=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]];
+    const norm=v=>{const l=Math.hypot(...v)||1;return [v[0]/l,v[1]/l,v[2]/l];};
+    const kreuz=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+    const punkt=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+    const z=norm(sub(auge,ziel)), x=norm(kreuz(oben,z)), y=kreuz(z,x);
+    return new Float32Array([x[0],y[0],z[0],0, x[1],y[1],z[1],0, x[2],y[2],z[2],0,
+      -punkt(x,auge),-punkt(y,auge),-punkt(z,auge),1]);}
+};
+
+/* ═══════════════ WebGL ═══════════════ */
+const cv=$('#bild');
+const gl=cv.getContext('webgl',{antialias:true,alpha:false,preserveDrawingBuffer:true})
+       ||cv.getContext('experimental-webgl');
+if(!gl){ $('#leer').innerHTML='<div><span class="ic">⚠️</span><b>Kein WebGL</b>'
+  +'<p>Dieser Browser kann keine 3D-Grafik darstellen.</p></div>'; }
+
+function programm(vs,fs){
+  const bau=(typ,q)=>{const s=gl.createShader(typ);gl.shaderSource(s,q);gl.compileShader(s);
+    if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+    return s;};
+  const p=gl.createProgram();
+  gl.attachShader(p,bau(gl.VERTEX_SHADER,vs));
+  gl.attachShader(p,bau(gl.FRAGMENT_SHADER,fs));
+  gl.linkProgram(p);
+  if(!gl.getProgramParameter(p,gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+  return p;
+}
+let progPunkte=null, progLinien=null;
+if(gl){
+  progPunkte=programm(`
+    attribute vec3 ort; attribute vec3 farbe;
+    uniform mat4 mvp; uniform float groesse; uniform int modus;
+    uniform vec3 min3, max3; uniform vec3 auge;
+    varying vec3 vFarbe;
+    vec3 regenbogen(float t){
+      t=clamp(t,0.0,1.0);
+      return vec3(smoothstep(0.5,0.8,t), t<0.5?smoothstep(0.0,0.5,t):smoothstep(1.0,0.6,t),
+                  smoothstep(0.5,0.2,t));
+    }
+    void main(){
+      vec4 p = mvp * vec4(ort,1.0);
+      gl_Position = p;
+      gl_PointSize = max(1.0, groesse * (300.0 / max(p.w, 0.1)));
+      if(modus==1){ vFarbe = regenbogen((ort.y-min3.y)/max(max3.y-min3.y,0.001)); }
+      else if(modus==2){ vFarbe = regenbogen(1.0 - clamp(length(ort-auge)/ (length(max3-min3)+0.001),0.0,1.0)); }
+      else { vFarbe = farbe; }
+    }`,`
+    precision mediump float; varying vec3 vFarbe;
+    void main(){
+      vec2 d = gl_PointCoord - vec2(0.5);
+      if(dot(d,d) > 0.25) discard;          // runde statt eckige Punkte
+      gl_FragColor = vec4(vFarbe,1.0);
+    }`);
+  progLinien=programm(`
+    attribute vec3 ort; attribute vec3 farbe; uniform mat4 mvp; varying vec3 vFarbe;
+    void main(){ gl_Position = mvp*vec4(ort,1.0); vFarbe=farbe; }`,`
+    precision mediump float; varying vec3 vFarbe;
+    void main(){ gl_FragColor=vec4(vFarbe,1.0); }`);
+}
+
+/* ═══════════════ Zustand ═══════════════ */
+const S={punkte:null,farben:null,anzahl:0,min:[0,0,0],max:[0,0,0],mitte:[0,0,0],spanne:1,
+  pfad:null,modus:0,groesse:2,achsen:true,pfadAn:true,drehen:false,
+  winkelX:0.5,winkelY:0.6,abstand:3,ziel:[0,0,0],puffer:{}};
+
+function grenzenRechnen(){
+  const p=S.punkte; if(!p||!p.length) return;
+  let mn=[1e30,1e30,1e30], mx=[-1e30,-1e30,-1e30];
+  for(let i=0;i<p.length;i+=3)
+    for(let k=0;k<3;k++){ const v=p[i+k]; if(v<mn[k])mn[k]=v; if(v>mx[k])mx[k]=v; }
+  S.min=mn; S.max=mx;
+  S.mitte=[(mn[0]+mx[0])/2,(mn[1]+mx[1])/2,(mn[2]+mx[2])/2];
+  S.spanne=Math.max(mx[0]-mn[0],mx[1]-mn[1],mx[2]-mn[2])||1;
+}
+function einpassen(){
+  grenzenRechnen(); S.ziel=[...S.mitte]; S.abstand=S.spanne*1.9;
+  $('#wGroesse').textContent=S.spanne.toFixed(2);
+}
+function hochladen(){
+  if(!gl||!S.punkte) return;
+  for(const k of ['ort','farbe']) if(S.puffer[k]) gl.deleteBuffer(S.puffer[k]);
+  S.puffer.ort=gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER,S.puffer.ort);
+  gl.bufferData(gl.ARRAY_BUFFER,S.punkte,gl.STATIC_DRAW);
+  S.puffer.farbe=gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER,S.puffer.farbe);
+  gl.bufferData(gl.ARRAY_BUFFER,S.farben,gl.STATIC_DRAW);
+}
+
+/* ═══════════════ PLY und XYZ lesen ═══════════════ */
+function plyLesen(puffer){
+  const bytes=new Uint8Array(puffer);
+  // Kopf als Text lesen, bis "end_header"
+  let kopfEnde=-1;
+  const suche='end_header';
+  for(let i=0;i<Math.min(bytes.length,65536);i++){
+    if(bytes[i]===0x0a){
+      const zeile=new TextDecoder().decode(bytes.subarray(Math.max(0,i-60),i));
+      if(zeile.includes(suche)){ kopfEnde=i+1; break; }
+    }
+  }
+  if(kopfEnde<0) throw new Error('Kein PLY-Kopf gefunden');
+  const kopf=new TextDecoder().decode(bytes.subarray(0,kopfEnde));
+  const binaer=/format\s+binary_little_endian/.test(kopf);
+  const ascii=/format\s+ascii/.test(kopf);
+  if(!binaer && !ascii) throw new Error('Nur ascii und binary_little_endian werden gelesen');
+  const mAnz=kopf.match(/element\s+vertex\s+(\d+)/);
+  if(!mAnz) throw new Error('Keine Punktanzahl im Kopf');
+  const anzahl=+mAnz[1];
+
+  // Eigenschaften in Reihenfolge
+  const GROESSE={char:1,uchar:1,int8:1,uint8:1,short:2,ushort:2,int16:2,uint16:2,
+                 int:4,uint:4,int32:4,uint32:4,float:4,float32:4,double:8,float64:8};
+  const eig=[];
+  let imVertex=false;
+  for(const z of kopf.split('\n')){
+    const t=z.trim();
+    if(t.startsWith('element')) imVertex=/element\s+vertex/.test(t);
+    else if(imVertex && t.startsWith('property')){
+      const p=t.split(/\s+/);
+      if(p[1]==='list'){ imVertex=false; continue; }
+      eig.push({typ:p[1],name:p[2],bytes:GROESSE[p[1]]||4});
+    }
+  }
+  const idx=n=>eig.findIndex(e=>e.name===n);
+  const iX=idx('x'),iY=idx('y'),iZ=idx('z');
+  if(iX<0||iY<0||iZ<0) throw new Error('x, y oder z fehlt');
+  const iR=idx('red')>=0?idx('red'):idx('r'), iG=idx('green')>=0?idx('green'):idx('g'),
+        iB=idx('blue')>=0?idx('blue'):idx('b');
+
+  const orte=new Float32Array(anzahl*3), farben=new Float32Array(anzahl*3);
+  if(ascii){
+    const text=new TextDecoder().decode(bytes.subarray(kopfEnde));
+    const zeilen=text.split('\n');
+    let n=0;
+    for(const z of zeilen){
+      if(n>=anzahl) break;
+      const w=z.trim().split(/\s+/);
+      if(w.length<eig.length) continue;
+      orte[n*3]=+w[iX]; orte[n*3+1]=+w[iY]; orte[n*3+2]=+w[iZ];
+      if(iR>=0){ const t=eig[iR].typ.includes('float')?1:255;
+        farben[n*3]=+w[iR]/t; farben[n*3+1]=+w[iG]/t; farben[n*3+2]=+w[iB]/t; }
+      else { farben[n*3]=farben[n*3+1]=farben[n*3+2]=0.8; }
+      n++;
+    }
+    return {orte:orte.subarray(0,n*3),farben:farben.subarray(0,n*3),anzahl:n};
+  }
+  // binär
+  const dv=new DataView(puffer);
+  const schritt=eig.reduce((s,e)=>s+e.bytes,0);
+  const versatz={}; let o=0;
+  for(const e of eig){ versatz[e.name]=o; o+=e.bytes; }
+  const lies=(basis,e)=>{
+    const p=basis+versatz[e.name];
+    switch(e.typ){
+      case 'float': case 'float32': return dv.getFloat32(p,true);
+      case 'double': case 'float64': return dv.getFloat64(p,true);
+      case 'uchar': case 'uint8': return dv.getUint8(p);
+      case 'char': case 'int8': return dv.getInt8(p);
+      case 'ushort': case 'uint16': return dv.getUint16(p,true);
+      case 'short': case 'int16': return dv.getInt16(p,true);
+      case 'uint': case 'uint32': return dv.getUint32(p,true);
+      default: return dv.getInt32(p,true);
+    }};
+  const eX=eig[iX],eY=eig[iY],eZ=eig[iZ];
+  const eR=iR>=0?eig[iR]:null,eG=iG>=0?eig[iG]:null,eB=iB>=0?eig[iB]:null;
+  const teiler=eR&&eR.typ.includes('float')?1:255;
+  for(let n=0;n<anzahl;n++){
+    const b=kopfEnde+n*schritt;
+    if(b+schritt>bytes.length) return {orte:orte.subarray(0,n*3),farben:farben.subarray(0,n*3),anzahl:n};
+    orte[n*3]=lies(b,eX); orte[n*3+1]=lies(b,eY); orte[n*3+2]=lies(b,eZ);
+    if(eR){ farben[n*3]=lies(b,eR)/teiler; farben[n*3+1]=lies(b,eG)/teiler;
+            farben[n*3+2]=lies(b,eB)/teiler; }
+    else { farben[n*3]=farben[n*3+1]=farben[n*3+2]=0.8; }
+  }
+  return {orte,farben,anzahl};
+}
+function xyzLesen(text){
+  const zeilen=text.split('\n'); const o=[],f=[];
+  for(const z of zeilen){
+    const t=z.trim(); if(!t||t.startsWith('#')) continue;
+    const w=t.split(/[\s,;]+/).map(Number);
+    if(w.length<3||!isFinite(w[0])) continue;
+    o.push(w[0],w[1],w[2]);
+    if(w.length>=6){const d=w[3]>1?255:1; f.push(w[3]/d,w[4]/d,w[5]/d);} else f.push(.8,.8,.8);
+  }
+  return {orte:new Float32Array(o),farben:new Float32Array(f),anzahl:o.length/3};
+}
+
+function setzen(d,name){
+  if(!d.anzahl) throw new Error('Keine Punkte in der Datei');
+  const GRENZE=3_000_000;
+  if(d.anzahl>GRENZE){
+    const n=GRENZE, schritt=Math.ceil(d.anzahl/n);
+    const o=new Float32Array(Math.floor(d.anzahl/schritt)*3), f=new Float32Array(o.length);
+    let j=0;
+    for(let i=0;i<d.anzahl;i+=schritt){
+      o[j*3]=d.orte[i*3];o[j*3+1]=d.orte[i*3+1];o[j*3+2]=d.orte[i*3+2];
+      f[j*3]=d.farben[i*3];f[j*3+1]=d.farben[i*3+1];f[j*3+2]=d.farben[i*3+2];j++;}
+    d={orte:o,farben:f,anzahl:j};
+    toast(`Auf ${j.toLocaleString('de-DE')} Punkte ausgedünnt`);
+  }
+  S.punkte=d.orte; S.farben=d.farben; S.anzahl=d.anzahl;
+  einpassen(); hochladen();
+  $('#leer').style.display='none';
+  $('#titel').textContent=name;
+  $('#cPunkte').textContent=d.anzahl.toLocaleString('de-DE')+' Punkte';
+  $('#wPunkte').textContent=d.anzahl.toLocaleString('de-DE');
+}
+
+$('#dateiBtn').onclick=()=>$('#dateiIn').click();
+$('#dateiIn').onchange=async e=>{
+  const f=e.target.files[0]; if(!f) return;
+  $('#titel').textContent='lese '+f.name+' …';
+  try{
+    const name=f.name.toLowerCase();
+    if(name.endsWith('.ply')) setzen(plyLesen(await f.arrayBuffer()),f.name);
+    else setzen(xyzLesen(await f.text()),f.name);
+    toast(`${f.name} geladen`);
+  }catch(err){
+    $('#titel').textContent='Fehler';
+    toast('Konnte nicht gelesen werden: '+err.message);
+    $('#leer').style.display='grid';
+    $('#leer').innerHTML=`<div><span class="ic">⚠️</span><b>Datei nicht lesbar</b>
+      <p>${err.message}</p></div>`;
+  }
+  e.target.value='';
+};
+
+/* ═══════════════ Beispielszene ═══════════════ */
+$('#demoBtn').onclick=()=>{
+  // Ein Raum mit Boden, zwei Wänden und einem Tisch — nur zum Ausprobieren
+  const o=[],f=[];
+  const setze=(x,y,z,r,g,b)=>{o.push(x,y,z);f.push(r,g,b);};
+  const rnd=(a,b)=>a+Math.random()*(b-a);
+  for(let i=0;i<42000;i++){            // Boden
+    const x=rnd(-2,2),z=rnd(-2,2), h=Math.sin(x*3)*0.01;
+    setze(x,h,z,0.33+rnd(0,.06),0.30+rnd(0,.05),0.27+rnd(0,.05));}
+  for(let i=0;i<26000;i++){            // Rückwand
+    const x=rnd(-2,2),y=rnd(0,1.9);
+    setze(x,y,-2,0.52+rnd(0,.05),0.54+rnd(0,.05),0.58+rnd(0,.05));}
+  for(let i=0;i<26000;i++){            // Seitenwand
+    const z=rnd(-2,2),y=rnd(0,1.9);
+    setze(-2,y,z,0.48+rnd(0,.05),0.50+rnd(0,.05),0.55+rnd(0,.05));}
+  for(let i=0;i<20000;i++){            // Tischplatte
+    setze(rnd(-.75,.75),0.74+rnd(0,.03),rnd(-.45,.45),0.55+rnd(0,.08),0.36+rnd(0,.05),0.19);}
+  for(const [bx,bz] of [[-.68,-.38],[.68,-.38],[-.68,.38],[.68,.38]])
+    for(let i=0;i<3200;i++)
+      setze(bx+rnd(-.03,.03),rnd(0,.74),bz+rnd(-.03,.03),0.42,0.27,0.14);
+  for(let i=0;i<9000;i++){             // Tasse auf dem Tisch
+    const a=rnd(0,Math.PI*2),r=rnd(.055,.07);
+    setze(0.3+Math.cos(a)*r,0.77+rnd(0,.1),0.05+Math.sin(a)*r,0.85,0.33,0.28);}
+  setzen({orte:new Float32Array(o),farben:new Float32Array(f),anzahl:o.length/3},
+         'Beispielszene (Raum mit Tisch)');
+  // Dazu ein Kamerapfad, wie ihn ein Rundgang erzeugen würde
+  const pf=[];
+  for(let i=0;i<=60;i++){const a=i/60*Math.PI*1.4-0.5;
+    pf.push(Math.cos(a)*1.7, 1.25+Math.sin(i/7)*0.06, Math.sin(a)*1.7);}
+  S.pfad=new Float32Array(pf); $('#pfadBtn').disabled=false;
+  $('#pfadBtn').classList.add('on');
+  toast('Beispielszene erzeugt — jetzt ziehen und zoomen');
+};
+
+/* ═══════════════ Bedienung ═══════════════ */
+let ziehen=null;
+cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);
+  ziehen={x:e.clientX,y:e.clientY,taste:e.button};});
+cv.addEventListener('pointerup',()=>ziehen=null);
+cv.addEventListener('pointercancel',()=>ziehen=null);
+cv.addEventListener('pointermove',e=>{
+  if(!ziehen) return;
+  const dx=e.clientX-ziehen.x, dy=e.clientY-ziehen.y;
+  ziehen.x=e.clientX; ziehen.y=e.clientY;
+  if(ziehen.taste===2||e.shiftKey){
+    const s=S.abstand*0.0016;
+    const sx=Math.sin(S.winkelY), cx=Math.cos(S.winkelY);
+    S.ziel[0]-= (dx*cx)*s; S.ziel[2]-= (dx*sx)*s; S.ziel[1]+= dy*s;
+  }else{
+    S.winkelY-=dx*0.007;
+    S.winkelX=Math.max(-1.5,Math.min(1.5,S.winkelX-dy*0.007));
+  }
+});
+cv.addEventListener('contextmenu',e=>e.preventDefault());
+cv.addEventListener('wheel',e=>{e.preventDefault();
+  S.abstand*=Math.exp(e.deltaY*0.0012);
+  S.abstand=Math.max(S.spanne*0.05,Math.min(S.spanne*14,S.abstand));},{passive:false});
+cv.addEventListener('dblclick',einpassen);
+let kneifen=null;
+cv.addEventListener('touchmove',e=>{
+  if(e.touches.length!==2) return;
+  e.preventDefault();
+  const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,
+                     e.touches[0].clientY-e.touches[1].clientY);
+  if(kneifen) S.abstand=Math.max(S.spanne*0.05,Math.min(S.spanne*14,S.abstand*kneifen/d));
+  kneifen=d;
+},{passive:false});
+cv.addEventListener('touchend',()=>kneifen=null);
+
+document.querySelectorAll('[data-farbe]').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('[data-farbe]').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+  S.modus={rgb:0,hoehe:1,tiefe:2}[b.dataset.farbe];});
+document.querySelectorAll('[data-blick]').forEach(b=>b.onclick=()=>{
+  const w={vorn:[0,0],oben:[1.45,0],seite:[0,Math.PI/2]}[b.dataset.blick];
+  S.winkelX=w[0]; S.winkelY=w[1];});
+$('#rGroesse').oninput=e=>{S.groesse=+e.target.value;$('#lGroesse').textContent=S.groesse.toFixed(1);};
+$('#achsenBtn').onclick=e=>{S.achsen=!S.achsen;e.target.classList.toggle('on',S.achsen);};
+$('#pfadBtn').onclick=e=>{S.pfadAn=!S.pfadAn;e.target.classList.toggle('on',S.pfadAn);};
+$('#zentrierBtn').onclick=einpassen;
+$('#drehBtn').onclick=e=>{S.drehen=!S.drehen;e.target.classList.toggle('on',S.drehen);};
+$('#achsenBtn').classList.add('on');
+
+/* ═══════════════ Zeichnen ═══════════════ */
+let linienPuffer=null, achsenPuffer=null;
+function linien(daten,farben){
+  const b=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,b);
+  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(daten),gl.STATIC_DRAW);
+  const c=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,c);
+  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(farben),gl.STATIC_DRAW);
+  return {ort:b,farbe:c,n:daten.length/3};
+}
+let letzteZeit=performance.now(), bilder=0, fps=0;
+function zeichnen(){
+  requestAnimationFrame(zeichnen);
+  if(!gl) return;
+  const b=cv.clientWidth,h=cv.clientHeight,dpr=Math.min(devicePixelRatio||1,2);
+  if(cv.width!==b*dpr||cv.height!==h*dpr){cv.width=b*dpr;cv.height=h*dpr;}
+  gl.viewport(0,0,cv.width,cv.height);
+  gl.clearColor(0.02,0.027,0.06,1);
+  gl.enable(gl.DEPTH_TEST);
+  gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+
+  const jetzt=performance.now(); bilder++;
+  if(jetzt-letzteZeit>500){fps=Math.round(bilder*1000/(jetzt-letzteZeit));
+    bilder=0;letzteZeit=jetzt;$('#cBilder').textContent=fps+' fps';}
+
+  if(S.drehen) S.winkelY+=0.004;
+  const auge=[
+    S.ziel[0]+S.abstand*Math.cos(S.winkelX)*Math.sin(S.winkelY),
+    S.ziel[1]+S.abstand*Math.sin(S.winkelX),
+    S.ziel[2]+S.abstand*Math.cos(S.winkelX)*Math.cos(S.winkelY)];
+  $('#cKamera').textContent=`x ${auge[0].toFixed(1)}  y ${auge[1].toFixed(1)}  z ${auge[2].toFixed(1)}`;
+  const mvp=M.mal(M.perspektive(1.0,b/Math.max(h,1),S.spanne*0.002,S.spanne*60),
+                  M.blick(auge,S.ziel,[0,1,0]));
+
+  // Achsen
+  if(S.achsen){
+    if(!achsenPuffer){
+      const l=S.spanne*0.6||1;
+      achsenPuffer=linien([0,0,0,l,0,0, 0,0,0,0,l,0, 0,0,0,0,0,l],
+                          [1,.33,.4,1,.33,.4, .33,1,.6,.33,1,.6, .43,.55,1,.43,.55,1]);
+    }
+    gl.useProgram(progLinien);
+    gl.uniformMatrix4fv(gl.getUniformLocation(progLinien,'mvp'),false,mvp);
+    for(const [n,puf] of [['ort',achsenPuffer.ort],['farbe',achsenPuffer.farbe]]){
+      const l=gl.getAttribLocation(progLinien,n);
+      gl.bindBuffer(gl.ARRAY_BUFFER,puf); gl.enableVertexAttribArray(l);
+      gl.vertexAttribPointer(l,3,gl.FLOAT,false,0,0);
+    }
+    gl.drawArrays(gl.LINES,0,achsenPuffer.n);
+  }
+
+  // Kamerapfad
+  if(S.pfad&&S.pfadAn){
+    if(!linienPuffer){
+      const f=[]; for(let i=0;i<S.pfad.length/3;i++) f.push(1,0.72,0.3);
+      linienPuffer=linien(Array.from(S.pfad),f);
+    }
+    gl.useProgram(progLinien);
+    gl.uniformMatrix4fv(gl.getUniformLocation(progLinien,'mvp'),false,mvp);
+    for(const [n,puf] of [['ort',linienPuffer.ort],['farbe',linienPuffer.farbe]]){
+      const l=gl.getAttribLocation(progLinien,n);
+      gl.bindBuffer(gl.ARRAY_BUFFER,puf); gl.enableVertexAttribArray(l);
+      gl.vertexAttribPointer(l,3,gl.FLOAT,false,0,0);
+    }
+    gl.drawArrays(gl.LINE_STRIP,0,linienPuffer.n);
+  }
+
+  // Punktwolke
+  if(S.punkte&&S.puffer.ort){
+    gl.useProgram(progPunkte);
+    gl.uniformMatrix4fv(gl.getUniformLocation(progPunkte,'mvp'),false,mvp);
+    gl.uniform1f(gl.getUniformLocation(progPunkte,'groesse'),S.groesse);
+    gl.uniform1i(gl.getUniformLocation(progPunkte,'modus'),S.modus);
+    gl.uniform3fv(gl.getUniformLocation(progPunkte,'min3'),S.min);
+    gl.uniform3fv(gl.getUniformLocation(progPunkte,'max3'),S.max);
+    gl.uniform3fv(gl.getUniformLocation(progPunkte,'auge'),auge);
+    for(const [n,puf] of [['ort',S.puffer.ort],['farbe',S.puffer.farbe]]){
+      const l=gl.getAttribLocation(progPunkte,n);
+      gl.bindBuffer(gl.ARRAY_BUFFER,puf); gl.enableVertexAttribArray(l);
+      gl.vertexAttribPointer(l,3,gl.FLOAT,false,0,0);
+    }
+    gl.drawArrays(gl.POINTS,0,S.anzahl);
+
+    // Pruefpunkt: direkt nach dem Zeichnen die Bildmitte auslesen.
+    // Nur so laesst sich zuverlaessig nachweisen, dass wirklich gerendert wird -
+    // ein Screenshot bekommt den WebGL-Puffer nicht immer zu fassen.
+    if(S._pruefen>0){
+      // Ueber mehrere Bilder messen: je nach Zeitpunkt liefert readPixels
+      // sonst einen bereits verworfenen Puffer.
+      const px=new Uint8Array(4*1600);
+      gl.readPixels(Math.floor(cv.width/2)-20,Math.floor(cv.height/2)-20,40,40,
+                    gl.RGBA,gl.UNSIGNED_BYTE,px);
+      let summe=0; const farben=new Set();
+      for(let i=0;i<px.length;i+=4){ summe+=px[i]+px[i+1]+px[i+2];
+        farben.add(px[i]+','+px[i+1]+','+px[i+2]); }
+      if(!S.probe || summe > S.probe.summe) S.probe={summe,farben:farben.size};
+      S._pruefen--;
+    }
+  }
+}
+zeichnen();
+
+/* Datei per Ziehen ablegen */
+addEventListener('dragover',e=>e.preventDefault());
+addEventListener('drop',async e=>{
+  e.preventDefault();
+  const f=e.dataTransfer.files[0]; if(!f) return;
+  try{
+    if(f.name.toLowerCase().endsWith('.ply')) setzen(plyLesen(await f.arrayBuffer()),f.name);
+    else setzen(xyzLesen(await f.text()),f.name);
+    toast(f.name+' geladen');
+  }catch(err){ toast('Nicht lesbar: '+err.message); }
+});
+/* Selbstprüfung: einmal in einen eigenen Puffer zeichnen und auslesen.
+   Zuverlässiger als das Bildschirmbild, das der Browser jederzeit verwerfen darf. */
+S.pruefbild = function(kante){
+  kante = kante || 64;
+  if(!gl || !S.punkte || !S.puffer.ort) return {fehler:'nichts geladen'};
+
+  // Je nach Treiber wird nur eine bestimmte Puffer-Kombination akzeptiert.
+  // Deshalb der Reihe nach durchprobieren, statt eine anzunehmen.
+  const bauen = (art, mitTiefe) => {
+    const fbo = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    let tex=null, farbRB=null, tiefe=null;
+    if(art === 'textur'){
+      tex = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,kante,kante,0,gl.RGBA,gl.UNSIGNED_BYTE,null);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+      gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,tex,0);
+    } else {
+      farbRB = gl.createRenderbuffer();
+      gl.bindRenderbuffer(gl.RENDERBUFFER, farbRB);
+      gl.renderbufferStorage(gl.RENDERBUFFER, gl.RGBA4, kante, kante);
+      gl.framebufferRenderbuffer(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.RENDERBUFFER,farbRB);
+    }
+    if(mitTiefe){
+      tiefe = gl.createRenderbuffer();
+      gl.bindRenderbuffer(gl.RENDERBUFFER, tiefe);
+      gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, kante, kante);
+      gl.framebufferRenderbuffer(gl.FRAMEBUFFER,gl.DEPTH_ATTACHMENT,gl.RENDERBUFFER,tiefe);
+    }
+    const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+    if(status !== gl.FRAMEBUFFER_COMPLETE){
+      gl.bindFramebuffer(gl.FRAMEBUFFER,null);
+      gl.deleteFramebuffer(fbo);
+      if(tex) gl.deleteTexture(tex);
+      if(farbRB) gl.deleteRenderbuffer(farbRB);
+      if(tiefe) gl.deleteRenderbuffer(tiefe);
+      return null;
+    }
+    return {fbo, tex, farbRB, tiefe, art, mitTiefe};
+  };
+
+  let ziel=null;
+  for(const [art,tiefe] of [['textur',true],['textur',false],
+                            ['puffer',true],['puffer',false]]){
+    ziel = bauen(art,tiefe);
+    if(ziel) break;
+  }
+  if(!ziel) return {nicht_pruefbar:true,
+    grund:'Dieser Grafiktreiber erlaubt kein Zeichnen in einen eigenen Puffer.'};
+
+  gl.viewport(0,0,kante,kante);
+  gl.clearColor(0,0,0,1);
+  if(ziel.tiefe){ gl.enable(gl.DEPTH_TEST); gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT); }
+  else { gl.disable(gl.DEPTH_TEST); gl.clear(gl.COLOR_BUFFER_BIT); }
+
+  const auge=[
+    S.ziel[0]+S.abstand*Math.cos(S.winkelX)*Math.sin(S.winkelY),
+    S.ziel[1]+S.abstand*Math.sin(S.winkelX),
+    S.ziel[2]+S.abstand*Math.cos(S.winkelX)*Math.cos(S.winkelY)];
+  const mvp=M.mal(M.perspektive(1.0,1,S.spanne*0.002,S.spanne*60),
+                  M.blick(auge,S.ziel,[0,1,0]));
+  gl.useProgram(progPunkte);
+  gl.uniformMatrix4fv(gl.getUniformLocation(progPunkte,'mvp'),false,mvp);
+  gl.uniform1f(gl.getUniformLocation(progPunkte,'groesse'),S.groesse);
+  gl.uniform1i(gl.getUniformLocation(progPunkte,'modus'),S.modus);
+  gl.uniform3fv(gl.getUniformLocation(progPunkte,'min3'),S.min);
+  gl.uniform3fv(gl.getUniformLocation(progPunkte,'max3'),S.max);
+  gl.uniform3fv(gl.getUniformLocation(progPunkte,'auge'),auge);
+  for(const [n,puf] of [['ort',S.puffer.ort],['farbe',S.puffer.farbe]]){
+    const l=gl.getAttribLocation(progPunkte,n);
+    gl.bindBuffer(gl.ARRAY_BUFFER,puf); gl.enableVertexAttribArray(l);
+    gl.vertexAttribPointer(l,3,gl.FLOAT,false,0,0);
+  }
+  gl.drawArrays(gl.POINTS,0,S.anzahl);
+  gl.finish();
+
+  const px=new Uint8Array(kante*kante*4);
+  gl.readPixels(0,0,kante,kante,gl.RGBA,gl.UNSIGNED_BYTE,px);
+  let summe=0, gesetzt=0; const farben=new Set();
+  for(let i=0;i<px.length;i+=4){
+    const h=px[i]+px[i+1]+px[i+2];
+    summe+=h; if(h>0) gesetzt++;
+    farben.add(px[i]+','+px[i+1]+','+px[i+2]);
+  }
+  const fehler = gl.getError();
+  gl.bindFramebuffer(gl.FRAMEBUFFER,null);
+  gl.enable(gl.DEPTH_TEST);
+  gl.deleteFramebuffer(ziel.fbo);
+  if(ziel.tex) gl.deleteTexture(ziel.tex);
+  if(ziel.farbRB) gl.deleteRenderbuffer(ziel.farbRB);
+  if(ziel.tiefe) gl.deleteRenderbuffer(ziel.tiefe);
+  return {summe, farben:farben.size, gefuellt:gesetzt,
+          anteil:+(gesetzt/(kante*kante)).toFixed(3),
+          glFehler:fehler, art:ziel.art, tiefenpuffer:!!ziel.tiefe};
+};
+
+window.__3d = S;   // für automatische Prüfungen
+</script>
+</body>
+</html>

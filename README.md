@@ -8,6 +8,7 @@ ohne dass Daten das Gerät verlassen.
 | | |
 |---|---|
 | **[Kamera-Scan](kamera.html)** | Bildfolge aufnehmen, Schärfe und Bewegung live messen, Paket für die 3D-Rekonstruktion mit [LingBot-Map](https://github.com/Robbyant/lingbot-map) herunterladen |
+| **[3D-Ansicht](3d.html)** | Punktwolken aus LingBot-Map öffnen und sich darin umsehen — drehen, heranholen, nach Höhe einfärben. Beispielszene eingebaut |
 | **[Berichtshelfer](berichtshelfer.html)** | Zeugnisbemerkungen und Entwicklungsberichte für alle Schularten und Bundesländer — 399 Formulierungen, Word-Export |
 | **[KI-Präsentation](praesentation.html)** | Wie ein Sprachmodell lernt — mit vier Live-Demos, die im Browser rechnen |
 

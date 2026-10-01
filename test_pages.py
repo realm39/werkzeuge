@@ -26,8 +26,8 @@ with sync_playwright() as pw:
     print("── Startseite ──")
     p.goto(BASIS+"/"); p.wait_for_timeout(700)
     chk("Startseite lädt", "MasterAgent" in p.title(), p.title())
-    chk("Drei Werkzeuge verlinkt", p.locator("a.karte").count()==3)
-    for ziel in ["kamera.html","berichtshelfer.html","praesentation.html"]:
+    chk("Alle Werkzeuge verlinkt", p.locator("a.karte").count()>=4, p.locator("a.karte").count())
+    for ziel in ["kamera.html","3d.html","berichtshelfer.html","praesentation.html"]:
         r=p.request.get(f"{BASIS}/{ziel}")
         chk(f"{ziel} erreichbar", r.status==200, r.status)
     chk("Hinweis auf Grenzen", "nicht läuft" in p.locator(".hinweis").inner_text()
