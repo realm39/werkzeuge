@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MasterAgent — Werkzeuge</title>
+<style>
+:root{--bg:#0a0c14;--card:#161b31;--line:#252c44;--txt:#eef1fb;--txt2:#a7b0d0;--txt3:#6d7699;
+ --acc:#6d8bff;--acc2:#b06dff;--ok:#38d39f;--warn:#ffb74d}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--txt);font:16px/1.6 system-ui,-apple-system,'Segoe UI',sans-serif;
+ -webkit-font-smoothing:antialiased;min-height:100dvh}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;
+ background:radial-gradient(900px 600px at 15% -10%,rgba(109,139,255,.16),transparent 60%),
+ radial-gradient(800px 500px at 85% 110%,rgba(176,109,255,.12),transparent 60%)}
+.wrap{position:relative;max-width:960px;margin:0 auto;padding:72px 20px 80px}
+h1{font-size:clamp(32px,6vw,52px);font-weight:800;letter-spacing:-.025em;line-height:1.05}
+.grad{background:linear-gradient(110deg,var(--acc),var(--acc2) 70%);-webkit-background-clip:text;
+ background-clip:text;color:transparent}
+.lead{font-size:18px;color:var(--txt2);max-width:60ch;margin-top:16px}
+.karten{display:grid;grid-template-columns:repeat(auto-fit,minmax(272px,1fr));gap:16px;margin-top:40px}
+a.karte{display:block;background:var(--card);border:1px solid var(--line);border-radius:17px;
+ padding:22px;text-decoration:none;color:inherit;transition:.17s}
+a.karte:hover{transform:translateY(-3px);border-color:var(--acc);
+ box-shadow:0 18px 44px -20px rgba(109,139,255,.6)}
+a.karte .ic{font-size:28px;display:block;margin-bottom:12px}
+a.karte h2{font-size:18px;font-weight:720;margin-bottom:7px}
+a.karte p{font-size:14px;color:var(--txt2);line-height:1.55}
+.tag{display:inline-block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;
+ font-weight:700;color:var(--ok);background:rgba(56,211,159,.1);
+ border:1px solid rgba(56,211,159,.3);padding:3px 9px;border-radius:999px;margin-top:11px}
+.hinweis{margin-top:44px;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--warn);
+ border-radius:0 15px 15px 0;padding:20px 24px}
+.hinweis h3{font-size:16px;margin-bottom:9px}
+.hinweis p{font-size:14px;color:var(--txt2);margin-bottom:8px}
+code{font-family:'SF Mono',Menlo,monospace;font-size:13px;background:#0e1222;
+ border:1px solid var(--line);border-radius:6px;padding:2px 7px}
+footer{margin-top:48px;font-size:13px;color:var(--txt3)}
+footer a{color:var(--txt2)}
+</style>
+</head>
+<body><div class="wrap">
+<h1>MasterAgent<br><span class="grad">Werkzeuge</span></h1>
+<p class="lead">Alles, was ohne Server auskommt — direkt im Browser, ohne Anmeldung,
+ohne dass Daten das Gerät verlassen.</p>
+
+<div class="karten">
+  <a class="karte" href="kamera.html">
+    <span class="ic">📷</span>
+    <h2>Kamera-Scan</h2>
+    <p>Bildfolge aufnehmen, Schärfe und Bewegung live messen, Paket für die
+       3D-Rekonstruktion mit LingBot-Map herunterladen.</p>
+    <span class="tag">läuft hier</span>
+  </a>
+  <a class="karte" href="berichtshelfer.html">
+    <span class="ic">✎</span>
+    <h2>Berichtshelfer</h2>
+    <p>Zeugnisbemerkungen und Entwicklungsberichte für alle Schularten und
+       Bundesländer — 399 Formulierungen, Word-Export.</p>
+    <span class="tag">läuft hier</span>
+  </a>
+  <a class="karte" href="praesentation.html">
+    <span class="ic">🧠</span>
+    <h2>Wie eine KI Sprache lernt</h2>
+    <p>Präsentation mit vier Live-Demos: Tokenisierung, Training, Textgenerierung
+       und der Einfluss der Trainingsdaten.</p>
+    <span class="tag">läuft hier</span>
+  </a>
+</div>
+
+<div class="hinweis">
+  <h3>Was hier nicht läuft — und warum</h3>
+  <p><b>Der Agent selbst</b> braucht Python und eine Datenbank. GitHub Pages liefert nur
+     Dateien aus, führt aber nichts aus. Lokal starten:</p>
+  <p><code>git clone … && cd masteragent && bash run.sh</code></p>
+  <p><b>Die 3D-Rekonstruktion</b> braucht eine Nvidia-Grafikkarte und mehrere Gigabyte
+     Modellgewichte. Der Kamera-Scan bereitet die Aufnahme vor; gerechnet wird dort,
+     wo eine Grafikkarte steht.</p>
+</div>
+
+<footer>
+  Quelltext und Anleitung im Repository ·
+  3D-Modell: <a href="https://github.com/Robbyant/lingbot-map">LingBot-Map</a> (Apache 2.0)
+</footer>
+</div></body></html>

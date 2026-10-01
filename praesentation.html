@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wie eine KI Sprache lernt — Präsentation</title>
+<style>
+:root{
+  --bg:#0a0c14; --bg2:#111527; --card:#161b31; --line:#252c4a;
+  --txt:#eef1fb; --txt2:#a7b0d0; --txt3:#6d7699;
+  --acc:#6d8bff; --acc2:#b06dff; --ok:#38d39f; --warn:#ffb74d; --err:#ff6b8a;
+  --mono:'SF Mono',Menlo,Consolas,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{
+  background:var(--bg); color:var(--txt); font-family:system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-size:20px; line-height:1.5; -webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background:radial-gradient(900px 600px at 15% -10%,rgba(109,139,255,.16),transparent 60%),
+             radial-gradient(800px 500px at 85% 110%,rgba(176,109,255,.13),transparent 60%);
+}
+/* ───────────── Folienrahmen ───────────── */
+.deck{position:relative;height:100dvh;z-index:1}
+.slide{
+  position:absolute; inset:0; display:none; flex-direction:column;
+  padding:clamp(28px,4vh,60px) clamp(34px,5vw,90px) 88px;
+  overflow-y:auto; overflow-x:hidden;
+  animation:in .45s cubic-bezier(.22,1,.36,1);
+}
+.slide.on{display:flex}
+@keyframes in{from{opacity:0;transform:translateY(22px) scale(.99)}to{opacity:1;transform:none}}
+h1{font-size:clamp(34px,5.4vw,68px);line-height:1.08;letter-spacing:-.02em;font-weight:800}
+h2{font-size:clamp(26px,3.6vw,46px);line-height:1.15;letter-spacing:-.015em;margin-bottom:6px;font-weight:750}
+h3{font-size:clamp(18px,1.7vw,24px);font-weight:700;margin-bottom:8px}
+.grad{background:linear-gradient(110deg,var(--acc),var(--acc2) 65%,#ff8fb1);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{font-size:clamp(17px,1.65vw,24px);color:var(--txt2);max-width:58ch;line-height:1.55}
+.kicker{font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--acc);
+  font-weight:800;margin-bottom:12px}
+.center{justify-content:center;align-items:flex-start}
+.mt{margin-top:22px}.mt2{margin-top:34px}
+/* ───────────── Bausteine ───────────── */
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;
+  padding:20px 22px}
+.card.tight{padding:15px 17px}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:1000px){.g2,.g3{grid-template-columns:1fr}}
+.btn{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;border:0;
+  padding:12px 22px;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;
+  font-family:inherit;transition:.18s}
+.btn:hover{filter:brightness(1.12);transform:translateY(-1px)}
+.btn:active{transform:translateY(1px)}
+.btn.sec{background:var(--bg2);border:1px solid var(--line);color:var(--txt)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+input[type=text],textarea,select{
+  width:100%;background:var(--bg2);border:1px solid var(--line);color:var(--txt);
+  border-radius:11px;padding:12px 14px;font-size:17px;font-family:inherit;outline:none}
+input[type=text]:focus,textarea:focus{border-color:var(--acc)}
+input[type=range]{width:100%;accent-color:var(--acc);height:26px}
+label{font-size:14px;color:var(--txt2);font-weight:600;display:block;margin-bottom:6px}
+code,.mono{font-family:var(--mono)}
+.tag{display:inline-block;background:var(--bg2);border:1px solid var(--line);
+  border-radius:8px;padding:3px 10px;font-size:14px;margin:3px 4px 3px 0}
+.big{font-size:clamp(30px,4vw,52px);font-weight:800;line-height:1}
+.muted{color:var(--txt3);font-size:14px}
+ul.clean{list-style:none}
+ul.clean li{padding-left:28px;position:relative;margin-bottom:11px;color:var(--txt2);
+  font-size:clamp(15px,1.45vw,20px);line-height:1.5}
+ul.clean li::before{content:'▸';position:absolute;left:6px;color:var(--acc);font-weight:800}
+ul.clean li b{color:var(--txt)}
+/* ───────────── Steuerleiste ───────────── */
+.bar{position:fixed;left:0;right:0;bottom:0;height:52px;display:flex;align-items:center;
+  gap:14px;padding:0 20px;background:rgba(10,12,20,.9);backdrop-filter:blur(14px);
+  border-top:1px solid var(--line);z-index:60;font-size:14px}
+.bar .sp{flex:1}
+.nav{background:var(--bg2);border:1px solid var(--line);color:var(--txt2);width:34px;
+  height:34px;border-radius:9px;cursor:pointer;font-size:17px;display:grid;place-items:center}
+.nav:hover{color:var(--txt);border-color:var(--acc)}
+.prog{position:fixed;top:0;left:0;height:3px;z-index:61;
+  background:linear-gradient(90deg,var(--acc),var(--acc2));transition:width .35s}
+.chapter{color:var(--txt3);font-size:13px;letter-spacing:.04em}
+#clock{font-family:var(--mono);color:var(--txt2);font-size:14px;font-variant-numeric:tabular-nums}
+#clock.run{color:var(--ok)}
+/* ───────────── Sprechzettel ───────────── */
+.notes{position:fixed;right:18px;bottom:66px;width:min(430px,44vw);max-height:56vh;
+  overflow-y:auto;background:rgba(18,22,40,.97);border:1px solid var(--acc);
+  border-radius:14px;padding:16px 18px;z-index:70;display:none;
+  box-shadow:0 20px 60px -15px #000;font-size:15px;line-height:1.55}
+.notes.on{display:block;animation:in .25s}
+.notes h4{color:var(--acc);font-size:13px;letter-spacing:.1em;text-transform:uppercase;
+  margin-bottom:9px}
+.notes p{color:var(--txt2);margin-bottom:9px}
+.notes b{color:var(--txt)}
+/* ───────────── Demo-spezifisch ───────────── */
+.tok{display:inline-block;padding:5px 9px;margin:3px;border-radius:7px;font-family:var(--mono);
+  font-size:15px;border:1px solid;animation:pop .3s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes pop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}
+.bars{display:flex;flex-direction:column;gap:7px}
+.brow{display:grid;grid-template-columns:150px 1fr 62px;align-items:center;gap:11px;
+  font-size:16px;animation:in .3s both}
+.brow .w{font-family:var(--mono);text-align:right;color:var(--txt);overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.btrack{display:block;height:26px;background:var(--bg2);border-radius:7px;overflow:hidden;
+  border:1px solid var(--line)}
+.bfill{display:block;height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));
+  border-radius:6px;transition:width .5s cubic-bezier(.22,1,.36,1);min-width:3px}
+.brow.top .bfill{background:linear-gradient(90deg,var(--ok),#6ee7c0)}
+.bpct{font-family:var(--mono);color:var(--txt2);font-size:15px;text-align:right}
+.out{background:#0c0f1c;border:1px solid var(--line);border-radius:12px;padding:16px 18px;
+  font-size:clamp(16px,1.5vw,20px);line-height:1.7;min-height:96px}
+.out .gen{color:var(--ok)}
+.out .cur{background:var(--acc);color:#fff;border-radius:4px;padding:0 3px}
+.stat{display:flex;gap:22px;flex-wrap:wrap;margin-top:12px}
+.stat div{font-size:14px;color:var(--txt3)}
+.stat b{display:block;font-size:22px;color:var(--txt);font-family:var(--mono);font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:clamp(14px,1.35vw,18px)}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--acc);font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+td.n{font-family:var(--mono);color:var(--txt2)}
+.warnbox{border-left:3px solid var(--warn);background:rgba(255,183,77,.08);
+  padding:14px 18px;border-radius:0 12px 12px 0}
+.errbox{border-left:3px solid var(--err);background:rgba(255,107,138,.08);
+  padding:14px 18px;border-radius:0 12px 12px 0}
+.okbox{border-left:3px solid var(--ok);background:rgba(56,211,159,.08);
+  padding:14px 18px;border-radius:0 12px 12px 0}
+.att{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+.att span{padding:9px 13px;border-radius:9px;background:var(--bg2);border:1px solid var(--line);
+  font-size:clamp(15px,1.5vw,21px);transition:.35s;cursor:default}
+.hint{font-size:13.5px;color:var(--txt3);margin-top:7px}
+.kbd{background:var(--bg2);border:1px solid var(--line);border-bottom-width:2px;
+  border-radius:5px;padding:2px 7px;font-family:var(--mono);font-size:13px;color:var(--txt2)}
+.title-deco{width:74px;height:5px;border-radius:3px;
+  background:linear-gradient(90deg,var(--acc),var(--acc2));margin:22px 0 26px}
+</style>
+</head>
+<body>
+<div class="prog" id="prog"></div>
+<div class="deck" id="deck">
+
+<!-- ══════════════ 1 TITEL ══════════════ -->
+<section class="slide center" data-ch="Einstieg" data-notes="
+  <b>Begrüßung und Aufhänger.</b>
+  <p>Frag die Klasse zuerst: „Wer von euch hat diese Woche ChatGPT benutzt?“ — Hände zählen lassen.
+  Dann: „Und wer weiß, was dabei im Inneren passiert?“ Meist gehen die Hände runter. Genau da setzt du an.</p>
+  <p>Sag klar an, was gleich passiert: <b>Kein Vortrag über KI, sondern wir bauen hier live eine.</b>
+  Die Modelle in dieser Präsentation trainieren wirklich im Browser — nichts ist vorher aufgezeichnet.</p>
+  <p>Dauer bis hier: etwa 1 Minute.</p>">
+  <div class="kicker">Präsentation · Künstliche Intelligenz</div>
+  <h1>Wie eine KI<br><span class="grad">Sprache lernt</span></h1>
+  <div class="title-deco"></div>
+  <p class="lead">Wir bauen in dieser Präsentation live ein Sprachmodell —
+     und sehen dabei genau, warum ChatGPT so überzeugend klingt
+     und warum es trotzdem Unsinn erzählt.</p>
+  <div class="mt2 grid g3" style="max-width:840px">
+    <div class="card tight"><div class="big grad">4</div>
+      <div class="muted" style="margin-top:4px">Live-Demos zum Mitmachen</div></div>
+    <div class="card tight"><div class="big grad">5.088</div>
+      <div class="muted" style="margin-top:4px">Wörter Trainingstext</div></div>
+    <div class="card tight"><div class="big grad">0</div>
+      <div class="muted" style="margin-top:4px">Internetverbindung nötig</div></div>
+  </div>
+  <p class="hint mt2"><span class="kbd">→</span> weiter &nbsp;
+     <span class="kbd">N</span> Sprechzettel &nbsp;
+     <span class="kbd">F</span> Vollbild &nbsp;
+     <span class="kbd">T</span> Timer</p>
+</section>
+
+<!-- ══════════════ 2 FRAGE ══════════════ -->
+<section class="slide center" data-ch="Einstieg" data-notes="
+  <b>Die Leitfrage aufwerfen.</b>
+  <p>Lies die drei Antworten vor und lass die Klasse per Handzeichen abstimmen.
+  Das dauert 30 Sekunden und holt alle ins Boot.</p>
+  <p>Löse noch <b>nicht</b> auf! Sag: „Merkt euch eure Antwort. Am Ende wisst ihr es sicher.“
+  Die Auflösung kommt auf der vorletzten Folie — das hält die Spannung.</p>
+  <p>Die richtige Antwort ist <b>C</b>, aber die Begründung ist das Eigentliche.</p>">
+  <div class="kicker">Die Leitfrage</div>
+  <h2>Versteht ChatGPT eigentlich,<br>was es da schreibt?</h2>
+  <div class="grid g3 mt2" style="max-width:1000px">
+    <div class="card"><h3>A — Ja</h3>
+      <p class="muted">Es denkt wie ein Mensch, nur schneller.</p></div>
+    <div class="card"><h3>B — Nein</h3>
+      <p class="muted">Es kopiert nur Sätze aus dem Internet.</p></div>
+    <div class="card" style="border-color:var(--acc)"><h3>C — Etwas dazwischen</h3>
+      <p class="muted">Es rechnet Wahrscheinlichkeiten aus.</p></div>
+  </div>
+  <p class="lead mt2">Stimmt kurz ab. Am Ende der Präsentation
+     könnt ihr die Frage selbst beantworten — und begründen.</p>
+</section>
+
+<!-- ══════════════ 3 TOKENS ══════════════ -->
+<section class="slide" data-ch="Grundlagen · Demo 1" data-notes="
+  <b>Demo 1: Tokenisierung. Etwa 2 Minuten.</b>
+  <p>Kernaussage: <b>Ein Computer kann nicht mit Buchstaben rechnen, nur mit Zahlen.</b>
+  Deshalb wird Text zuerst zerlegt und nummeriert.</p>
+  <p>Lass jemanden aus der Klasse ein Wort zurufen und tippe es ein. Besonders eindrucksvoll:
+  <b>„Donaudampfschifffahrt“</b> — wird in viele Teile zerlegt. Oder ein Emoji.</p>
+  <p>Wichtiger Punkt zum Erwähnen: Deshalb ist KI bei langen deutschen Wörtern und beim
+  Buchstabenzählen schlecht — sie sieht gar keine einzelnen Buchstaben, sondern nur diese Brocken.
+  Das erklärt den berühmten Fehler „Wie viele R sind in Erdbeere?“</p>">
+  <div class="kicker">Schritt 1 von 4 · Demo</div>
+  <h2>Text wird zu Zahlen</h2>
+  <p class="lead">Ein Computer kennt keine Wörter. Zuerst wird jeder Text in Bausteine
+     zerlegt — sogenannte <b style="color:var(--txt)">Token</b> — und jeder bekommt eine Nummer.</p>
+  <div class="mt" style="max-width:900px">
+    <label>Gib einen Satz ein (oder lass dir einen zurufen)</label>
+    <input type="text" id="tokIn" value="Künstliche Intelligenz versteht keine Buchstaben.">
+  </div>
+  <div class="card mt" id="tokOut" style="min-height:96px"></div>
+  <div class="stat" id="tokStat"></div>
+  <div class="warnbox mt">
+    <b>Deshalb scheitert KI an einfachen Dingen:</b> Fragt man „Wie viele R sind in Erdbeere?“,
+    sieht das Modell nicht E-R-D-B-E-E-R-E, sondern nur zwei, drei Brocken.
+    Buchstaben zählen kann es damit gar nicht.
+  </div>
+</section>
+
+<!-- ══════════════ 4 TRAINING ══════════════ -->
+<section class="slide" data-ch="Das Modell · Demo 2" data-notes="
+  <b>Demo 2: Das Training. Etwa 3 Minuten — das Herzstück.</b>
+  <p>Erkläre zuerst die Aufgabe: Das Modell geht den Text Wort für Wort durch und merkt sich
+  nur eines — <b>welches Wort folgt auf welches, und wie oft</b>. Mehr nicht. Keine Bedeutung,
+  keine Grammatik, nur Zählen.</p>
+  <p>Klick auf <b>Training starten</b> und lass es durchlaufen. Die Zahlen steigen sichtbar.
+  Sag dazu: „Ein echtes Modell macht genau das auch — nur mit dem ganzen Internet
+  statt mit 2.600 Wörtern, und es zählt nicht, sondern lernt Gewichte.“</p>
+  <p>Danach: Wort anklicken oder eingeben und die Vorhersage zeigen. Grün ist das
+  wahrscheinlichste nächste Wort.</p>
+  <p><b>Merksatz für die Tafel:</b> Das Modell sagt nicht die Wahrheit voraus, sondern das
+  wahrscheinlichste nächste Wort.</p>">
+  <div class="kicker">Schritt 2 von 4 · Demo</div>
+  <h2>Das Modell lernt — jetzt, live</h2>
+  <p class="lead">Es liest einen Text Wort für Wort und merkt sich nur eines:<br>
+     <b style="color:var(--txt)">Welches Wort folgt auf welches — und wie oft?</b></p>
+  <div class="grid g2 mt" style="grid-template-columns:1fr 1.25fr">
+    <div>
+      <div class="card">
+        <label>Trainingstext auswählen</label>
+        <select id="corpus">
+          <option value="kafka">Kafka — Die Verwandlung (2.600 Wörter)</option>
+          <option value="nietzsche">Nietzsche — Zarathustra (2.200 Wörter)</option>
+          <option value="sachtext">Sachtext über KI (288 Wörter)</option>
+        </select>
+        <button class="btn mt" id="trainBtn" style="width:100%">Training starten</button>
+        <div class="stat" id="trainStat">
+          <div><b id="sW">0</b>Wörter gelesen</div>
+          <div><b id="sV">0</b>Vokabular</div>
+          <div><b id="sP">0</b>gelernte Paare</div>
+        </div>
+      </div>
+      <div class="card mt tight">
+        <label>Vorhersage für dieses Wort</label>
+        <input type="text" id="predIn" placeholder="erst trainieren …" disabled>
+        <div class="hint">Vorschläge: <span id="sugg"></span></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Was kommt als Nächstes?</h3>
+      <div class="bars mt" id="predOut">
+        <p class="muted">Starte links das Training.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ 5 GENERIEREN ══════════════ -->
+<section class="slide" data-ch="Das Modell · Demo 3" data-notes="
+  <b>Demo 3: Text erzeugen. Etwa 3 Minuten — der Wow-Moment.</b>
+  <p>Klick <b>Text erzeugen</b>. Das Modell würfelt jetzt immer wieder das nächste Wort
+  aus seinen gelernten Wahrscheinlichkeiten. Lies das Ergebnis vor!</p>
+  <p><b>Der entscheidende Punkt:</b> Es klingt nach Kafka, hat Rhythmus und Grammatik —
+  und ergibt trotzdem oft keinen Sinn. Genau <b>das</b> ist eine Halluzination, nur im Kleinen.
+  ChatGPT macht denselben Fehler, nur viel seltener und dadurch viel gefährlicher,
+  weil man ihn nicht mehr sofort bemerkt.</p>
+  <p><b>Temperatur-Regler erklären:</b> ganz links wählt das Modell immer das
+  wahrscheinlichste Wort — langweilig und es wiederholt sich. Ganz rechts würfelt es wild —
+  kreativ, aber Kauderwelsch. Diesen Regler gibt es bei ChatGPT wirklich.
+  Zeig beide Extreme!</p>">
+  <div class="kicker">Schritt 3 von 4 · Demo</div>
+  <h2>Jetzt schreibt das Modell selbst</h2>
+  <p class="lead">Es hängt immer wieder das nächste Wort an — gewürfelt nach den
+     Wahrscheinlichkeiten, die es gelernt hat.</p>
+  <div class="grid g2 mt" style="grid-template-columns:1.35fr 1fr">
+    <div class="out" id="genOut">
+      <span class="muted">Trainiere zuerst auf der vorherigen Folie, dann hier erzeugen.</span>
+    </div>
+    <div>
+      <div class="card tight">
+        <label>Temperatur — wie mutig würfelt das Modell?
+          <b class="mono" id="tVal" style="color:var(--acc)">0.8</b></label>
+        <input type="range" id="temp" min="0" max="150" value="80">
+        <div style="display:flex;justify-content:space-between" class="muted">
+          <span>0 · immer das Sicherste</span><span>1.5 · Chaos</span>
+        </div>
+      </div>
+      <div class="card tight mt">
+        <label>Kontextlänge</label>
+        <select id="order">
+          <option value="1">1 Wort zurückschauen (Bigramm)</option>
+          <option value="2" selected>2 Wörter zurückschauen (Trigramm)</option>
+        </select>
+        <div class="hint">Mehr Kontext = sinnvollere Sätze.
+          ChatGPT schaut tausende Wörter zurück.</div>
+      </div>
+      <button class="btn mt" id="genBtn" style="width:100%" disabled>Text erzeugen</button>
+      <button class="btn sec mt" id="genStop" style="width:100%;display:none">Stopp</button>
+    </div>
+  </div>
+  <div class="errbox mt">
+    <b>Genau hier entsteht die Halluzination.</b> Der Text klingt richtig, hat Grammatik und
+    Rhythmus — und ist trotzdem erfunden. Das Modell kennt keinen Unterschied zwischen
+    „wahr“ und „klingt wahrscheinlich“.
+  </div>
+</section>
+
+<!-- ══════════════ 6 DATEN BESTIMMEN ══════════════ -->
+<section class="slide" data-ch="Folgen · Demo 4" data-notes="
+  <b>Demo 4: Die Daten bestimmen alles. Etwa 2 Minuten.</b>
+  <p>Klick auf beide Knöpfe und lies die Ergebnisse vor. Dasselbe Programm, derselbe Code —
+  aber völlig unterschiedliche Sprache. Der einzige Unterschied ist der Trainingstext.</p>
+  <p><b>Die Brücke zum Ernstfall:</b> Wenn schon der Stil komplett von den Daten abhängt —
+  was ist dann mit Vorurteilen? Wenn in den Trainingsdaten überwiegend Männer Ingenieure sind,
+  lernt das Modell genau das und gibt es weiter. Das nennt man <b>Bias</b>.</p>
+  <p>Beispiel zum Erzählen: Eine Bewerbungs-KI von Amazon hat Frauen systematisch schlechter
+  bewertet, weil sie mit den Lebensläufen der überwiegend männlichen Belegschaft trainiert wurde.
+  Das Projekt wurde 2018 eingestellt.</p>">
+  <div class="kicker">Schritt 4 von 4 · Demo</div>
+  <h2>Die Daten bestimmen, was herauskommt</h2>
+  <p class="lead">Gleicher Code, gleiche Rechnung — nur ein anderer Trainingstext.</p>
+  <div class="grid g2 mt">
+    <div class="card">
+      <h3 style="color:var(--acc)">Trainiert auf Kafka</h3>
+      <div class="out mt" id="cmpA" style="min-height:120px;font-size:17px">
+        <span class="muted">Noch nicht erzeugt</span></div>
+      <button class="btn sec mt" id="cmpABtn" style="width:100%">Erzeugen</button>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--acc2)">Trainiert auf Nietzsche</h3>
+      <div class="out mt" id="cmpB" style="min-height:120px;font-size:17px">
+        <span class="muted">Noch nicht erzeugt</span></div>
+      <button class="btn sec mt" id="cmpBBtn" style="width:100%">Erzeugen</button>
+    </div>
+  </div>
+  <div class="warnbox mt">
+    <b>Und jetzt im Ernst:</b> Wenn schon der Schreibstil komplett von den Daten abhängt —
+    was passiert dann mit <b>Vorurteilen</b>, die in den Texten stecken?
+    Das Modell übernimmt sie. Amazon musste 2018 eine Bewerbungs-KI abschalten,
+    die Frauen systematisch schlechter bewertete.
+  </div>
+</section>
+
+<!-- ══════════════ 7 UNTERSCHIED ZU GPT ══════════════ -->
+<section class="slide" data-ch="Einordnung" data-notes="
+  <b>Einordnung. Etwa 2 Minuten.</b>
+  <p>Wichtig für die Ehrlichkeit deiner Präsentation: Sag klar, dass dein Modell ein
+  <b>stark vereinfachtes</b> ist. Das Prinzip — nächstes Wort vorhersagen — ist aber
+  wirklich dasselbe.</p>
+  <p>Geh die Tabelle von oben nach unten durch. Der wichtigste Unterschied ist die
+  <b>Kontextlänge</b>: Dein Modell sieht 2 Wörter, GPT-4 sieht ein ganzes Buch.</p>
+  <p>Zahl zum Merken: <b>1,8 Billionen Parameter</b> — das sind 1.800.000.000.000 Zahlen.
+  Wenn jede Zahl ein Sandkorn wäre, hättest du einen Sandhaufen von etwa 40 Kubikmetern.</p>">
+  <div class="kicker">Ehrliche Einordnung</div>
+  <h2>Unser Modell gegen GPT-4</h2>
+  <p class="lead">Das Prinzip ist dasselbe. Der Maßstab ist es nicht.</p>
+  <table class="mt">
+    <tr><th></th><th>Unser Modell</th><th>GPT-4</th></tr>
+    <tr><td>Trainingstext</td><td class="n">2.600 Wörter</td>
+        <td class="n">~13 Billionen Token</td></tr>
+    <tr><td>Gelernte Werte</td><td class="n" id="cmpParams">~2.000 Zählwerte</td>
+        <td class="n">~1.800.000.000.000 Gewichte</td></tr>
+    <tr><td>Kontext</td><td class="n">2 Wörter</td>
+        <td class="n">bis 128.000 Token (ein ganzes Buch)</td></tr>
+    <tr><td>Trainingsdauer</td><td class="n">unter 1 Sekunde</td>
+        <td class="n">Monate auf tausenden Grafikkarten</td></tr>
+    <tr><td>Stromkosten</td><td class="n">praktisch null</td>
+        <td class="n">geschätzt über 50 Mio. Euro</td></tr>
+    <tr><td>Versteht Bedeutung?</td><td class="n">nein</td>
+        <td class="n">auch nicht — rechnet aber viel feiner</td></tr>
+  </table>
+  <div class="okbox mt">
+    <b>Der entscheidende Zusatz bei echten Modellen heißt Attention (2017).</b>
+    Damit kann das Modell für jedes Wort entscheiden, welche anderen Wörter im Satz
+    gerade wichtig sind — statt nur auf die letzten zwei zu schauen.
+  </div>
+</section>
+
+<!-- ══════════════ 8 ATTENTION ══════════════ -->
+<section class="slide" data-ch="Einordnung · Bonus" data-notes="
+  <b>Bonus-Folie: Attention. Etwa 1–2 Minuten.</b>
+  <p>Diese Folie kannst du weglassen, wenn die Zeit knapp wird.</p>
+  <p>Klick die beiden Sätze durch. Das Wort <b>Bank</b> ist identisch, aber die Bedeutung
+  hängt von einem einzigen anderen Wort ab — <b>Fluss</b> oder <b>Geld</b>.
+  Die Aufmerksamkeit leuchtet genau dort auf.</p>
+  <p>Kernsatz: „Das Modell schaut nicht stur auf die Nachbarwörter, sondern sucht sich
+  im ganzen Satz aus, worauf es ankommt.“ Das war 2017 der Durchbruch, der ChatGPT
+  überhaupt möglich gemacht hat.</p>">
+  <div class="kicker">Bonus · der Durchbruch von 2017</div>
+  <h2>Attention: worauf das Modell schaut</h2>
+  <p class="lead">Dasselbe Wort, zwei Bedeutungen. Das Modell entscheidet anhand des
+     restlichen Satzes — und gewichtet dafür jedes Wort.</p>
+  <div class="card mt">
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn sec" data-att="0">Satz 1: die Bank am Fluss</button>
+      <button class="btn sec" data-att="1">Satz 2: die Bank mit dem Geld</button>
+    </div>
+    <div class="att" id="attRow"></div>
+    <p class="hint" id="attTxt">Wähle einen Satz. Je heller ein Wort, desto stärker
+      beachtet das Modell es, um „Bank“ zu deuten.</p>
+  </div>
+  <div class="grid g2 mt">
+    <div class="card tight"><h3>Ohne Attention</h3>
+      <p class="muted">Das Modell schaut nur auf die letzten Wörter — wie unser Bigramm.
+        Bei langen Sätzen verliert es den Faden.</p></div>
+    <div class="card tight"><h3>Mit Attention</h3>
+      <p class="muted">Es darf für jedes Wort im ganzen Text entscheiden, was gerade
+        wichtig ist. Das machte 2017 den Weg zu ChatGPT frei.</p></div>
+  </div>
+</section>
+
+<!-- ══════════════ 9 CHANCEN/RISIKEN ══════════════ -->
+<section class="slide" data-ch="Bewertung" data-notes="
+  <b>Chancen und Risiken. Etwa 2 Minuten.</b>
+  <p>Nicht alles vorlesen — das langweilt. Nimm aus jeder Spalte zwei Punkte,
+  die dich selbst überzeugen, und erzähle ein eigenes Beispiel dazu.</p>
+  <p>Guter Aufhänger für die Klasse: <b>Hausaufgaben.</b> Frag: „Ist es Betrug,
+  wenn ich die KI meinen Aufsatz schreiben lasse? Und wenn sie ihn nur korrigiert?“
+  Da gehen die Meinungen auseinander — das belebt die Diskussion.</p>
+  <p>Wenn dein Lehrer eine Diskussion erwartet: Hier ist die Stelle dafür.</p>">
+  <div class="kicker">Bewertung</div>
+  <h2>Was das für uns bedeutet</h2>
+  <div class="grid g2 mt">
+    <div class="card">
+      <h3 style="color:var(--ok)">Was wirklich gut funktioniert</h3>
+      <ul class="clean mt">
+        <li><b>Sprache umformen</b> — übersetzen, zusammenfassen, vereinfachen</li>
+        <li><b>Erklären auf Abruf</b> — geduldig, beliebig oft, angepasst an das Niveau</li>
+        <li><b>Programmieren</b> — Routinecode schreiben und Fehler finden</li>
+        <li><b>Barrierefreiheit</b> — Vorlesen, Untertitel, Bildbeschreibungen</li>
+        <li><b>Medizin</b> — Muster in Röntgenbildern erkennen, oft früher als Menschen</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--err)">Wo es gefährlich wird</h3>
+      <ul class="clean mt">
+        <li><b>Halluzinationen</b> — erfundene Fakten, überzeugend vorgetragen</li>
+        <li><b>Bias</b> — Vorurteile aus den Daten werden verstärkt</li>
+        <li><b>Deepfakes</b> — Stimmen und Videos sind fälschbar</li>
+        <li><b>Datenschutz</b> — was ihr eintippt, kann ins Training wandern</li>
+        <li><b>Denkfaulheit</b> — wer nur kopiert, lernt nichts</li>
+      </ul>
+    </div>
+  </div>
+  <div class="okbox mt">
+    <b>Die praktische Regel:</b> KI ist ein guter erster Entwurf und ein schlechter letzter.
+    Alles, was zählt, muss ein Mensch prüfen.
+  </div>
+</section>
+
+<!-- ══════════════ 10 AUFLÖSUNG ══════════════ -->
+<section class="slide center" data-ch="Fazit" data-notes="
+  <b>Auflösung der Eingangsfrage. Etwa 1 Minute.</b>
+  <p>Komm auf die Abstimmung vom Anfang zurück: „Wer hatte C?“ Jetzt kannst du auflösen —
+  und alle verstehen die Begründung, weil sie es selbst gesehen haben.</p>
+  <p>Sprich die drei Sätze langsam. Das ist deine Kernbotschaft, die hängenbleiben soll.</p>">
+  <div class="kicker">Auflösung</div>
+  <h2>Versteht ChatGPT, was es schreibt?</h2>
+  <div class="card mt2" style="max-width:930px;border-color:var(--acc)">
+    <div class="big grad">Nein — es rechnet.</div>
+    <p class="lead mt">Ein Sprachmodell sagt immer nur das wahrscheinlichste nächste Wort
+       voraus. Es hat kein Wissen, keine Absicht und keine Ahnung, ob etwas stimmt.</p>
+    <p class="lead mt">Dass dabei so oft etwas Kluges herauskommt, liegt daran, dass in
+       unserer Sprache sehr viel Wissen steckt. Wer Sprache gut genug vorhersagt,
+       wirkt, als würde er denken.</p>
+    <p class="lead mt"><b style="color:var(--txt)">Und genau deshalb bleibt eure Aufgabe:
+       prüfen, nachfragen, selbst denken.</b></p>
+  </div>
+</section>
+
+<!-- ══════════════ 11 EIGENES PROJEKT ══════════════ -->
+<section class="slide" data-ch="Fazit" data-notes="
+  <b>Optionale Folie — nur zeigen, wenn du den Agenten wirklich vorführen kannst
+  oder willst.</b>
+  <p>Wenn du willst, kannst du hier erzählen, dass du selbst einen KI-Agenten gebaut hast,
+  der Werkzeuge benutzt: Websuche, Dateien lesen, Berechnungen. Das ist der Unterschied
+  zwischen einem <b>Sprachmodell</b> (sagt Wörter vorher) und einem <b>Agenten</b>
+  (plant, benutzt Werkzeuge, prüft sich selbst).</p>
+  <p>Wenn du das nicht zeigen willst: Folie mit Pfeiltaste überspringen.</p>">
+  <div class="kicker">Ausblick</div>
+  <h2>Vom Sprachmodell zum <span class="grad">Agenten</span></h2>
+  <p class="lead">Ein Sprachmodell sagt Wörter voraus. Ein Agent benutzt damit Werkzeuge —
+     und wird dadurch erst nützlich.</p>
+  <div class="grid g3 mt2">
+    <div class="card"><h3>1 · Planen</h3>
+      <p class="muted">Die Aufgabe in Schritte zerlegen, statt sofort zu antworten.</p></div>
+    <div class="card"><h3>2 · Werkzeuge nutzen</h3>
+      <p class="muted">Im Web suchen, rechnen, Dateien lesen — statt zu raten.
+        Gegen Halluzination hilft nachschlagen.</p></div>
+    <div class="card"><h3>3 · Sich selbst prüfen</h3>
+      <p class="muted">Die eigene Antwort kritisieren und überarbeiten,
+        bevor sie herausgeht.</p></div>
+  </div>
+  <div class="okbox mt2">
+    <b>Genau das habe ich als Projekt gebaut:</b> einen Agenten mit über 100 Werkzeugen,
+    der plant, recherchiert und seine Antworten selbst überprüft — komplett ohne
+    fremde Programmbibliotheken.
+  </div>
+</section>
+
+<!-- ══════════════ 12 QUELLEN ══════════════ -->
+<section class="slide" data-ch="Anhang" data-notes="
+  <b>Abschluss.</b>
+  <p>Sag den letzten Satz und bedanke dich. Dann: „Habt ihr Fragen?“ und warte wirklich
+  ein paar Sekunden — nicht sofort weiterreden.</p>
+  <p><b>Auf typische Fragen vorbereitet sein:</b></p>
+  <p>„Wird KI uns ersetzen?“ → Sie ersetzt Aufgaben, nicht Menschen. Wer sie bedienen kann,
+  ist im Vorteil.</p>
+  <p>„Kann KI Gefühle haben?“ → Nein. Sie sagt Wörter über Gefühle vorher, weil Menschen
+  solche Texte geschrieben haben.</p>
+  <p>„Woher kommen die Trainingsdaten?“ → Aus dem Internet, Büchern, Wikipedia — teils
+  ohne Erlaubnis der Urheber. Darüber laufen gerade Gerichtsverfahren.</p>">
+  <div class="kicker">Anhang</div>
+  <h2>Quellen &amp; zum Weiterlesen</h2>
+  <div class="grid g2 mt">
+    <div class="card">
+      <h3>Trainingstexte dieser Demo</h3>
+      <ul class="clean mt">
+        <li><b>Franz Kafka — Die Verwandlung</b> (1915), gemeinfrei, Project Gutenberg</li>
+        <li><b>Friedrich Nietzsche — Also sprach Zarathustra</b> (1883), gemeinfrei,
+            Project Gutenberg</li>
+        <li><b>Sachtext</b> — selbst verfasst</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Fachliche Grundlagen</h3>
+      <ul class="clean mt">
+        <li><b>Vaswani u.a.: „Attention Is All You Need“</b> (2017) — die Arbeit,
+            die Transformer eingeführt hat</li>
+        <li><b>3Blue1Brown</b>, YouTube — sehr gute Visualisierungen zu neuronalen Netzen</li>
+        <li><b>Dautenhahn / Amazon-Fall</b> — Reuters-Bericht 2018 zur Bewerbungs-KI</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card mt" style="border-color:var(--acc)">
+    <p class="lead"><b style="color:var(--txt)">Diese Präsentation ist selbst gebaut:</b>
+      eine einzige HTML-Datei, ohne Internet, ohne PowerPoint. Die Sprachmodelle
+      darin wurden live in eurem Browser trainiert — nichts war aufgezeichnet.</p>
+  </div>
+  <h2 class="mt2">Vielen Dank. Fragen?</h2>
+</section>
+
+</div>
+
+<div class="notes" id="notes"><h4>Sprechzettel</h4><div id="notesBody"></div></div>
+
+<div class="bar">
+  <button class="nav" id="prev" title="Zurück">‹</button>
+  <button class="nav" id="next" title="Weiter">›</button>
+  <span class="mono" id="counter">1 / 12</span>
+  <span class="chapter" id="chapter"></span>
+  <span class="sp"></span>
+  <span id="clock" title="Taste T startet/stoppt">00:00</span>
+  <button class="nav" id="noteBtn" title="Sprechzettel (N)">N</button>
+  <button class="nav" id="fsBtn" title="Vollbild (F)">⛶</button>
+</div>
+
+<script>
+'use strict';
+/* ════════════════ Korpora ════════════════ */
+const KORPORA = {"kafka": "Als Gregor Samsa eines Morgens aus unruhigen Träumen erwachte, fand er sich in seinem Bett zu einem ungeheueren Ungeziefer verwandelt. Er lag auf seinem panzerartig harten Rücken und sah, wenn er den Kopf ein wenig hob, seinen gewölbten, braunen, von bogenförmigen Versteifungen geteilten Bauch, auf dessen Höhe sich die Bettdecke, zum gänzlichen Niedergleiten bereit, kaum noch erhalten konnte. Seine vielen, im Vergleich zu seinem sonstigen Umfang kläglich dünnen Beine flimmerten ihm hilflos vor den Augen. ¶ \"Was ist mit mir geschehen?\" dachte er. Es war kein Traum. Sein Zimmer, ein richtiges, nur etwas zu kleines Menschenzimmer, lag ruhig zwischen den vier wohlbekannten Wänden. Über dem Tisch, auf dem eine auseinandergepackte Musterkollektion von Tuchwaren ausgebreitet war — Samsa war Reisender —, hing das Bild, das er vor kurzem aus einer illustrierten Zeitschrift ausgeschnitten und in einem hübschen, vergoldeten Rahmen untergebracht hatte. Es stellte eine Dame dar, die, mit einem Pelzhut und einer Pelzboa versehen, aufrecht dasaß und einen schweren Pelzmuff, in dem ihr ganzer Unterarm verschwunden war, dem Beschauer entgegenhob. ¶ Gregors Blick richtete sich dann zum Fenster, und das trübe Wetter — man hörte Regentropfen auf das Fensterblech aufschlagen — machte ihn ganz melancholisch. \"Wie wäre es, wenn ich noch ein wenig weiterschliefe und alle Narrheiten vergäße,\" dachte er, aber das war gänzlich undurchführbar, denn er war gewöhnt, auf der rechten Seite zu schlafen, konnte sich aber in seinem gegenwärtigen Zustand nicht in diese Lage bringen. Mit welcher Kraft er sich auch auf die rechte Seite warf, immer wieder schaukelte er in die Rückenlage zurück. Er versuchte es wohl hundertmal, schloß die Augen, um die zappelnden Beine nicht sehen zu müssen, und ließ erst ab, als er in der Seite einen noch nie gefühlten, leichten, dumpfen Schmerz zu fühlen begann. ¶ \"Ach Gott,\" dachte er, \"was für einen anstrengenden Beruf habe ich gewählt! Tag aus, Tag ein auf der Reise. Die geschäftlichen Aufregungen sind viel größer, als im eigentlichen Geschäft zu Hause, und außerdem ist mir noch diese Plage des Reisens auferlegt, die Sorgen um die Zuganschlüsse, das unregelmäßige, schlechte Essen, ein immer wechselnder, nie andauernder, nie herzlich werdender menschlicher Verkehr. Der Teufel soll das alles holen!\" Er fühlte ein leichtes Jucken oben auf dem Bauch; schob sich auf dem Rücken langsam näher zum Bettpfosten, um den Kopf besser heben zu können; fand die juckende Stelle, die mit lauter kleinen weißen Pünktchen besetzt war, die er nicht zu beurteilen verstand; und wollte mit einem Bein die Stelle betasten, zog es aber gleich zurück, denn bei der Berührung umwehten ihn Kälteschauer. ¶ Er glitt wieder in seine frühere Lage zurück. \"Dies frühzeitige Aufstehen\", dachte er, \"macht einen ganz blödsinnig. Der Mensch muß seinen Schlaf haben. Andere Reisende leben wie Haremsfrauen. Wenn ich zum Beispiel im Laufe des Vormittags ins Gasthaus zurückgehe, um die erlangten Aufträge zu überschreiben, sitzen diese Herren erst beim Frühstück. Das sollte ich bei meinem Chef versuchen; ich würde auf der Stelle hinausfliegen. Wer weiß übrigens, ob das nicht sehr gut für mich wäre. Wenn ich mich nicht wegen meiner Eltern zurückhielte, ich hätte längst gekündigt, ich wäre vor den Chef hingetreten und hätte ihm meine Meinung von Grund des Herzens aus gesagt. Vom Pult hätte er fallen müssen! Es ist auch eine sonderbare Art, sich auf das Pult zu setzen und von der Höhe herab mit dem Angestellten zu reden, der überdies wegen der Schwerhörigkeit des Chefs ganz nahe herantreten muß. Nun, die Hoffnung ist noch nicht gänzlich aufgegeben, habe ich einmal das Geld beisammen, um die Schuld der Eltern an ihn abzuzahlen — es dürfte noch fünf bis sechs Jahre dauern —, mache ich die Sache unbedingt. Dann wird der große Schnitt gemacht. Vorläufig allerdings muß ich aufstehen, denn mein Zug fährt um fünf.\" ¶ Und er sah zur Weckuhr hinüber, die auf dem Kasten tickte. \"Himmlischer Vater!\" dachte er, Es war halb sieben Uhr, und die Zeiger gingen ruhig vorwärts, es war sogar halb vorüber, es näherte sich schon dreiviertel. Sollte der Wecker nicht geläutet haben? Man sah vom Bett aus, daß er auf vier Uhr richtig eingestellt war; gewiß hatte er auch geläutet. Ja, aber war es möglich, dieses möbelerschütternde Läuten ruhig zu verschlafen? Nun, ruhig hatte er ja nicht geschlafen, aber wahrscheinlich desto fester. Was aber sollte er jetzt tun? Der nächste Zug ging um sieben Uhr; um den einzuholen, hätte er sich unsinnig beeilen müssen, und die Kollektion war noch nicht eingepackt, und er selbst fühlte sich durchaus nicht besonders frisch und beweglich. Und selbst wenn er den Zug einholte, ein Donnerwetter des Chefs war nicht zu vermeiden, denn der Geschäftsdiener hatte beim Fünfuhrzug gewartet und die Meldung von seiner Versäumnis längst erstattet. Es war eine Kreatur des Chefs, ohne Rückgrat und Verstand. Wie nun, wenn er sich krank meldete? Das wäre aber äußerst peinlich und verdächtig, denn Gregor war während seines fünfjährigen Dienstes noch nicht einmal krank gewesen. Gewiß würde der Chef mit dem Krankenkassenarzt kommen, würde den Eltern wegen des faulen Sohnes Vorwürfe machen und alle Einwände durch den Hinweis auf den Krankenkassenarzt abschneiden, für den es ja überhaupt nur ganz gesunde, aber arbeitsscheue Menschen gibt. Und hätte er übrigens in diesem Falle so ganz unrecht? Gregor fühlte sich tatsächlich, abgesehen von einer nach dem langen Schlaf wirklich überflüssigen Schläfrigkeit, ganz wohl und hatte sogar einen besonders kräftigen Hunger. ¶ Als er dies alles in größter Eile überlegte, ohne sich entschließen zu können, das Bett zu verlassen — gerade schlug der Wecker dreiviertel sieben — klopfte es vorsichtig an die Tür am Kopfende seines Bettes. \"Gregor,\" rief es — es war die Mutter —, \"es ist dreiviertel sieben. Wolltest du nicht wegfahren?\" Die sanfte Stimme! Gregor erschrak, als er seine antwortende Stimme hörte, die wohl unverkennbar seine frühere war, in die sich aber, wie von unten her, ein nicht zu unterdrückendes, schmerzliches Piepsen mischte, das die Worte förmlich nur im ersten Augenblick in ihrer Deutlichkeit beließ, um sie im Nachklang derart zu zerstören, daß man nicht wußte, ob man recht gehört hatte. Gregor hatte ausführlich antworten und alles erklären wollen, beschränkte sich aber bei diesen Umständen darauf, zu sagen: \"Ja, ja, danke, Mutter, ich stehe schon auf.\" Infolge der Holztür war die Veränderung in Gregors Stimme draußen wohl nicht zu merken, denn die Mutter beruhigte sich mit dieser Erklärung und schlürfte davon. Aber durch das kleine Gespräch waren die anderen Familienmitglieder darauf aufmerksam geworden, daß Gregor wider Erwarten noch zu Hause war, und schon klopfte an der einen Seitentür der Vater, schwach, aber mit der Faust. \"Gregor, Gregor,\" rief er, \"was ist denn?\" Und nach einer kleinen Weile mahnte er nochmals mit tieferer Stimme: \"Gregor! Gregor!\" An der anderen Seitentür aber klagte leise die Schwester: \"Gregor? Ist dir nicht wohl? Brauchst du etwas?\" Nach beiden Seiten hin antwortete Gregor: \"Bin schon fertig,\" und bemühte sich, durch die sorgfältigste Aussprache und durch Einschaltung von langen Pausen zwischen den einzelnen Worten seiner Stimme alles Auffallende zu nehmen. Der Vater kehrte auch zu seinem Frühstück zurück, die Schwester aber flüsterte: \"Gregor, mach auf, ich beschwöre dich.\" Gregor aber dachte gar nicht daran aufzumachen, sondern lobte die vom Reisen her übernommene Vorsicht, auch zu Hause alle Türen während der Nacht zu versperren. ¶ Zunächst wollte er ruhig und ungestört aufstehen, sich anziehen und vor allem frühstücken, und dann erst das Weitere überlegen, denn, das merkte er wohl, im Bett würde er mit dem Nachdenken zu keinem vernünftigen Ende kommen. Er erinnerte sich, schon öfters im Bett irgendeinen vielleicht durch ungeschicktes Liegen erzeugten, leichten Schmerz empfunden zu haben, der sich dann beim Aufstehen als reine Einbildung herausstellte, und er war gespannt, wie sich seine heutigen Vorstellungen allmählich auflösen würden. Daß die Veränderung der Stimme nichts anderes war als der Vorbote einer tüchtigen Verkühlung, einer Berufskrankheit der Reisenden, daran zweifelte er nicht im geringsten. ¶ Die Decke abzuwerfen war ganz einfach; er brauchte sich nur ein wenig aufzublasen und sie fiel von selbst. Aber weiterhin wurde es schwierig, besonders weil er so ungemein breit war. Er hätte Arme und Hände gebraucht, um sich aufzurichten; statt dessen aber hatte er nur die vielen Beinchen, die ununterbrochen in der verschiedensten Bewegung waren und die er überdies nicht beherrschen konnte. Wollte er eines einmal einknicken, so war es das erste, daß er sich streckte; und gelang es ihm endlich, mit diesem Bein das auszuführen, was er wollte, so arbeiteten inzwischen alle anderen, wie freigelassen, in höchster, schmerzlicher Aufregung. \"Nur sich nicht im Bett unnütz aufhalten,\" sagte sich Gregor. ¶ Zuerst wollte er mit dem unteren Teil seines Körpers aus dem Bett hinauskommen, aber dieser untere Teil, den er übrigens noch nicht gesehen hatte und von dem er sich auch keine rechte Vorstellung machen konnte, erwies sich als zu schwer beweglich; es ging so langsam; und als er schließlich, fast wild geworden, mit gesammelter Kraft, ohne Rücksicht sich vorwärtsstieß, hatte er die Richtung falsch gewählt, schlug an den unteren Bettpfosten heftig an, und der brennende Schmerz, den er empfand, belehrte ihn, daß gerade der untere Teil seines Körpers augenblicklich vielleicht der empfindlichste war. ¶ Er versuchte es daher, zuerst den Oberkörper aus dem Bett zu bekommen, und drehte vorsichtig den Kopf dem Bettrand zu. Dies gelang auch leicht, und trotz ihrer Breite und Schwere folgte schließlich die Körpermasse langsam der Wendung des Kopfes. Aber als er den Kopf endlich außerhalb des Bettes in der freien Luft hielt, bekam er Angst, weiter auf diese Weise vorzurücken, denn wenn er sich schließlich so fallen ließ, mußte geradezu ein Wunder geschehen wenn der Kopf nicht verletzt werden sollte. Und die Besinnung durfte er gerade jetzt um keinen Preis verlieren; lieber wollte er im Bett bleiben. ¶ Aber als er wieder nach gleicher Mühe aufseufzend so dalag wie früher, und wieder seine Beinchen womöglich noch ärger gegeneinander kämpfen sah und keine Möglichkeit fand, in diese Willkür Ruhe und Ordnung zu bringen, sagte er sich wieder, daß er unmöglich im Bett bleiben könne und daß es das Vernünftigste sei, alles zu opfern, wenn auch nur die kleinste Hoffnung bestünde, sich dadurch vom Bett zu befreien. Gleichzeitig aber vergaß er nicht, sich zwischendurch daran zu erinnern, daß viel besser als verzweifelte Entschlüsse ruhige und ruhigste Überlegung sei. In solchen Augenblicken richtete er die Augen möglichst scharf auf das Fenster, aber leider war aus dem Anblick des Morgennebels, der sogar die andere Seite der engen Straße verhüllte, wenig Zuversicht und Munterkeit zu holen. \"Schon sieben Uhr,\" sagte er sich beim neuerlichen Schlagen des Weckers, \"schon sieben Uhr und noch immer ein solcher Nebel.\" Und ein Weilchen lang lag er ruhig mit schwachem Atem, als erwarte er vielleicht von der völligen Stille die Wiederkehr der wirklichen und selbstverständlichen Verhältnisse. ¶ Dann aber sagte er sich: \"Ehe es einviertel acht schlägt, muß ich unbedingt das Bett vollständig verlassen haben. Im übrigen wird auch bis dahin jemand aus dem Geschäft kommen, um nach mir zu fragen, denn das Geschäft wird vor sieben Uhr geöffnet.\" Und er machte sich nun daran, den Körper in seiner ganzen Länge vollständig gleichmäßig aus dem Bett hinauszuschaukeln. Wenn er sich auf diese Weise aus dem Bett fallen ließ, blieb der Kopf, den er beim Fall scharf heben wollte, voraussichtlich unverletzt. Der Rücken schien hart zu sein; dem würde wohl bei dem Fall auf den Teppich nichts geschehen. Das größte Bedenken machte ihm die Rücksicht auf den lauten Krach, den es geben müßte und der wahrscheinlich hinter allen Türen wenn nicht Schrecken, so doch Besorgnisse erregen würde. Das mußte aber gewagt werden. ¶ Als Gregor schon zur Hälfte aus dem Bette ragte — die neue Methode war mehr ein Spiel als eine Anstrengung, er brauchte immer nur ruckweise zu schaukeln —, fiel ihm ein, wie einfach alles wäre, wenn man ihm zu Hilfe käme. Zwei starke Leute — er dachte an seinen Vater und das Dienstmädchen — hätten vollständig genügt; sie hätten ihre Arme nur unter seinen gewölbten Rücken schieben, ihn so aus dem Bett schälen, sich mit der Last niederbeugen und dann bloß vorsichtig dulden müssen, daß er den Überschwung auf dem Fußboden vollzog, wo dann die Beinchen hoffentlich einen Sinn bekommen würden. Nun, ganz abgesehen davon, daß die Türen versperrt waren, hätte er wirklich um Hilfe rufen sollen? Trotz aller Not konnte er bei diesem Gedanken ein Lächeln nicht unterdrücken. ¶ Schon war er so weit, daß er bei stärkerem Schaukeln kaum das Gleichgewicht noch erhielt, und sehr bald mußte er sich nun endgültig entscheiden, denn es war in fünf Minuten einviertel acht, — als es an der Wohnungstür läutete. \"Das ist jemand aus dem Geschäft,\" sagte er sich und erstarrte fast, während seine Beinchen nur desto eiliger tanzten. Einen Augenblick blieb alles still. \"Sie öffnen nicht,\" sagte sich Gregor, befangen in irgendeiner unsinnigen Hoffnung. Aber dann ging natürlich wie immer das Dienstmädchen festen Schrittes zur Tür und öffnete. Gregor brauchte nur das erste Grußwort des Besuchers zu hören und wußte schon, wer es war — der Prokurist selbst. Warum war nur Gregor dazu verurteilt, bei einer Firma zu dienen, wo man bei der kleinsten Versäumnis gleich den größten Verdacht faßte? Waren denn alle Angestellten samt und sonders Lumpen, gab es denn unter ihnen keinen treuen ergebenen Menschen, den, wenn er auch nur ein paar Morgenstunden für das Geschäft nicht ausgenützt hatte, vor Gewissensbissen närrisch wurde und geradezu nicht imstande war, das Bett zu verlassen? Genügte es wirklich nicht, einen Lehrjungen nachfragen zu lassen — wenn überhaupt diese Fragerei nötig war —, mußte da der Prokurist selbst kommen, und mußte dadurch der ganzen unschuldigen Familie gezeigt werden, daß die Untersuchung dieser verdächtigen Angelegenheit nur dem Verstand des Prokuristen anvertraut werden konnte? Und mehr infolge der Erregung, in welche Gregor durch diese Überlegungen versetzt wurde, als infolge eines richtigen Entschlusses, schwang er sich mit aller Macht aus dem Bett. Es gab einen lauten Schlag, aber ein eigentlicher Krach war es nicht. Ein wenig wurde der Fall durch den Teppich abgeschwächt, auch war der Rücken elastischer, als Gregor gedacht hatte, daher kam der nicht gar so auffallende dumpfe Klang. Nur den Kopf hatte er nicht vorsichtig genug gehalten und ihn angeschlagen; er drehte ihn und rieb ihn an dem Teppich vor Ärger und Schmerz. ¶ \"Da drin ist etwas gefallen,\" sagte der Prokurist im Nebenzimmer links. Gregor suchte sich vorzustellen, ob nicht auch einmal dem Prokuristen etwas Ähnliches passieren könnte, wie heute ihm; die Möglichkeit dessen mußte man doch eigentlich zugeben. Aber wie zur rohen Antwort auf diese Frage machte jetzt der Prokurist im Nebenzimmer ein paar bestimmte Schritte und ließ seine Lackstiefel knarren. Aus dem Nebenzimmer rechts flüsterte die Schwester, um Gregor zu verständigen: \"Gregor, der Prokurist ist da.\" \"Ich weiß,\" sagte Gregor vor sich hin; aber so laut, daß es die Schwester hätte hören können, wagte er die Stimme nicht zu erheben. ¶ \"Gregor,\" sagte nun der Vater aus dem Nebenzimmer links, \"der Herr Prokurist ist gekommen und erkundigt sich, warum du nicht mit dem Frühzug weggefahren bist. Wir wissen nicht, was wir ihm sagen sollen. Übrigens will er auch mit dir persönlich sprechen. Also bitte mach die Tür auf. Er wird die Unordnung im Zimmer zu entschuldigen schon die Güte haben.\" \"Guten Morgen, Herr Samsa,\" rief der Prokurist freundlich dazwischen. \"Ihm ist nicht wohl,\" sagte die Mutter zum Prokuristen, während der Vater noch an der Tür redete, \"ihm ist nicht wohl, glauben Sie mir, Herr Prokurist. Wie würde denn Gregor sonst einen Zug versäumen! Der Junge hat ja nichts im Kopf als das Geschäft. Ich ärgere mich schon fast, daß er abends niemals ausgeht; jetzt war er doch acht Tage in der Stadt, aber jeden Abend war er zu Hause. Da sitzt er bei uns am Tisch und liest still die Zeitung oder studiert Fahrpläne. Es ist schon eine Zerstreuung für ihn, wenn", "nietzsche": "Als Zarathustra dreissig Jahr alt war, verliess er seine Heimat und den See seiner Heimat und ging in das Gebirge. Hier genoss er seines Geistes und seiner Einsamkeit und wurde dessen zehn Jahr nicht müde. Endlich aber verwandelte sich sein Herz,—und eines Morgens stand er mit der Morgenröthe auf, trat vor die Sonne hin und sprach zu ihr also: ¶ „Du grosses Gestirn! Was wäre dein Glück, wenn du nicht Die hättest, welchen du leuchtest! ¶ Zehn Jahre kamst du hier herauf zu meiner Höhle: du würdest deines Lichtes und dieses Weges satt geworden sein, ohne mich, meinen Adler und meine Schlange. ¶ Aber wir warteten deiner an jedem Morgen, nahmen dir deinen Überfluss ab und segneten dich dafür. ¶ Siehe! Ich bin meiner Weisheit überdrüssig, wie die Biene, die des Honigs zu viel gesammelt hat, ich bedarf der Hände, die sich ausstrecken. ¶ Ich möchte verschenken und austheilen, bis die Weisen unter den Menschen wieder einmal ihrer Thorheit und die Armen einmal ihres Reichthums froh geworden sind. ¶ Dazu muss ich in die Tiefe steigen: wie du des Abends thust, wenn du hinter das Meer gehst und noch der Unterwelt Licht bringst, du überreiches Gestirn! ¶ Ich muss, gleich dir, _untergehen_, wie die Menschen es nennen, zu denen ich hinab will. ¶ So segne mich denn, du ruhiges Auge, das ohne Neid auch ein allzugrosses Glück sehen kann! ¶ Segne den Becher, welcher überfliessen will, dass das Wasser golden aus ihm fliesse und überallhin den Abglanz deiner Wonne trage! ¶ Siehe! Dieser Becher will wieder leer werden, und Zarathustra will wieder Mensch werden.“ ¶ —Also begann Zarathustra’s Untergang. ¶ 2. ¶ Zarathustra stieg allein das Gebirge abwärts und Niemand begegnete ihm. Als er aber in die Wälder kam, stand auf einmal ein Greis vor ihm, der seine heilige Hütte verlassen hatte, um Wurzeln im Walde zu suchen. Und also sprach der Greis zu Zarathustra: ¶ Nicht fremd ist mir dieser Wanderer: vor manchem Jahre gieng er hier vorbei. Zarathustra hiess er; aber er hat sich verwandelt. Damals trugst du deine Asche zu Berge: willst du heute dein Feuer in die Thäler tragen? Fürchtest du nicht des Brandstifters Strafen? ¶ Ja, ich erkenne Zarathustra. Rein ist sein Auge, und an seinem Munde birgt sich kein Ekel. Geht er nicht daher wie ein Tänzer? ¶ Verwandelt ist Zarathustra, zum Kind ward Zarathustra, ein Erwachter ist Zarathustra: was willst du nun bei den Schlafenden? ¶ Wie im Meere lebtest du in der Einsamkeit, und das Meer trug dich. Wehe, du willst an’s Land steigen? Wehe, du willst deinen Leib wieder selber schleppen? ¶ Zarathustra antwortete: „Ich liebe die Menschen.“ ¶ Warum, sagte der Heilige, gieng ich doch in den Wald und die Einöde? War es nicht, weil ich die Menschen allzu sehr liebte? ¶ Jetzt liebe ich Gott: die Menschen liebe ich nicht. Der Mensch ist mir eine zu unvollkommene Sache. Liebe zum Menschen würde mich umbringen. ¶ Zarathustra antwortete: „Was sprach ich von Liebe! Ich bringe den Menschen ein Geschenk.“ ¶ Gieb ihnen Nichts, sagte der Heilige. Nimm ihnen lieber Etwas ab und trage es mit ihnen—das wird ihnen am wohlsten thun: wenn er dir nur wohlthut! ¶ Und willst du ihnen geben, so gieb nicht mehr, als ein Almosen, und lass sie noch darum betteln! ¶ „Nein, antwortete Zarathustra, ich gebe kein Almosen. Dazu bin ich nicht arm genug.“ ¶ Der Heilige lachte über Zarathustra und sprach also: So sieh zu, dass sie deine Schätze annehmen! Sie sind misstrauisch gegen die Einsiedler und glauben nicht, dass wir kommen, um zu schenken. ¶ Unsre Schritte klingen ihnen zu einsam durch die Gassen. Und wie wenn sie Nachts in ihren Betten einen Mann gehen hören, lange bevor die Sonne aufsteht, so fragen sie sich wohl: wohin will der Dieb? ¶ Gehe nicht zu den Menschen und bleibe im Walde! Gehe lieber noch zu den Thieren! Warum willst du nicht sein, wie ich,—ein Bär unter Bären, ein Vogel unter Vögeln? ¶ „Und was macht der Heilige im Walde?“ fragte Zarathustra. ¶ Der Heilige antwortete: Ich mache Lieder und singe sie, und wenn ich Lieder mache, lache, weine und brumme ich: also lobe ich Gott. ¶ Mit Singen, Weinen, Lachen und Brummen lobe ich den Gott, der mein Gott ist. Doch was bringst du uns zum Geschenke? ¶ Als Zarathustra diese Worte gehört hatte, grüsste er den Heiligen und sprach: „Was hätte ich euch zu geben! Aber lasst mich schnell davon, dass ich euch Nichts nehme!“—Und so trennten sie sich von einander, der Greis und der Mann, lachend, gleichwie zwei Knaben lachen. ¶ Als Zarathustra aber allein war, sprach er also zu seinem Herzen: „Sollte es denn möglich sein! Dieser alte Heilige hat in seinem Walde noch Nichts davon gehört, dass _Gott todt_ ist!“— ¶ 3. ¶ Als Zarathustra in die nächste Stadt kam, die an den Wäldern liegt, fand er daselbst viel Volk versammelt auf dem Markte: denn es war verheissen worden, das man einen Seiltänzer sehen solle. Und Zarathustra sprach also zum Volke: ¶ Ich lehre euch den Übermenschen. Der Mensch ist Etwas, das überwunden werden soll. Was habt ihr gethan, ihn zu überwinden? ¶ „Alle Wesen bisher schufen etwas über sich hinaus: und ihr wollt die Ebbe dieser großen Flut sein und lieber noch zum Thiere zurückgehen, als den Menschen zu überwinden?“ ¶ Was ist der Affe für den Menschen? Ein Gelächter oder eine schmerzliche Scham. Und ebendas soll der Mensch für den Übermenschen sein: ein Gelächter oder eine schmerzliche Scham. ¶ Ihr habt den Weg vom Wurme zum Menschen gemacht, und Vieles ist in euch noch Wurm. Einst wart ihr Affen, und auch jetzt ist der Mensch mehr Affe, als irgend ein Affe. ¶ Wer aber der Weiseste von euch ist, der ist auch nur ein Zwiespalt und Zwitter von Pflanze und von Gespenst. Aber heisse ich euch zu Gespenstern oder Pflanzen werden? ¶ Seht, ich lehre euch den Übermenschen! ¶ Der Übermensch ist der Sinn der Erde. Euer Wille sage: der Übermensch _sei_ der Sinn der Erde! ¶ Ich beschwöre euch, meine Brüder, _bleibt der Erde treu_ und glaubt Denen nicht, welche euch von überirdischen Hoffnungen reden! Giftmischer sind es, ob sie es wissen oder nicht. ¶ Verächter des Lebens sind es, Absterbende und selber Vergiftete, deren die Erde müde ist: so mögen sie dahinfahren! ¶ Einst war der Frevel an Gott der grösste Frevel, aber Gott starb, und damit auch diese Frevelhaften. An der Erde zu freveln ist jetzt das Furchtbarste und die Eingeweide des Unerforschlichen höher zu achten, als der Sinn der Erde! ¶ Einst blickte die Seele verächtlich auf den Leib: und damals war diese Verachtung das Höchste:—sie wollte ihn mager, grässlich, verhungert. So dachte sie ihm und der Erde zu entschlüpfen. ¶ Oh diese Seele war selbst noch mager, grässlich und verhungert: und Grausamkeit war die Wollust dieser Seele! ¶ Aber auch ihr noch, meine Brüder, sprecht mir: was kündet euer Leib von eurer Seele? Ist eure Seele nicht Armuth und Schmutz und ein erbärmliches Behagen? ¶ Wahrlich, ein schmutziger Strom ist der Mensch. Man muss schon ein Meer sein, um einen schmutzigen Strom aufnehmen zu können, ohne unrein zu werden. ¶ Seht, ich lehre euch den Übermenschen: der ist diess Meer, in ihm kann eure grosse Verachtung untergehn. ¶ Was ist das Grösste, das ihr erleben könnt? Das ist die Stunde der grossen Verachtung. Die Stunde, in der euch auch euer Glück zum Ekel wird und ebenso eure Vernunft und eure Tugend. ¶ Die Stunde, wo ihr sagt: „Was liegt an meinem Glücke! Es ist Armuth und Schmutz, und ein erbärmliches Behagen. Aber mein Glück sollte das Dasein selber rechtfertigen!“ ¶ Die Stunde, wo ihr sagt: „Was liegt an meiner Vernunft! Begehrt sie nach Wissen wie der Löwe nach seiner Nahrung? Sie ist Armuth und Schmutz und ein erbärmliches Behagen!“ ¶ Die Stunde, wo ihr sagt: „Was liegt an meiner Tugend! Noch hat sie mich nicht rasen gemacht. Wie müde bin ich meines Guten und meines Bösen! Alles das ist Armuth und Schmutz und ein erbärmliches Behagen!“ ¶ Die Stunde, wo ihr sagt: „Was liegt an meiner Gerechtigkeit! Ich sehe nicht, dass ich Gluth und Kohle wäre. Aber der Gerechte ist Gluth und Kohle!“ ¶ Die Stunde, wo ihr sagt: „Was liegt an meinem Mitleiden! Ist nicht Mitleid das Kreuz, an das Der genagelt wird, der die Menschen liebt? Aber mein Mitleiden ist keine Kreuzigung.“ ¶ Spracht ihr schon so? Schriet ihr schon so? Ach, dass ich euch schon so schreien gehört hatte! ¶ Nicht eure Sünde—eure Genügsamkeit schreit gen Himmel, euer Geiz selbst in eurer Sünde schreit gen Himmel! ¶ Wo ist doch der Blitz, der euch mit seiner Zunge lecke? Wo ist der Wahnsinn, mit dem ihr geimpft werden müsstet? ¶ Seht, ich lehre euch den Übermenschen: der ist dieser Blitz, der ist dieser Wahnsinn!— ¶ Als Zarathustra so gesprochen hatte, schrie Einer aus dem Volke: „Wir hörten nun genug von dem Seiltänzer; nun lasst uns ihn auch sehen!“ Und alles Volk lachte über Zarathustra. Der Seiltänzer aber, welcher glaubte, dass das Wort ihm gälte, machte sich an sein Werk. ¶ 4. ¶ Zarathustra aber sahe das Volk an und wunderte sich. Dann sprach er also: ¶ Der Mensch ist ein Seil, geknüpft zwischen Thier und Übermensch,—ein Seil über einem Abgrunde. ¶ Ein gefährliches Hinüber, ein gefährliches Auf-dem-Wege, ein gefährliches Zurückblicken, ein gefährliches Schaudern und Stehenbleiben. ¶ Was gross ist am Menschen, das ist, dass er eine Brücke und kein Zweck ist: was geliebt werden kann am Menschen, das ist, dass er ein _Übergang_ und ein _Untergang_ ist. ¶ Ich liebe Die, welche nicht zu leben wissen, es sei denn als Untergehende, denn es sind die Hinübergehenden. ¶ Ich liebe die grossen Verachtenden, weil sie die grossen Verehrenden sind und Pfeile der Sehnsucht nach dem andern Ufer. ¶ Ich liebe Die, welche nicht erst hinter den Sternen einen Grund suchen, unterzugehen und Opfer zu sein: sondern die sich der Erde opfern, dass die Erde einst der Übermenschen werde. ¶ Ich liebe Den, welcher lebt, damit er erkenne, und welcher erkennen will, damit einst der Übermensch lebe. Und so will er seinen Untergang. ¶ Ich liebe Den, welcher arbeitet und erfindet, dass er dem Übermenschen das Haus baue und zu ihm Erde, Thier und Pflanze vorbereite: denn so will er seinen Untergang. ¶ Ich liebe Den, welcher seine Tugend liebt: denn Tugend ist Wille zum Untergang und ein Pfeil der Sehnsucht. ¶ Ich liebe Den, welcher nicht einen Tropfen Geist für sich zurückbehält, sondern ganz der Geist seiner Tugend sein will: so schreitet er als Geist über die Brücke. ¶ Ich liebe Den, welcher aus seiner Tugend seinen Hang und sein Verhängniss macht: so will er um seiner Tugend willen noch leben und nicht mehr leben. ¶ Ich liebe Den, welcher nicht zu viele Tugenden haben will. Eine Tugend ist mehr Tugend, als zwei, weil sie mehr Knoten ist, an den sich das Verhängniss hängt. ¶ Ich liebe Den, dessen Seele sich verschwendet, der nicht Dank haben will und nicht zurückgiebt: denn er schenkt immer und will sich nicht bewahren. ¶ Ich liebe Den, welcher sich schämt, wenn der Würfel zu seinem Glücke fällt und der dann fragt: bin ich denn ein falscher Spieler?—denn er will zu Grunde gehen. ¶ Ich liebe Den, welcher goldne Worte seinen Thaten voraus wirft und immer noch mehr hält, als er verspricht: denn er will seinen Untergang. ¶ Ich liebe Den, welcher die Zukünftigen rechtfertigt und die Vergangenen erlöst: denn er will an den Gegenwärtigen zu Grunde gehen. ¶ Ich liebe Den, welcher seinen Gott züchtigt, weil er seinen Gott liebt: denn er muss am Zorne seines Gottes zu Grunde gehen. ¶ Ich liebe Den, dessen Seele tief ist auch in der Verwundung, und der an einem kleinen Erlebnisse zu Grunde gehen kann: so geht er gerne über die Brücke. ¶ Ich liebe Den, dessen Seele übervoll ist, so dass er sich selber vergisst, und alle Dinge in ihm sind: so werden alle Dinge sein Untergang. ¶ Ich liebe Den, der freien Geistes und freien Herzes ist: so ist sein Kopf nur das Eingeweide seines Herzens, sein Herz aber treibt ihn zum Untergang. ¶ Ich liebe alle Die, welche schwere Tropfen sind, einzeln fallend aus der dunklen Wolke, die über den Menschen hängt: sie verkündigen, dass der Blitz kommt, und gehn als Verkündiger zu Grunde. ¶ Seht, ich bin ein Verkündiger des Blitzes und ein schwerer Tropfen aus der Wolke: dieser Blitz aber heisst Übermensch.— ¶ 5. ¶ Als Zarathustra diese Worte gesprochen hatte, sahe er wieder das Volk an und schwieg. „Da stehen sie“, sprach er zu seinem Herzen, „da lachen sie: sie verstehen mich nicht, ich bin nicht der Mund für diese Ohren. ¶ Muss man ihnen erst die Ohren zerschlagen, dass sie lernen, mit den Augen hören. Muss man rasseln gleich Pauken und Busspredigern? Oder glauben sie nur dem Stammelnden? ¶ Sie haben etwas, worauf sie stolz sind. Wie nennen sie es doch, was sie stolz macht? Bildung nennen sie’s, es zeichnet sie aus vor den Ziegenhirten. ¶ Drum hören sie ungern von sich das Wort „Verachtung“. So will ich denn zu ihrem Stolze reden. ¶ So will ich ihnen vom Verächtlichsten sprechen: das aber ist der _letzte Mensch_.“ ¶ Und also sprach Zarathustra", "sachtext": "Ein Sprachmodell ist ein Programm, das zu einer Folge von Wörtern das jeweils nächste Wort vorhersagt. Es versteht die Welt nicht, es berechnet Wahrscheinlichkeiten. Das Modell lernt diese Wahrscheinlichkeiten aus sehr grossen Textmengen, indem es Milliarden von Beispielen sieht und seine internen Zahlenwerte so lange anpasst, bis seine Vorhersagen besser werden. Diese Zahlenwerte heissen Parameter oder Gewichte. Ein grosses Modell hat mehrere hundert Milliarden davon. Beim Training wird der Text zunächst in kleine Bausteine zerlegt, die man Token nennt. Ein Token ist oft ein ganzes Wort, manchmal aber auch nur eine Silbe oder ein einzelnes Zeichen. Das Modell rechnet nicht mit Buchstaben, sondern mit Zahlen, deshalb bekommt jedes Token eine eigene Nummer. Aus diesen Nummern werden Vektoren, also Listen von Zahlen, die die Bedeutung eines Wortes im Zusammenhang beschreiben. Wörter mit ähnlicher Bedeutung bekommen ähnliche Vektoren. Der entscheidende Baustein moderner Modelle heisst Transformer und wurde im Jahr 2017 vorgestellt. Sein wichtigster Teil ist die Aufmerksamkeit, auf Englisch Attention. Damit kann das Modell für jedes Wort entscheiden, welche anderen Wörter im Satz gerade wichtig sind. In dem Satz die Bank am Fluss war nass richtet sich die Aufmerksamkeit auf das Wort Fluss und das Modell wählt die richtige Bedeutung von Bank. Weil das Modell nur Wahrscheinlichkeiten berechnet, kann es Dinge behaupten, die falsch sind. Man nennt das Halluzination. Das Modell klingt dabei genauso sicher wie bei richtigen Antworten, denn es kennt den Unterschied nicht. Deshalb muss man jede wichtige Aussage einer KI überprüfen. Ein weiteres Problem sind Verzerrungen im Training. Das Modell übernimmt die Muster seiner Daten, auch die unfairen. Wenn in den Texten überwiegend Männer als Ingenieure vorkommen, wird das Modell diese Verbindung lernen und weitergeben. Die Daten bestimmen also, was das Modell sagt und wie es klingt."};
+
+/* ════════════════ Foliensteuerung ════════════════ */
+const slides = [...document.querySelectorAll('.slide')];
+let cur = 0;
+
+function show(i){
+  cur = Math.max(0, Math.min(i, slides.length - 1));
+  slides.forEach((s, n) => s.classList.toggle('on', n === cur));
+  document.getElementById('counter').textContent = `${cur+1} / ${slides.length}`;
+  document.getElementById('chapter').textContent = slides[cur].dataset.ch || '';
+  document.getElementById('prog').style.width = ((cur+1)/slides.length*100) + '%';
+  document.getElementById('notesBody').innerHTML = slides[cur].dataset.notes || '<p>—</p>';
+  slides[cur].scrollTop = 0;
+}
+document.getElementById('next').onclick = () => show(cur+1);
+document.getElementById('prev').onclick = () => show(cur-1);
+
+document.addEventListener('keydown', e => {
+  const tippt = /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName);
+  if (tippt && !['Escape'].includes(e.key)) return;
+  if (['ArrowRight','PageDown',' '].includes(e.key)){ e.preventDefault(); show(cur+1); }
+  else if (['ArrowLeft','PageUp'].includes(e.key)){ e.preventDefault(); show(cur-1); }
+  else if (e.key === 'Home') show(0);
+  else if (e.key === 'End') show(slides.length-1);
+  else if (e.key.toLowerCase() === 'n') document.getElementById('notes').classList.toggle('on');
+  else if (e.key.toLowerCase() === 'f') vollbild();
+  else if (e.key.toLowerCase() === 't') uhrUmschalten();
+  else if (/^[1-9]$/.test(e.key)) show(+e.key - 1);
+});
+document.getElementById('noteBtn').onclick = () =>
+  document.getElementById('notes').classList.toggle('on');
+
+function vollbild(){
+  if (document.fullscreenElement) document.exitFullscreen();
+  else document.documentElement.requestFullscreen().catch(()=>{});
+}
+document.getElementById('fsBtn').onclick = vollbild;
+
+/* Timer */
+let sek = 0, uhr = null;
+function uhrUmschalten(){
+  const el = document.getElementById('clock');
+  if (uhr){ clearInterval(uhr); uhr = null; el.classList.remove('run'); }
+  else {
+    el.classList.add('run');
+    uhr = setInterval(() => {
+      sek++;
+      el.textContent = String(Math.floor(sek/60)).padStart(2,'0') + ':' +
+                       String(sek%60).padStart(2,'0');
+    }, 1000);
+  }
+}
+document.getElementById('clock').onclick = uhrUmschalten;
+
+/* ════════════════ DEMO 1 · Tokenisierung ════════════════ */
+const FARBEN = ['#6d8bff','#b06dff','#38d39f','#ffb74d','#ff6b8a','#4dd0e1','#f06292'];
+
+function tokenisieren(text){
+  // Vereinfachte Nachbildung echter Tokenizer: haeufige kurze Woerter bleiben ganz,
+  // lange Woerter werden in Silbenbrocken zerlegt, Satzzeichen sind eigene Token.
+  const roh = text.match(/[\wÄÖÜäöüß]+|[^\s\wÄÖÜäöüß]/g) || [];
+  const out = [];
+  for (const w of roh){
+    if (!/[\wÄÖÜäöüß]/.test(w)){ out.push(w); continue; }
+    if (w.length <= 6){ out.push(w); continue; }
+    let rest = w, erster = true;
+    while (rest.length > 0){
+      const n = rest.length <= 8 ? rest.length : (erster ? 5 : 4);
+      out.push((erster ? '' : '##') + rest.slice(0, n));
+      rest = rest.slice(n); erster = false;
+    }
+  }
+  return out;
+}
+function hash(s){ let h = 0; for (const c of s) h = (h*31 + c.charCodeAt(0)) >>> 0; return h; }
+
+function tokRender(){
+  const text = document.getElementById('tokIn').value;
+  const toks = tokenisieren(text);
+  document.getElementById('tokOut').innerHTML = toks.map((t,i) => {
+    const f = FARBEN[i % FARBEN.length];
+    return `<span class="tok" style="color:${f};border-color:${f}55;background:${f}18;
+      animation-delay:${Math.min(i*28,600)}ms">${t.replace(/</g,'&lt;')}
+      <span style="opacity:.5;font-size:11px"> ${hash(t) % 50000}</span></span>`;
+  }).join('') || '<span class="muted">Tippe etwas ein …</span>';
+  document.getElementById('tokStat').innerHTML = `
+    <div><b>${text.length}</b>Zeichen</div>
+    <div><b>${toks.length}</b>Token</div>
+    <div><b>${(text.length/(toks.length||1)).toFixed(1)}</b>Zeichen je Token</div>`;
+}
+document.getElementById('tokIn').addEventListener('input', tokRender);
+tokRender();
+
+/* ════════════════ Sprachmodell ════════════════ */
+class Modell {
+  constructor(){ this.bi = new Map(); this.tri = new Map(); this.woerter = []; }
+  trainieren(text){
+    this.woerter = text.split(/\s+/).filter(Boolean);
+    this.bi.clear(); this.tri.clear();
+    for (let i = 0; i < this.woerter.length - 1; i++){
+      const a = this.woerter[i], b = this.woerter[i+1];
+      if (!this.bi.has(a)) this.bi.set(a, new Map());
+      const m = this.bi.get(a); m.set(b, (m.get(b) || 0) + 1);
+    }
+    for (let i = 0; i < this.woerter.length - 2; i++){
+      const k = this.woerter[i] + ' ' + this.woerter[i+1], c = this.woerter[i+2];
+      if (!this.tri.has(k)) this.tri.set(k, new Map());
+      const m = this.tri.get(k); m.set(c, (m.get(c) || 0) + 1);
+    }
+    return { woerter: this.woerter.length,
+             vokabular: new Set(this.woerter).size,
+             paare: this.bi.size + this.tri.size };
+  }
+  vorhersage(wort){
+    const m = this.bi.get(wort);
+    if (!m) return [];
+    const gesamt = [...m.values()].reduce((a,b) => a+b, 0);
+    return [...m.entries()]
+      .map(([w,n]) => ({ wort:w, anteil:n/gesamt, anzahl:n }))
+      .sort((a,b) => b.anteil - a.anteil);
+  }
+  naechstes(verlauf, temperatur, ordnung){
+    let m = null;
+    if (ordnung >= 2 && verlauf.length >= 2)
+      m = this.tri.get(verlauf.slice(-2).join(' '));
+    if (!m) m = this.bi.get(verlauf[verlauf.length-1]);
+    if (!m || m.size === 0) return null;
+    const eintraege = [...m.entries()];
+    if (temperatur < 0.05)
+      return eintraege.sort((a,b) => b[1]-a[1])[0][0];
+    const gew = eintraege.map(([w,n]) => [w, Math.pow(n, 1/temperatur)]);
+    const summe = gew.reduce((s,[,g]) => s+g, 0);
+    let r = Math.random() * summe;
+    for (const [w,g] of gew){ r -= g; if (r <= 0) return w; }
+    return gew[gew.length-1][0];
+  }
+}
+const modell = new Modell();
+let trainiert = false;
+
+/* ── Demo 2: Training ── */
+function zahlAnimieren(el, ziel){
+  const start = performance.now(), dauer = 900;
+  (function schritt(t){
+    const p = Math.min((t - start)/dauer, 1);
+    el.textContent = Math.round(ziel * (1 - Math.pow(1-p, 3))).toLocaleString('de-DE');
+    if (p < 1) requestAnimationFrame(schritt);
+  })(start);
+}
+document.getElementById('trainBtn').onclick = () => {
+  const name = document.getElementById('corpus').value;
+  const s = modell.trainieren(KORPORA[name]);
+  trainiert = true;
+  zahlAnimieren(document.getElementById('sW'), s.woerter);
+  zahlAnimieren(document.getElementById('sV'), s.vokabular);
+  zahlAnimieren(document.getElementById('sP'), s.paare);
+  document.getElementById('cmpParams').textContent = '~' + s.paare.toLocaleString('de-DE') + ' Zählwerte';
+  const inp = document.getElementById('predIn');
+  inp.disabled = false;
+  document.getElementById('genBtn').disabled = false;
+  // Vorschlaege: Woerter mit vielen verschiedenen Fortsetzungen
+  // Woerter aussuchen, bei denen die Verteilung anschaulich ist:
+  // mehrere Fortsetzungen UND ein klar erkennbarer Favorit.
+  const gut = [...modell.bi.entries()]
+    .filter(([w,m]) => m.size >= 2 && m.size <= 6 && /^[A-ZÄÖÜa-zäöü]{3,}$/.test(w))
+    .map(([w,m]) => {
+      const werte = [...m.values()].sort((a,b) => b-a);
+      const summe = werte.reduce((a,b) => a+b, 0);
+      const spitze = werte[0] / summe;
+      // gute Demo = hoher Favorit, aber nicht nur ein einziges Vorkommen
+      return { w, punkte: spitze * Math.log(1 + summe) * (summe >= 3 ? 1 : 0.2) };
+    })
+    .sort((a,b) => b.punkte - a.punkte).slice(0,5).map(o => o.w);
+  document.getElementById('sugg').innerHTML = gut.map(w =>
+    `<a href="#" class="tag" data-w="${w}" style="text-decoration:none">${w}</a>`).join('');
+  inp.value = gut[0] || modell.woerter[0];
+  predRender();
+};
+document.getElementById('sugg').addEventListener('click', e => {
+  const a = e.target.closest('[data-w]');
+  if (!a) return;
+  e.preventDefault();
+  document.getElementById('predIn').value = a.dataset.w;
+  predRender();
+});
+function predRender(){
+  const w = document.getElementById('predIn').value.trim();
+  const top = modell.vorhersage(w).slice(0, 7);
+  const box = document.getElementById('predOut');
+  if (!top.length){
+    box.innerHTML = `<p class="muted">Das Wort „${w.replace(/</g,'&lt;')}“ kommt im
+      Trainingstext nicht vor — das Modell weiß dazu nichts.</p>`;
+    return;
+  }
+  const spitze = top[0].anteil;
+  box.innerHTML = top.map((t,i) => `
+    <div class="brow ${i===0?'top':''}" style="animation-delay:${i*45}ms">
+      <span class="w">${t.wort.replace(/</g,'&lt;')}</span>
+      <span class="btrack"><span class="bfill" style="width:${
+        Math.max(t.anteil/spitze*100, 4)}%"></span></span>
+      <span class="bpct">${(t.anteil*100).toFixed(0)}%</span>
+    </div>`).join('') +
+    `<p class="hint">„${w.replace(/</g,'&lt;')}“ kommt ${
+      top.reduce((s,t)=>s+t.anzahl,0)} mal im Text vor · ${top.length
+      } verschiedene Fortsetzungen · Balkenlänge im Verhältnis zum Spitzenwert</p>`;
+}
+document.getElementById('predIn').addEventListener('input', predRender);
+
+/* ── Demo 3: Generieren ── */
+const tempEl = document.getElementById('temp');
+tempEl.addEventListener('input', () => {
+  document.getElementById('tVal').textContent = (tempEl.value/100).toFixed(2);
+});
+let laeuft = false;
+document.getElementById('genBtn').onclick = async () => {
+  if (!trainiert || laeuft) return;
+  laeuft = true;
+  const btn = document.getElementById('genBtn'), stop = document.getElementById('genStop');
+  btn.style.display = 'none'; stop.style.display = 'block';
+  const temperatur = tempEl.value / 100;
+  const ordnung = +document.getElementById('order').value;
+  const box = document.getElementById('genOut');
+  const start = Math.floor(Math.random() * Math.max(1, modell.woerter.length - 40));
+  let verlauf = modell.woerter.slice(start, start + ordnung);
+  box.innerHTML = `<span style="color:var(--txt3)">${verlauf.join(' ')}</span> `;
+  for (let i = 0; i < 55 && laeuft; i++){
+    const w = modell.naechstes(verlauf, temperatur, ordnung);
+    if (!w) break;
+    verlauf.push(w);
+    box.innerHTML = `<span style="color:var(--txt3)">${
+      verlauf.slice(0, ordnung).join(' ')}</span> <span class="gen">${
+      verlauf.slice(ordnung).join(' ').replace(/</g,'&lt;')}</span><span class="cur">▌</span>`;
+    box.scrollTop = box.scrollHeight;
+    await new Promise(r => setTimeout(r, 85));
+  }
+  box.innerHTML = box.innerHTML.replace('<span class="cur">▌</span>', '');
+  laeuft = false; btn.style.display = 'block'; stop.style.display = 'none';
+};
+document.getElementById('genStop').onclick = () => { laeuft = false; };
+
+/* ── Demo 4: Vergleich ── */
+function erzeugeMit(korpus, ziel, woerter = 32){
+  const m = new Modell();
+  m.trainieren(KORPORA[korpus]);
+  const start = Math.floor(Math.random() * Math.max(1, m.woerter.length - 40));
+  let v = m.woerter.slice(start, start + 2);
+  for (let i = 0; i < woerter; i++){
+    const w = m.naechstes(v, 0.75, 2);
+    if (!w) break;
+    v.push(w);
+  }
+  document.getElementById(ziel).innerHTML =
+    '<span class="gen">' + v.join(' ').replace(/</g,'&lt;') + '</span>';
+}
+document.getElementById('cmpABtn').onclick = () => erzeugeMit('kafka', 'cmpA');
+document.getElementById('cmpBBtn').onclick = () => erzeugeMit('nietzsche', 'cmpB');
+
+/* ── Bonus: Attention ── */
+const ATT = [
+  { satz: ['die','Bank','am','Fluss','war','nass'],
+    gew:  [0.05, 1, 0.15, 0.95, 0.2, 0.45],
+    txt: 'Das Modell beachtet vor allem <b>Fluss</b> — also ist die Bank zum Sitzen gemeint.' },
+  { satz: ['die','Bank','hat','mein','Geld','verloren'],
+    gew:  [0.05, 1, 0.2, 0.25, 0.95, 0.5],
+    txt: 'Jetzt leuchtet <b>Geld</b> auf — dieselbe Wortform, aber das Geldinstitut.' }
+];
+function attZeigen(i){
+  const a = ATT[i];
+  document.getElementById('attRow').innerHTML = a.satz.map((w,n) => {
+    const g = a.gew[n];
+    return `<span style="background:rgba(109,139,255,${g*0.75});
+      border-color:rgba(109,139,255,${g});
+      color:${g > 0.6 ? '#fff' : 'var(--txt2)'};
+      font-weight:${g > 0.6 ? 700 : 400}">${w}</span>`;
+  }).join('');
+  document.getElementById('attTxt').innerHTML = a.txt;
+}
+document.querySelectorAll('[data-att]').forEach(b =>
+  b.onclick = () => attZeigen(+b.dataset.att));
+attZeigen(0);
+
+show(0);
+</script>
+</body>
+</html>

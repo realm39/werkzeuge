@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Kamera-Scan · für LingBot-Map</title>
+<style>
+:root{--bg:#0a0c14;--bg2:#111527;--card:#161b31;--line:#252c44;
+ --txt:#eef1fb;--txt2:#a7b0d0;--txt3:#6d7699;
+ --acc:#6d8bff;--acc2:#b06dff;--ok:#38d39f;--warn:#ffb74d;--err:#ff6b8a;
+ --mono:'SF Mono',Menlo,Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--txt);font:15px/1.55 system-ui,-apple-system,'Segoe UI',sans-serif;
+ -webkit-font-smoothing:antialiased;min-height:100dvh}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+ background:radial-gradient(900px 600px at 15% -10%,rgba(109,139,255,.14),transparent 60%),
+ radial-gradient(800px 500px at 85% 110%,rgba(176,109,255,.11),transparent 60%)}
+.wrap{position:relative;z-index:1;max-width:1320px;margin:0 auto;padding:0 16px 80px}
+header{padding:22px 0 14px;display:flex;align-items:center;gap:13px;flex-wrap:wrap}
+.logo{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,var(--acc),var(--acc2));
+ display:grid;place-items:center;font-size:21px;flex:none}
+h1{font-size:20px;font-weight:750;letter-spacing:-.01em}
+.sub{font-size:12.5px;color:var(--txt2)}
+.badge{margin-left:auto;font-size:12px;color:var(--ok);background:rgba(56,211,159,.1);
+ border:1px solid rgba(56,211,159,.3);padding:7px 13px;border-radius:999px;font-weight:600}
+.grid{display:grid;grid-template-columns:1.45fr 1fr;gap:16px;align-items:start}
+@media(max-width:940px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:16px}
+.card-h{padding:13px 17px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:9px}
+.card-h h2{font-size:14.5px;font-weight:700}
+.card-h .n{margin-left:auto;font-size:11.5px;color:var(--txt3);font-family:var(--mono)}
+.card-b{padding:16px 17px}
+.buehne{position:relative;background:#05070f;aspect-ratio:4/3;display:grid;place-items:center}
+video{width:100%;height:100%;object-fit:cover;display:block}
+.hinweis{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:26px;
+ color:var(--txt2);font-size:14px}
+.hinweis .ic{font-size:40px;display:block;margin-bottom:12px}
+.hud{position:absolute;left:12px;top:12px;right:12px;display:flex;gap:8px;flex-wrap:wrap;pointer-events:none}
+.chip{background:rgba(8,11,22,.78);border:1px solid var(--line);border-radius:999px;padding:5px 12px;
+ font-size:11.5px;font-family:var(--mono);backdrop-filter:blur(8px)}
+.chip b{color:var(--txt)}
+.chip.gut{border-color:rgba(56,211,159,.5);color:var(--ok)}
+.chip.mittel{border-color:rgba(255,183,77,.5);color:var(--warn)}
+.chip.schlecht{border-color:rgba(255,107,138,.5);color:var(--err)}
+.rec{position:absolute;right:12px;bottom:12px;display:flex;align-items:center;gap:7px;
+ background:rgba(8,11,22,.8);border-radius:999px;padding:6px 13px;font-size:12px;font-family:var(--mono)}
+.punkt{width:9px;height:9px;border-radius:50%;background:var(--err);animation:blink 1.1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.leiste{display:flex;gap:9px;flex-wrap:wrap;padding:14px 17px;border-top:1px solid var(--line)}
+button{font:inherit;font-size:14px;cursor:pointer;border:0;border-radius:11px;padding:11px 19px;
+ font-weight:650;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;transition:.15s}
+button:hover{filter:brightness(1.1);transform:translateY(-1px)}
+button:active{transform:translateY(1px)}
+button.sec{background:var(--bg2);border:1px solid var(--line);color:var(--txt)}
+button.sec:hover{border-color:var(--acc);filter:none}
+button.rot{background:var(--err)}
+button:disabled{opacity:.42;cursor:not-allowed;transform:none;filter:none}
+button.sm{padding:8px 13px;font-size:13px}
+label{display:block;font-size:12px;font-weight:650;color:var(--txt2);margin-bottom:6px}
+input,select{width:100%;font:inherit;font-size:14px;background:var(--bg2);color:var(--txt);
+ border:1px solid var(--line);border-radius:10px;padding:9px 12px;outline:none}
+input:focus,select:focus{border-color:var(--acc)}
+.row{display:flex;gap:9px}.row>*{flex:1}
+.mt{margin-top:12px}
+.mess{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.mess div{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:11px 13px}
+.mess b{display:block;font-size:21px;font-family:var(--mono);font-weight:700}
+.mess span{font-size:11px;color:var(--txt3)}
+.note{font-size:12.5px;color:var(--txt2);background:rgba(109,139,255,.08);border-left:3px solid var(--acc);
+ padding:11px 14px;border-radius:0 11px 11px 0;margin-top:13px}
+.note.warn{background:rgba(255,183,77,.09);border-color:var(--warn)}
+.note.ok{background:rgba(56,211,159,.09);border-color:var(--ok)}
+pre{font-family:var(--mono);font-size:12px;line-height:1.6;white-space:pre-wrap;background:var(--bg2);
+ border:1px solid var(--line);border-radius:11px;padding:13px;max-height:300px;overflow:auto}
+.streifen{display:flex;gap:6px;overflow-x:auto;padding:12px 17px;border-top:1px solid var(--line)}
+.streifen img{width:74px;height:56px;object-fit:cover;border-radius:8px;border:1px solid var(--line)}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(90px);
+ background:var(--txt);color:var(--bg);padding:11px 20px;border-radius:11px;font-size:14px;
+ font-weight:600;transition:.3s cubic-bezier(.22,1,.36,1);z-index:99}
+.toast.on{transform:translateX(-50%)}
+a{color:var(--acc)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="logo">📷</div>
+  <div><h1>Kamera-Scan</h1>
+    <div class="sub">Bildfolge aufnehmen, Qualität prüfen, Paket für LingBot-Map erzeugen</div></div>
+  <span class="badge" id="modus">läuft im Browser</span>
+</header>
+
+<div class="grid">
+  <div>
+    <div class="card">
+      <div class="card-h"><h2>Aufnahme</h2><span class="n" id="statusZeile">bereit</span></div>
+      <div class="buehne" id="buehne">
+        <video id="video" playsinline muted autoplay style="display:none"></video>
+        <div class="hinweis" id="hinweis"><div><span class="ic">📷</span>
+          <b>Kamera noch nicht gestartet</b><br>
+          <span style="font-size:13px">Unten auf „Kamera starten“ tippen.</span></div></div>
+        <div class="hud" id="hud" style="display:none">
+          <span class="chip" id="chipScharf">Schärfe <b>–</b></span>
+          <span class="chip" id="chipHell">Licht <b>–</b></span>
+          <span class="chip" id="chipBeweg">Bewegung <b>–</b></span>
+        </div>
+        <div class="rec" id="rec" style="display:none">
+          <span class="punkt"></span><span id="recText">0 Bilder</span></div>
+      </div>
+      <div class="leiste">
+        <button id="startBtn">Kamera starten</button>
+        <button class="sec" id="wechselBtn" disabled>Kamera wechseln</button>
+        <button class="rot" id="scanBtn" disabled>Scan starten</button>
+        <button class="sec" id="fotoBtn" disabled>Einzelfoto</button>
+        <button class="sec" id="dateiBtn">Bilder laden</button>
+        <input type="file" id="dateiIn" accept="image/*" multiple hidden>
+      </div>
+      <div class="streifen" id="streifen" style="display:none"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-h"><h2>Beurteilung</h2></div>
+      <div class="card-b">
+        <pre id="urteil">Noch keine Aufnahme ausgewertet.</pre>
+        <div class="row mt">
+          <button id="zipBtn" disabled>Paket herunterladen (.zip)</button>
+          <button class="sec" id="loeschBtn" disabled>Aufnahme verwerfen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="card">
+      <div class="card-h"><h2>Einstellungen</h2></div>
+      <div class="card-b">
+        <label>Name der Aufnahme</label>
+        <input id="nameIn" value="scan1" autocomplete="off">
+        <div class="row mt">
+          <div><label>Bilder je Sekunde</label><select id="fpsIn">
+            <option value="2">2 — sparsam</option><option value="4" selected>4 — empfohlen</option>
+            <option value="8">8 — dicht</option></select></div>
+          <div><label>Höchstzahl</label><select id="maxIn">
+            <option value="60">60</option><option value="120" selected>120</option>
+            <option value="300">300</option></select></div>
+        </div>
+        <div class="mess">
+          <div><b id="mAnzahl">0</b><span>Bilder</span></div>
+          <div><b id="mSchaerfe">–</b><span>Ø Schärfe</span></div>
+          <div><b id="mDauer">0s</b><span>Dauer</span></div>
+        </div>
+        <div class="note"><b>So wird der Scan gut:</b> langsam und gleichmäßig um das Objekt
+          gehen, gutes Licht, immer Überlappung zum vorherigen Bild.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-h"><h2>Weiterverarbeitung</h2><span class="n" id="agentStatus">—</span></div>
+      <div class="card-b">
+        <pre id="info" style="max-height:230px">…</pre>
+        <label class="mt">Agent (optional)</label>
+        <input id="agentUrl" value="http://localhost:8080" autocomplete="off"
+          placeholder="http://localhost:8080 oder https://….trycloudflare.com">
+        <div class="row mt">
+          <input id="agentToken" placeholder="Zugangstoken" autocomplete="off">
+          <button class="sec sm" id="agentBtn" style="max-width:106px">Verbinden</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<canvas id="arbeit" style="display:none"></canvas>
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+const $=s=>document.querySelector(s);
+let stream=null,laufend=false,frames=[],blobs=[],nr=0,startZeit=0,letzteGrau=null,
+    kameras=[],kameraIndex=0,timer=null;
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');
+  clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),2400);}
+
+/* ═══ Bildanalyse im Browser ═══ */
+function messen(quelle){
+  const c=$('#arbeit'),b=160,h=120;
+  c.width=b;c.height=h;
+  const ctx=c.getContext('2d',{willReadFrequently:true});
+  ctx.drawImage(quelle,0,0,b,h);
+  const d=ctx.getImageData(0,0,b,h).data, grau=new Float32Array(b*h);
+  let summe=0;
+  for(let i=0,j=0;i<d.length;i+=4,j++){
+    const g=0.299*d[i]+0.587*d[i+1]+0.114*d[i+2]; grau[j]=g; summe+=g;}
+  let ls=0,ls2=0,n=0;
+  for(let y=1;y<h-1;y++)for(let x=1;x<b-1;x++){
+    const i=y*b+x, l=4*grau[i]-grau[i-1]-grau[i+1]-grau[i-b]-grau[i+b];
+    ls+=l; ls2+=l*l; n++;}
+  const varianz=ls2/n-(ls/n)**2;
+  let bewegung=0;
+  if(letzteGrau){let s=0;for(let i=0;i<grau.length;i++)s+=Math.abs(grau[i]-letzteGrau[i]);
+    bewegung=s/grau.length;}
+  letzteGrau=grau;
+  return {schaerfe:Math.max(0,Math.min(100,Math.sqrt(varianz)*3.2)),
+          helligkeit:Math.max(0,Math.min(100,summe/(b*h)/2.55)),
+          bewegung:Math.max(0,Math.min(100,bewegung*2.6)),
+          b:quelle.videoWidth||quelle.naturalWidth||0,
+          h:quelle.videoHeight||quelle.naturalHeight||0};
+}
+const stufe=(w,g,m)=>w>=g?'gut':w>=m?'mittel':'schlecht';
+function hudZeigen(m){
+  const setze=(id,w,k)=>{const e=$(id);e.querySelector('b').textContent=Math.round(w);
+    e.className='chip '+k;};
+  setze('#chipScharf',m.schaerfe,stufe(m.schaerfe,45,25));
+  setze('#chipHell',m.helligkeit,stufe(m.helligkeit,45,28));
+  setze('#chipBeweg',m.bewegung,m.bewegung>55?'schlecht':m.bewegung>6?'gut':'mittel');
+}
+
+/* ═══ Beurteilung — dieselbe Logik wie im Agenten, hier in JavaScript ═══ */
+function beurteilen(name,f){
+  if(!f.length) return 'Keine Bilder aufgenommen.';
+  const n=f.length, mit=a=>a.reduce((x,y)=>x+y,0)/a.length;
+  const sch=f.map(x=>x.schaerfe), hel=f.map(x=>x.helligkeit), bew=f.map(x=>x.bewegung);
+  const unscharf=sch.filter(s=>s<25).length, dunkel=hel.filter(h=>h<40).length,
+        hektisch=bew.filter(b=>b>55).length;
+  let punkte=100; const hinweise=[];
+  if(n<20){hinweise.push(`Nur ${n} Bilder — für eine stabile Rekonstruktion sind mindestens 50 bis 100 sinnvoll.`);punkte-=30;}
+  else if(n<50){hinweise.push(`${n} Bilder sind knapp; mehr Aufnahmen verbessern das Ergebnis.`);punkte-=10;}
+  if(unscharf>n*0.25){hinweise.push(`${unscharf} von ${n} Bildern sind unscharf (Ø Schärfe ${mit(sch).toFixed(0)}). Langsamer bewegen.`);punkte-=25;}
+  if(dunkel>n*0.25){hinweise.push(`${dunkel} Bilder sind zu dunkel (Ø Helligkeit ${mit(hel).toFixed(0)}). Mehr Licht.`);punkte-=20;}
+  if(hektisch>n*0.3){hinweise.push(`${hektisch} Bilder mit starker Bewegung — gleichmäßiger schwenken.`);punkte-=15;}
+  if(mit(bew)<4){hinweise.push('Kaum Bewegung zwischen den Bildern. Für 3D braucht das Modell verschiedene Blickwinkel.');punkte-=25;}
+  punkte=Math.max(0,punkte);
+  const note=punkte>=85?'sehr gut':punkte>=65?'brauchbar':punkte>=40?'grenzwertig':'ungeeignet';
+  return `Aufnahme '${name}' — Bewertung: ${note} (${punkte}/100)\n\n`
+    +`Bilder          ${n}\n`
+    +`Ø Schärfe       ${mit(sch).toFixed(0)}/100  (unscharf: ${unscharf})\n`
+    +`Ø Helligkeit    ${mit(hel).toFixed(0)}/100  (zu dunkel: ${dunkel})\n`
+    +`Ø Bewegung      ${mit(bew).toFixed(0)}/100  (hektisch: ${hektisch})\n`
+    +(hinweise.length?'\nHinweise:\n'+hinweise.map(h=>'  · '+h).join('\n'):'\nKeine Auffälligkeiten.');
+}
+
+/* ═══ Kamera ═══ */
+async function kameraStarten(){
+  if(!navigator.mediaDevices?.getUserMedia){
+    fehler('Kein Kamerazugriff möglich','Dieser Browser unterstützt getUserMedia nicht. Nutze „Bilder laden“.');return;}
+  try{
+    const wunsch=kameras.length?{deviceId:{exact:kameras[kameraIndex].deviceId}}
+                              :{facingMode:{ideal:'environment'}};
+    stream=await navigator.mediaDevices.getUserMedia({
+      video:{...wunsch,width:{ideal:1280},height:{ideal:960}},audio:false});
+    const v=$('#video'); v.srcObject=stream; await v.play();
+    $('#hinweis').style.display='none'; v.style.display='block'; $('#hud').style.display='flex';
+    $('#scanBtn').disabled=false; $('#fotoBtn').disabled=false;
+    $('#startBtn').textContent='Kamera stoppen';
+    kameras=(await navigator.mediaDevices.enumerateDevices()).filter(d=>d.kind==='videoinput');
+    $('#wechselBtn').disabled=kameras.length<2;
+    $('#statusZeile').textContent=`${v.videoWidth}×${v.videoHeight}`;
+    (function tick(){if(!stream)return; if(v.videoWidth)hudZeigen(messen(v));
+      requestAnimationFrame(()=>setTimeout(tick,220));})();
+  }catch(e){
+    const grund={NotAllowedError:'Der Zugriff wurde abgelehnt oder ist in diesem Rahmen gesperrt.',
+      NotFoundError:'Es wurde keine Kamera gefunden.',
+      NotReadableError:'Die Kamera wird von einem anderen Programm benutzt.',
+      SecurityError:'Kamerazugriff ist nur über HTTPS oder localhost erlaubt.'}[e.name]
+      ||(e.message||'Unbekannter Fehler');
+    fehler('Kamera nicht verfügbar',grund+' — du kannst stattdessen Bilder laden.');
+  }
+}
+function fehler(t,x){$('#hinweis').style.display='grid';
+  $('#hinweis').innerHTML=`<div><span class="ic">⚠️</span><b>${t}</b><br>
+    <span style="font-size:13px">${x}</span></div>`;
+  $('#video').style.display='none';$('#hud').style.display='none';}
+function kameraStoppen(){
+  if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}
+  $('#video').style.display='none';$('#hinweis').style.display='grid';$('#hud').style.display='none';
+  $('#startBtn').textContent='Kamera starten';
+  $('#scanBtn').disabled=true;$('#fotoBtn').disabled=true;$('#wechselBtn').disabled=true;}
+$('#startBtn').onclick=()=>stream?kameraStoppen():kameraStarten();
+$('#wechselBtn').onclick=async()=>{kameraIndex=(kameraIndex+1)%Math.max(1,kameras.length);
+  if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;} await kameraStarten();};
+
+/* ═══ Aufnahme — alles bleibt im Browser ═══ */
+function schnappschuss(){
+  const v=$('#video'),c=document.createElement('canvas');
+  const breite=Math.min(1280,v.videoWidth||1280);
+  c.width=breite; c.height=Math.round(breite*((v.videoHeight/v.videoWidth)||0.75));
+  c.getContext('2d').drawImage(v,0,0,c.width,c.height);
+  return new Promise(res=>c.toBlob(b=>res(b),'image/jpeg',0.86));
+}
+async function bildAblegen(blob,m){
+  frames.push(m); blobs.push(blob);
+  const img=document.createElement('img'); img.src=URL.createObjectURL(blob);
+  $('#streifen').style.display='flex'; $('#streifen').appendChild(img);
+  $('#streifen').scrollLeft=1e6;
+  $('#mAnzahl').textContent=blobs.length;
+  if(frames.length) $('#mSchaerfe').textContent=
+    Math.round(frames.reduce((a,f)=>a+f.schaerfe,0)/frames.length);
+}
+async function scanStarten(){
+  frames=[];blobs=[];nr=0;startZeit=Date.now();laufend=true;letzteGrau=null;
+  $('#streifen').innerHTML='';$('#rec').style.display='flex';
+  $('#scanBtn').textContent='Scan beenden';$('#scanBtn').classList.remove('rot');
+  $('#fotoBtn').disabled=true;
+  const fps=+$('#fpsIn').value,max=+$('#maxIn').value;
+  timer=setInterval(async()=>{
+    if(!laufend||!stream)return;
+    const v=$('#video'); if(!v.videoWidth)return;
+    const m=messen(v); m.t=Date.now()-startZeit; hudZeigen(m);
+    await bildAblegen(await schnappschuss(),m);
+    $('#recText').textContent=`${blobs.length} Bilder`;
+    $('#mDauer').textContent=Math.round((Date.now()-startZeit)/1000)+'s';
+    if(blobs.length>=max) scanBeenden();
+  },1000/fps);
+}
+function scanBeenden(){
+  laufend=false; clearInterval(timer); timer=null;
+  $('#rec').style.display='none';
+  $('#scanBtn').textContent='Scan starten'; $('#scanBtn').classList.add('rot');
+  $('#fotoBtn').disabled=!stream;
+  if(!blobs.length){toast('Keine Bilder aufgenommen');return;}
+  $('#urteil').textContent=beurteilen($('#nameIn').value||'scan1',frames);
+  $('#zipBtn').disabled=false; $('#loeschBtn').disabled=false;
+  toast(`${blobs.length} Bilder aufgenommen`);
+}
+$('#scanBtn').onclick=()=>laufend?scanBeenden():scanStarten();
+$('#fotoBtn').onclick=async()=>{
+  const v=$('#video'); const m=messen(v); m.t=Date.now()-(startZeit||Date.now());
+  if(!blobs.length){startZeit=Date.now();}
+  await bildAblegen(await schnappschuss(),m);
+  $('#urteil').textContent=beurteilen($('#nameIn').value||'scan1',frames);
+  $('#zipBtn').disabled=false; $('#loeschBtn').disabled=false;
+  toast('Foto aufgenommen');
+};
+$('#loeschBtn').onclick=()=>{
+  frames=[];blobs=[];letzteGrau=null;
+  $('#streifen').innerHTML='';$('#streifen').style.display='none';
+  $('#urteil').textContent='Noch keine Aufnahme ausgewertet.';
+  $('#mAnzahl').textContent='0';$('#mSchaerfe').textContent='–';$('#mDauer').textContent='0s';
+  $('#zipBtn').disabled=true;$('#loeschBtn').disabled=true; toast('Verworfen');
+};
+$('#dateiBtn').onclick=()=>$('#dateiIn').click();
+$('#dateiIn').onchange=async e=>{
+  const dateien=[...e.target.files].slice(0,300); if(!dateien.length)return;
+  frames=[];blobs=[];letzteGrau=null;startZeit=Date.now();
+  $('#streifen').innerHTML='';
+  $('#urteil').textContent=`Lese ${dateien.length} Bilder …`;
+  for(const f of dateien){
+    const url=URL.createObjectURL(f);
+    const bild=await new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.src=url;});
+    const m=messen(bild); m.t=blobs.length*250;
+    await bildAblegen(f,m);
+  }
+  scanBeenden(); e.target.value='';
+};
+
+/* ═══ ZIP ohne Fremdbibliothek (gespeichert, nicht komprimiert) ═══ */
+const CRC=(()=>{const t=new Uint32Array(256);
+  for(let i=0;i<256;i++){let c=i;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[i]=c>>>0;}
+  return b=>{let c=0xFFFFFFFF;for(let i=0;i<b.length;i++)c=t[(c^b[i])&255]^(c>>>8);
+    return (c^0xFFFFFFFF)>>>0;};})();
+async function zipBauen(eintraege){
+  const te=new TextEncoder(),teile=[],zentral=[];let off=0;
+  for(const [name,inhalt] of eintraege){
+    const nb=te.encode(name);
+    const db=inhalt instanceof Blob?new Uint8Array(await inhalt.arrayBuffer())
+            :te.encode(inhalt);
+    const crc=CRC(db);
+    const lok=new Uint8Array(30+nb.length),dv=new DataView(lok.buffer);
+    dv.setUint32(0,0x04034b50,true);dv.setUint16(4,20,true);dv.setUint32(14,crc,true);
+    dv.setUint32(18,db.length,true);dv.setUint32(22,db.length,true);dv.setUint16(26,nb.length,true);
+    lok.set(nb,30);teile.push(lok,db);
+    const zen=new Uint8Array(46+nb.length),zv=new DataView(zen.buffer);
+    zv.setUint32(0,0x02014b50,true);zv.setUint16(4,20,true);zv.setUint16(6,20,true);
+    zv.setUint32(16,crc,true);zv.setUint32(20,db.length,true);zv.setUint32(24,db.length,true);
+    zv.setUint16(28,nb.length,true);zv.setUint32(42,off,true);zen.set(nb,46);
+    zentral.push(zen);off+=lok.length+db.length;}
+  const zl=zentral.reduce((s,z)=>s+z.length,0);
+  const end=new Uint8Array(22),ev=new DataView(end.buffer);
+  ev.setUint32(0,0x06054b50,true);ev.setUint16(8,eintraege.length,true);
+  ev.setUint16(10,eintraege.length,true);ev.setUint32(12,zl,true);ev.setUint32(16,off,true);
+  return new Blob([...teile,...zentral,end],{type:'application/zip'});
+}
+$('#zipBtn').onclick=async()=>{
+  const name=($('#nameIn').value||'scan1').replace(/[^\w-]/g,'');
+  $('#zipBtn').disabled=true; $('#zipBtn').textContent='packe …';
+  const befehl=`python demo.py \\\n  --image_folder bilder \\\n`
+    +`  --model_path $LINGBOT_MAP_GEWICHTE \\\n  --mode streaming \\\n`
+    +`  --image_size 518 \\\n  --max_frame_num ${Math.max(1024,blobs.length+64)}`;
+  const start=`# Aufnahmepaket für LingBot-Map\n\n`
+    +`Aufgenommen: ${new Date().toLocaleString('de-DE')}\nBilder: ${blobs.length}\n\n`
+    +`## So wird daraus 3D\n\nAuf einem Rechner mit Nvidia-Grafikkarte:\n\n`
+    +"```bash\ngit clone https://github.com/Robbyant/lingbot-map.git\ncd lingbot-map\n"
+    +"pip install torch --index-url https://download.pytorch.org/whl/cu121\n"
+    +"pip install -e '.[demo]'\nhuggingface-cli download robbyant/lingbot-map --local-dir ckpt\n"
+    +"export LINGBOT_MAP_GEWICHTE=$PWD/ckpt/modell.pt\n```\n\n"
+    +`Dann diesen Ordner hineinkopieren und starten:\n\n`+"```bash\n"+befehl+"\n```\n\n"
+    +`## Beurteilung der Aufnahme\n\n`+"```\n"+beurteilen(name,frames)+"\n```\n";
+  const eintraege=[['START.md',start],
+    ['messwerte.json',JSON.stringify({frames,zeit:Date.now(),
+      geraet:navigator.userAgent.slice(0,140)},null,1)]];
+  blobs.forEach((b,i)=>eintraege.push([`bilder/${String(i).padStart(5,'0')}.jpg`,b]));
+  const zip=await zipBauen(eintraege);
+  const a=document.createElement('a');a.href=URL.createObjectURL(zip);
+  a.download=name+'.zip';document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},900);
+  $('#zipBtn').disabled=false; $('#zipBtn').textContent='Paket herunterladen (.zip)';
+  toast(`Paket mit ${blobs.length} Bildern geladen`);
+};
+
+/* ═══ Optionale Verbindung zu einem lokal laufenden Agenten ═══ */
+function infoText(extra){
+  const https=location.protocol==='https:';
+  $('#info').textContent=
+    `Diese Seite läuft vollständig im Browser.\n`+
+    `· Bilder bleiben auf dem Gerät\n`+
+    `· kein Server, keine Übertragung\n`+
+    `· Paket entsteht als ZIP zum Herunterladen\n\n`+
+    `Für die 3D-Rekonstruktion braucht LingBot-Map eine\n`+
+    `Nvidia-Grafikkarte und mehrere GB Modellgewichte.\n`+
+    `Das Paket enthält die fertige Befehlszeile dafür.\n`+
+    (extra?`\n${extra}`:
+      (https?`\nHinweis: Von einer HTTPS-Seite aus kann der Browser\n`
+        +`den Zugriff auf einen lokalen Agenten blockieren.\n`
+        +`Mit „Verbinden“ lässt sich das ausprobieren.`:''));
+}
+$('#agentBtn').onclick=async()=>{
+  const url=$('#agentUrl').value.replace(/\/+$/,'');
+  localStorage.setItem('ma_url',url);
+  localStorage.setItem('ma_token',$('#agentToken').value.trim());
+  $('#agentStatus').textContent='verbinde …';
+  try{
+    const tok=$('#agentToken').value.trim();
+    const s=await fetch(url+'/api/kamera/lingbot',{signal:AbortSignal.timeout(5000),
+      headers:tok?{'X-MA-Token':tok}:{}}).then(async r=>{
+        const d=await r.json();
+        if(r.status===401) throw new Error(d.grund||'Zugriff verweigert');
+        return d;});
+    $('#agentStatus').textContent='verbunden';
+    $('#agentStatus').style.color='var(--ok)';
+    infoText(`Agent erreichbar unter ${url}\n`+
+      `LingBot-Map: ${s.einsatzbereit?'einsatzbereit':'nicht möglich'}\n`+
+      (s.fehlt?.length?'Es fehlt:\n'+s.fehlt.map(f=>'  · '+f).join('\n'):''));
+    toast('Mit dem Agenten verbunden');
+  }catch(e){
+    $('#agentStatus').textContent='nicht erreichbar';
+    $('#agentStatus').style.color='var(--warn)';
+    infoText(`Keine Verbindung zu ${url}\nGrund: ${e.name==='TimeoutError'?'Zeitüberschreitung':e.message}\n\n`+
+      `Das ist normal, wenn dort kein Agent läuft oder der Browser\n`+
+      `den Zugriff von einer HTTPS-Seite auf localhost unterbindet.\n`+
+      `Die Aufnahme funktioniert davon unabhängig.`);
+  }
+};
+$('#modus').textContent=location.protocol==='https:'?'läuft im Browser · HTTPS'
+  :location.protocol==='file:'?'läuft im Browser · lokale Datei':'läuft im Browser';
+if(localStorage.getItem('ma_url')) $('#agentUrl').value=localStorage.getItem('ma_url');
+if(localStorage.getItem('ma_token')) $('#agentToken').value=localStorage.getItem('ma_token');
+infoText();
+</script>
+</body>
+</html>

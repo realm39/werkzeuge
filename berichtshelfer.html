@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Berichtshelfer — Zeugnisse und Entwicklungsberichte</title>
+<style>
+/* ── Schrift: Fraunces (Subset, eingebettet – funktioniert offline) ── */
+@font-face{font-family:"Fraunces";src:url(data:font/woff2;base64,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) format("woff2");
+ font-weight:600;font-style:normal;font-display:swap}
+
+/* ── Farben nach dem Vorbild von Lumo ── */
+:root{
+ --paper:#f3ece1; --paper2:#efe6d8; --card:#fffaf2;
+ --ink:#1c1915; --ink-soft:#5c564c; --ink-faint:#8a8276;
+ --line:rgba(28,25,21,.1); --line2:rgba(28,25,21,.2);
+ --coral:#e85d4c; --coral-deep:#c44738; --sage:#2f6b5a; --sage-soft:#dce8e2;
+ --gold:#e0a83a; --navy:#2c3554;
+ --shadow:0 18px 50px rgba(62,42,22,.08);
+ --radius:22px; --radius-s:14px;
+ --serif:"Fraunces",Georgia,"Times New Roman",serif;
+ --sans:"Inter","Segoe UI",system-ui,-apple-system,sans-serif;
+ --mono:"SF Mono",Menlo,Consolas,monospace;
+ --noise:.35;
+}
+html[data-theme=dark]{
+ --paper:#191613; --paper2:#211c17; --card:#232019;
+ --ink:#f4ece1; --ink-soft:#b5ab9b; --ink-faint:#857c6e;
+ --line:rgba(244,236,225,.12); --line2:rgba(244,236,225,.22);
+ --coral:#f0705e; --coral-deep:#e85d4c; --sage:#6bb79c; --sage-soft:#1f3b33;
+ --gold:#e8bb5c;
+ --shadow:0 18px 50px rgba(0,0,0,.45);
+ --noise:.14;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;
+ line-height:1.55;-webkit-font-smoothing:antialiased;font-feature-settings:"ss01","cv11"}
+/* Papierkorn wie auf der Vorlage */
+body::before{content:"";pointer-events:none;position:fixed;inset:0;z-index:0;opacity:var(--noise);
+ background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.wrap{position:relative;z-index:1;max-width:1500px;margin:0 auto;padding:0 20px 70px}
+h1,h2,h3,h4,.serif{font-family:var(--serif);font-weight:600;letter-spacing:-.03em}
+
+header{padding:28px 0 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo{width:46px;height:46px;border-radius:15px;background:var(--coral);
+ display:grid;place-items:center;color:#fff8f0;font-size:21px;flex:none;
+ box-shadow:0 8px 22px -8px var(--coral)}
+h1{font-size:clamp(1.7rem,2.6vw,2.3rem);line-height:1}
+.sub{font-size:13.5px;color:var(--ink-soft);margin-top:3px}
+.hgrp{margin-left:auto;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.badge{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--sage);
+ background:var(--sage-soft);border:1px solid rgba(47,107,90,.22);padding:8px 15px;
+ border-radius:999px;font-weight:600}
+.eyebrow{font-size:11px;letter-spacing:.17em;text-transform:uppercase;color:var(--coral);
+ font-weight:700}
+
+.bar{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+ padding:15px 17px;display:grid;grid-template-columns:repeat(auto-fit,minmax(152px,1fr));
+ gap:13px;margin-bottom:16px;box-shadow:var(--shadow),0 1px 0 rgba(255,255,255,.6) inset}
+.bar label{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;
+ color:var(--ink-faint);margin-bottom:6px;display:block}
+.grid{display:grid;grid-template-columns:282px 1fr 1fr;gap:16px;align-items:start}
+@media(max-width:1200px){.grid{grid-template-columns:252px 1fr}.col-out{grid-column:1/-1}}
+@media(max-width:820px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+ box-shadow:var(--shadow),0 1px 0 rgba(255,255,255,.6) inset;margin-bottom:16px;overflow:hidden}
+.card-h{padding:15px 19px 13px;border-bottom:1px solid var(--line);display:flex;
+ align-items:baseline;gap:9px}
+.card-h h2{font-size:17px}
+.card-h .n{margin-left:auto;font-size:11.5px;color:var(--ink-faint);font-family:var(--mono)}
+.card-b{padding:17px 19px}
+
+label.f{display:block;font-size:12.5px;font-weight:650;color:var(--ink-soft);margin-bottom:6px}
+input,select,textarea{width:100%;font:inherit;font-size:14.5px;background:var(--paper2);
+ color:var(--ink);border:1px solid var(--line2);border-radius:var(--radius-s);
+ padding:10px 13px;outline:none;transition:.15s;font-family:var(--sans)}
+select{padding-right:30px;appearance:none;cursor:pointer;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235c564c' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+ background-repeat:no-repeat;background-position:right 12px center}
+html[data-theme=dark] select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23b5ab9b' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")}
+input:focus,select:focus,textarea:focus{border-color:var(--coral);
+ box-shadow:0 0 0 3px rgba(232,93,76,.16);background:var(--card)}
+textarea{resize:vertical;line-height:1.6}
+.row{display:flex;gap:9px}.row>*{flex:1}
+.mt{margin-top:12px}.mt2{margin-top:18px}
+
+button{font-family:var(--sans);font-size:14px;cursor:pointer;border:0;border-radius:999px;
+ padding:11px 20px;font-weight:600;background:var(--ink);color:var(--paper);
+ transition:transform .15s ease,background .15s,box-shadow .15s}
+button:hover{transform:translateY(-1px)}
+button:active{transform:translateY(1px)}
+button.acc{background:var(--coral);color:#fff8f0;box-shadow:0 10px 24px -10px var(--coral)}
+button.sec{background:transparent;color:var(--ink);border:1px solid var(--line2)}
+button.sec:hover{border-color:var(--coral);color:var(--coral)}
+button.danger{background:transparent;color:var(--coral-deep);border:1px solid rgba(196,71,56,.35)}
+button.sm{padding:8px 14px;font-size:13px}
+button.ico{padding:9px 12px;background:transparent;border:1px solid var(--line2);color:var(--ink-soft)}
+
+.plist{max-height:320px;overflow-y:auto;margin:-4px -6px;padding:4px 6px}
+.pitem{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:999px;
+ cursor:pointer;border:1px solid transparent;margin-bottom:3px;transition:.14s}
+.pitem:hover{background:var(--paper2)}
+.pitem.on{background:var(--sage-soft);border-color:rgba(47,107,90,.28)}
+.pav{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:12px;
+ font-weight:700;color:#fff8f0;flex:none;font-family:var(--serif)}
+.pname{font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pdone{margin-left:auto;font-size:10.5px;color:var(--sage);font-weight:700;letter-spacing:.04em}
+.pdel{margin-left:auto;opacity:0;border:0;background:none;color:var(--coral-deep);
+ padding:1px 6px;font-size:16px;border-radius:50%}
+.pitem:hover .pdel{opacity:1}.pitem:hover .pdone{display:none}
+
+.grp{margin-bottom:16px;padding-bottom:15px;border-bottom:1px solid var(--line)}
+.grp:last-child{border:0;margin:0;padding:0}
+.grp>.q{font-family:var(--serif);font-size:16px;font-weight:600;letter-spacing:-.02em;margin-bottom:2px}
+.grp>.hint{font-size:12px;color:var(--ink-faint);margin-bottom:9px}
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+.opt{font-size:12.5px;padding:8px 14px;border-radius:999px;border:1px solid var(--line2);
+ background:var(--card);cursor:pointer;color:var(--ink-soft);transition:.14s;font-weight:600;
+ font-family:var(--sans)}
+.opt:hover{border-color:var(--coral);color:var(--coral);transform:translateY(-1px)}
+.opt.on{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.opt.on:hover{color:var(--paper);transform:translateY(-1px)}
+.opt.multi.on{background:var(--sage);border-color:var(--sage);color:#fff8f0}
+
+.out{font-size:16px;line-height:1.78;white-space:pre-wrap;min-height:160px;
+ border:1px solid var(--line2);border-radius:var(--radius-s);padding:16px 18px;
+ background:var(--paper2);font-family:var(--sans)}
+.out:focus{border-color:var(--coral);outline:none;background:var(--card)}
+.stat{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;font-size:11.5px;color:var(--ink-faint)}
+.stat b{color:var(--ink-soft);font-family:var(--mono)}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+.note{font-size:12.5px;color:var(--ink-soft);background:var(--paper2);
+ border-left:3px solid var(--coral);padding:11px 15px;border-radius:0 var(--radius-s) var(--radius-s) 0;
+ margin-top:13px}
+.note.warn{border-color:var(--gold)}
+.note.err{border-color:var(--coral-deep)}
+.note.ok{border-color:var(--sage);background:var(--sage-soft)}
+.empty{text-align:center;padding:32px 16px;color:var(--ink-faint);font-size:13.5px}
+.empty .ic{font-size:28px;display:block;margin-bottom:8px}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(90px);
+ background:var(--ink);color:var(--paper);padding:12px 22px;border-radius:999px;font-size:14px;
+ font-weight:600;box-shadow:var(--shadow);transition:.3s cubic-bezier(.22,1,.36,1);z-index:99}
+.toast.on{transform:translateX(-50%)}
+.all{max-height:52vh;overflow-y:auto}
+.all .one{padding:14px 0;border-bottom:1px solid var(--line)}
+.all .one:last-child{border:0}
+.all .one h4{font-size:16px;margin-bottom:5px;color:var(--coral)}
+.all .one p{font-size:13.5px;line-height:1.7;color:var(--ink-soft)}
+
+dialog{border:0;border-radius:var(--radius);padding:0;background:var(--card);color:var(--ink);
+ box-shadow:var(--shadow);max-width:720px;width:94vw}
+dialog::backdrop{background:rgba(28,25,21,.5);backdrop-filter:blur(3px)}
+.dlg-h{padding:18px 22px 15px;border-bottom:1px solid var(--line)}
+.dlg-h h3{font-size:21px}
+.dlg-b{padding:18px 22px;max-height:68vh;overflow-y:auto}
+.dlg-f{padding:14px 22px;border-top:1px solid var(--line);display:flex;gap:9px;justify-content:flex-end}
+.uz{border:1px solid var(--line);border-radius:var(--radius-s);padding:13px 15px;
+ margin-bottom:10px;background:var(--paper2)}
+.uz .klar{font-size:13px;font-weight:700;color:var(--coral-deep);margin-bottom:7px}
+.uz .vor{font-size:13.5px;line-height:1.6;padding:7px 11px;border-radius:10px;cursor:pointer;
+ color:var(--ink-soft);transition:.13s}
+.uz .vor:hover{background:var(--sage-soft);color:var(--ink)}
+.sbar{display:grid;grid-template-columns:160px 1fr 34px;gap:9px;align-items:center;
+ font-size:12.5px;margin-bottom:6px}
+.strack{height:20px;background:var(--paper2);border:1px solid var(--line);border-radius:999px;
+ overflow:hidden;display:block}
+.sfill{display:block;height:100%;background:var(--coral);border-radius:999px;transition:width .5s}
+details summary{list-style:none;font-size:12.5px;color:var(--ink-soft);cursor:pointer;
+ font-weight:600}
+details summary::-webkit-details-marker{display:none}
+details summary::before{content:"+ ";color:var(--coral);font-weight:700}
+details[open] summary::before{content:"– "}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--line2);border-radius:999px;border:3px solid var(--paper)}
+
+@media print{body{background:#fff}body::before{display:none}
+ .wrap{max-width:none;padding:0}
+ header,.bar,.col-list,.col-edit,.tools,.note,.stat,.badge,.no-print,dialog{display:none!important}
+ .card{border:0;box-shadow:none;margin:0}.card-h{display:none}
+ .all{max-height:none;overflow:visible}
+ .all .one{page-break-inside:avoid;padding:0 0 26px}
+ .all .one h4{font-size:15px;color:#000}.all .one p{font-size:12.5px;color:#000}
+ .unterschrift{display:block!important}
+ .legbogen{page-break-after:always}
+ .legbogen h4{font-size:16px}
+ .druckkopf{color:#555!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="logo">✎</div>
+  <div><div class="eyebrow">Für Lehrkräfte · ohne Cloud</div>
+    <h1>Berichtshelfer</h1>
+    <div class="sub">Zeugnisbemerkungen und Entwicklungsberichte — alle Schularten, alle Bundesländer</div></div>
+  <div class="hgrp">
+    <span class="badge" id="netBadge">● offline nutzbar · keine Datenübertragung</span>
+    <button class="ico" id="themeBtn" title="Hell / Dunkel">◐</button>
+  </div>
+</header>
+
+<div class="bar">
+  <div><label>Bundesland</label><select id="land"></select></div>
+  <div><label>Schulart</label><select id="schulart">
+    <option value="gs">Grundschule</option><option value="foe">Förderschule</option>
+    <option value="sek1">Haupt-/Real-/Gesamtschule</option><option value="gym">Gymnasium</option>
+    <option value="bs">Berufsschule</option></select></div>
+  <div><label>Textlänge</label><select id="laenge">
+    <option value="kurz">kurz · 2–3 Sätze</option><option value="mittel" selected>mittel · 4–6 Sätze</option>
+    <option value="lang">ausführlich · Bericht</option></select></div>
+  <div><label>Zeitform</label><select id="zeit">
+    <option value="praesens">Präsens (arbeitet)</option>
+    <option value="praeteritum">Präteritum (arbeitete)</option></select></div>
+  <div><label>Anrede</label><select id="anrede">
+    <option value="er">3. Person (Mia …)</option><option value="du">2. Person (Du …)</option></select></div>
+  <div><label>Darstellung</label><select id="form">
+    <option value="fliess">Fließtext</option><option value="stich">Stichpunkte</option></select></div>
+  <div><label>Zeichen-Obergrenze</label>
+    <input id="zeichenZiel" type="number" min="0" step="50" placeholder="z.B. 600"></div>
+  <div><label>Ausgabe</label><select id="ausgabe">
+    <option value="bericht">Zeugnistexte</option>
+    <option value="leg">Lernentwicklungsgespräch</option></select></div>
+</div>
+<div class="note" id="landInfo" style="margin:-4px 0 14px"></div>
+
+<div class="grid">
+  <div class="col-list">
+    <div class="note warn" id="sicherHinweis" style="display:none;margin:0 0 14px">
+      <b>Bitte sichern.</b> Die Daten liegen nur in diesem Browser.
+      <button class="sec sm mt" id="sicherJetzt" style="width:100%">Jetzt sichern</button>
+    </div>
+    <div class="card"><div class="card-h"><h2>Klasse</h2><span class="n" id="cnt">0</span></div>
+      <div class="card-b">
+        <div class="row" style="margin-bottom:11px">
+          <select id="klasseWahl"></select>
+          <button class="sec sm" id="klasseNeu" style="max-width:40px;padding:8px 0" title="Neue Klasse">+</button>
+          <button class="sec sm" id="klasseWeg" style="max-width:40px;padding:8px 0" title="Klasse entfernen">×</button>
+        </div>
+        <input id="newName" placeholder="Vorname" autocomplete="off">
+        <div class="row" style="margin-top:8px">
+          <input id="newZusatz" placeholder="Kennzeichen (optional)"
+            title="Nachname oder Buchstabe — nur zur Unterscheidung, steht nicht im Text">
+          <select id="newSex" style="max-width:128px"><option value="m">männlich</option>
+            <option value="w">weiblich</option><option value="n">neutral</option></select></div>
+        <button class="acc mt" id="addBtn" style="width:100%">Hinzufügen</button>
+        <div class="row mt"><input id="suche" placeholder="Liste durchsuchen …" autocomplete="off">
+          <button class="sec sm" id="sortBtn" style="max-width:52px" title="Alphabetisch sortieren">A–Z</button></div>
+        <div class="row mt"><button class="sec sm" id="nextOpen" style="width:100%">Nächstes offenes Kind →</button></div>
+        <div class="plist mt" id="plist"></div>
+        <details class="mt"><summary style="font-size:12px;color:var(--txt2);cursor:pointer">Namensliste einfügen</summary>
+          <textarea id="bulk" rows="4" class="mt" placeholder="Mia w&#10;Noah m&#10;Alex n&#10;(auch Komma oder Semikolon)"></textarea>
+          <button class="sec sm mt" id="bulkBtn" style="width:100%">Einlesen</button></details>
+      </div></div>
+    <div class="card"><div class="card-h"><h2>Für den Ausdruck</h2></div><div class="card-b">
+      <input id="dSchule" placeholder="Name der Schule" autocomplete="off">
+      <div class="row mt"><input id="dKlasse" placeholder="Klasse" autocomplete="off">
+        <input id="dJahr" placeholder="Schuljahr" autocomplete="off"></div>
+      <label class="f mt">Fehltage für <span id="fehlWer">—</span></label>
+      <div class="row"><input id="dFehl" type="number" min="0" placeholder="gesamt">
+        <input id="dFehlU" type="number" min="0" placeholder="unentschuldigt"></div>
+      <div class="note" style="font-size:11.5px">Erscheint auf dem Ausdruck und im Word-Export.</div>
+    </div></div>
+    <div class="card"><div class="card-h"><h2>Werkzeuge</h2></div><div class="card-b">
+      <button class="sec sm" id="kopfBtn" style="width:100%">Kopfnoten-Vorschlag</button>
+      <button class="sec sm mt" id="eigenBtn" style="width:100%">Eigene Textbausteine</button>
+      <button class="sec sm mt" id="uebBtn" style="width:100%">Zeugnissprache-Übersetzer</button>
+      <button class="sec sm mt" id="statBtn" style="width:100%">Klassenstatistik</button>
+      <button class="sec sm mt" id="dupBtn" style="width:100%">Auf ähnliche Texte prüfen</button>
+      <button class="sec sm mt" id="saveBtn" style="width:100%">Sicherung speichern</button>
+      <button class="sec sm mt" id="loadBtn" style="width:100%">Sicherung laden</button>
+      <input type="file" id="fileIn" accept="application/json" hidden>
+      <button class="sec sm mt" id="reroll" style="width:100%">Formulierungen neu würfeln</button>
+      <div class="note" style="font-size:11.5px">Alles bleibt in diesem Browser. Es wird nichts hochgeladen.</div>
+      <button class="danger sm mt" id="wipe" style="width:100%">Alle Daten löschen</button>
+    </div></div>
+  </div>
+
+  <div class="col-edit"><div class="card"><div class="card-h"><h2>Einschätzung</h2>
+    <span class="n" id="who">—</span></div><div class="card-b" id="formBox"></div></div></div>
+
+  <div class="col-out">
+    <div class="card"><div class="card-h"><h2>Text</h2><span class="n" id="meta"></span></div>
+      <div class="card-b">
+        <div class="out" id="out" contenteditable="true" spellcheck="true"></div>
+        <div class="stat" id="stats"></div>
+        <div class="tools">
+          <button class="sec sm" id="copyBtn">Kopieren</button>
+          <button class="sec sm" id="rerollOne">Neu formulieren</button>
+          <button class="sec sm" id="resetOne">Änderungen verwerfen</button>
+        </div>
+        <div class="note warn"><b>Vor der Abgabe lesen.</b> Der Text ist ein Entwurf aus Bausteinen.
+          Die pädagogische Einschätzung und die Verantwortung bleiben bei der Lehrkraft.</div>
+      </div></div>
+    <div class="card"><div class="card-h"><h2>Alle Texte</h2><span class="n" id="allCnt"></span></div>
+      <div class="card-b">
+        <div class="tools no-print" style="margin:0 0 11px">
+          <button class="acc sm" id="docxBtn">Word (.docx)</button>
+          <button class="sec sm" id="printBtn">Drucken / PDF</button>
+          <button class="sec sm" id="txtBtn">Textdatei</button>
+        </div>
+        <div class="all" id="all"></div>
+        <div id="druckKopf" style="display:none"></div>
+      </div></div>
+  </div>
+</div>
+</div>
+
+<dialog id="dlg"><div class="dlg-h"><h3 id="dlgT"></h3></div>
+  <div class="dlg-b" id="dlgB"></div>
+  <div class="dlg-f"><button class="sec" onclick="document.getElementById('dlg').close()">Schließen</button></div>
+</dialog>
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+const B={"arbeit": {"label": "Arbeitsverhalten", "frage": "Wie arbeitet die Person?", "stufen": [["A", "sehr konzentriert und ausdauernd", ["{N} arbeitet konzentriert und ausdauernd, auch über längere Phasen hinweg.", "{N} geht {seine} Aufgaben zielstrebig an und bleibt auch bei Schwierigkeiten dran.", "Auffällig ist, mit welcher Ausdauer {N} auch anspruchsvolle Aufgaben bearbeitet.", "{N} arbeitet verlässlich und konzentriert und benötigt dabei kaum Unterstützung.", "Bei der Arbeit zeigt {N} eine bemerkenswerte Konzentration und einen langen Atem.", "{N} lässt sich nur selten ablenken und bringt begonnene Aufgaben zu Ende."], ["{N} arbeitete konzentriert und ausdauernd, auch über längere Phasen hinweg.", "{N} ging {seine} Aufgaben zielstrebig an und blieb auch bei Schwierigkeiten dran.", "Auffällig war, mit welcher Ausdauer {N} auch anspruchsvolle Aufgaben bearbeitete.", "{N} arbeitete verlässlich und konzentriert und benötigte dabei kaum Unterstützung.", "Bei der Arbeit zeigte {N} eine bemerkenswerte Konzentration und einen langen Atem.", "{N} ließ sich nur selten ablenken und brachte begonnene Aufgaben zu Ende."], ["Du arbeitest konzentriert und ausdauernd, auch über längere Phasen hinweg.", "Du gehst deine Aufgaben zielstrebig an und bleibst auch bei Schwierigkeiten dran.", "Du lässt dich nur selten ablenken und bringst begonnene Aufgaben zu Ende.", "Bei der Arbeit zeigst du eine bemerkenswerte Konzentration und einen langen Atem."]], ["B", "überwiegend zuverlässig", ["{N} arbeitet überwiegend konzentriert und erledigt {seine} Aufgaben zuverlässig.", "In der Regel bleibt {N} bei der Sache und kommt gut voran.", "{N} arbeitet meist aufmerksam; längere Arbeitsphasen gelingen {ihm} zunehmend besser.", "Die gestellten Aufgaben bearbeitet {N} sorgfältig und in angemessenem Tempo.", "{N} zeigt ein stabiles Arbeitsverhalten und hält sich an getroffene Absprachen.", "Meist arbeitet {N} ruhig und zügig an {seinen} Aufgaben."], ["{N} arbeitete überwiegend konzentriert und erledigte {seine} Aufgaben zuverlässig.", "In der Regel blieb {N} bei der Sache und kam gut voran.", "{N} arbeitete meist aufmerksam; längere Arbeitsphasen gelangen {ihm} zunehmend besser.", "Die gestellten Aufgaben bearbeitete {N} sorgfältig und in angemessenem Tempo.", "{N} zeigte ein stabiles Arbeitsverhalten und hielt sich an getroffene Absprachen.", "Meist arbeitete {N} ruhig und zügig an {seinen} Aufgaben."], ["Du arbeitest überwiegend konzentriert und erledigst deine Aufgaben zuverlässig.", "In der Regel bleibst du bei der Sache und kommst gut voran.", "Du arbeitest meist aufmerksam; längere Arbeitsphasen gelingen dir zunehmend besser.", "Du zeigst ein stabiles Arbeitsverhalten und hältst dich an getroffene Absprachen."]], ["C", "wechselhaft", ["Die Konzentration von {N} schwankt: In ruhigen Phasen arbeitet {er} gut, bei Unruhe verliert {er} schnell den Faden.", "{N} beginnt Aufgaben motiviert, verliert nach einiger Zeit aber die Ausdauer.", "Das Arbeitsverhalten von {N} ist wechselhaft und hängt stark vom Thema ab.", "Bei Interesse arbeitet {N} sehr konzentriert; fällt der Zugang schwerer, lässt die Aufmerksamkeit nach.", "{N} benötigt gelegentlich eine Erinnerung, um bei der Aufgabe zu bleiben.", "Immer wieder gelingen {N} längere konzentrierte Phasen, noch nicht jedoch durchgängig."], ["Die Konzentration von {N} schwankte: In ruhigen Phasen arbeitete {er} gut, bei Unruhe verlor {er} schnell den Faden.", "{N} begann Aufgaben motiviert, verlor nach einiger Zeit aber die Ausdauer.", "Das Arbeitsverhalten von {N} war wechselhaft und hing stark vom Thema ab.", "Bei Interesse arbeitete {N} sehr konzentriert; fiel der Zugang schwerer, ließ die Aufmerksamkeit nach.", "{N} benötigte gelegentlich eine Erinnerung, um bei der Aufgabe zu bleiben.", "Immer wieder gelangen {N} längere konzentrierte Phasen, noch nicht jedoch durchgängig."], ["Deine Konzentration schwankt: In ruhigen Phasen arbeitest du gut, bei Unruhe verlierst du schnell den Faden.", "Du beginnst Aufgaben motiviert, verlierst nach einiger Zeit aber die Ausdauer.", "Bei Interesse arbeitest du sehr konzentriert; fällt dir der Zugang schwerer, lässt deine Aufmerksamkeit nach.", "Du brauchst gelegentlich eine Erinnerung, um bei der Aufgabe zu bleiben."]], ["D", "braucht viel Unterstützung", ["{N} braucht häufig eine direkte Ansprache, um mit der Arbeit zu beginnen; mit klaren Zwischenschritten gelingt dies zunehmend besser.", "Längere Arbeitsphasen fallen {N} schwer; {er} benötigt dafür noch viel Begleitung.", "Um Aufgaben zu Ende zu bringen, ist {N} auf regelmäßige Unterstützung angewiesen.", "Die Aufmerksamkeit von {N} lässt rasch nach; kleine Zwischenziele helfen {ihm} dabei weiter.", "{N} lässt sich leicht ablenken und findet bislang nur mit Hilfe zur Aufgabe zurück. Hier ist ein wichtiger Ansatzpunkt."], ["{N} brauchte häufig eine direkte Ansprache, um mit der Arbeit zu beginnen; mit klaren Zwischenschritten gelang dies zunehmend besser.", "Längere Arbeitsphasen fielen {N} schwer; {er} benötigte dafür noch viel Begleitung.", "Um Aufgaben zu Ende zu bringen, war {N} auf regelmäßige Unterstützung angewiesen.", "Die Aufmerksamkeit von {N} ließ rasch nach; kleine Zwischenziele halfen {ihm} dabei weiter.", "{N} ließ sich leicht ablenken und fand nur mit Hilfe zur Aufgabe zurück. Hier liegt ein wichtiger Ansatzpunkt."], ["Du brauchst häufig eine direkte Ansprache, um mit der Arbeit zu beginnen; mit klaren Zwischenschritten gelingt dir das immer besser.", "Längere Arbeitsphasen fallen dir noch schwer; dabei brauchst du viel Begleitung.", "Du lässt dich leicht ablenken und findest erst mit Hilfe zur Aufgabe zurück. Daran solltest du weiter arbeiten.", "Deine Aufmerksamkeit lässt rasch nach; kleine Zwischenziele helfen dir dabei weiter."]]]}, "sozial": {"label": "Sozialverhalten", "frage": "Wie ist der Umgang mit anderen?", "stufen": [["A", "sehr rücksichtsvoll, übernimmt Verantwortung", ["{N} ist in der Klassengemeinschaft anerkannt und geht freundlich und respektvoll mit allen um.", "{N} begegnet {Mitschuelern} aufmerksam und hilfsbereit.", "Im Umgang mit anderen ist {N} rücksichtsvoll und zuverlässig; {er} übernimmt gern Verantwortung.", "{N} wirkt ausgleichend und trägt spürbar zu einer guten Atmosphäre bei.", "Konflikte löst {N} besonnen und sucht dabei von sich aus das Gespräch.", "Auf {N} ist Verlass: {er} hilft anderen selbstverständlich und ohne Aufforderung."], ["{N} war in der Klassengemeinschaft anerkannt und ging freundlich und respektvoll mit allen um.", "{N} begegnete {Mitschuelern} aufmerksam und hilfsbereit.", "Im Umgang mit anderen war {N} rücksichtsvoll und zuverlässig; {er} übernahm gern Verantwortung.", "{N} wirkte ausgleichend und trug spürbar zu einer guten Atmosphäre bei.", "Konflikte löste {N} besonnen und suchte dabei von sich aus das Gespräch.", "Auf {N} war Verlass: {er} half anderen selbstverständlich und ohne Aufforderung."], ["Du bist in der Klassengemeinschaft anerkannt und gehst freundlich und respektvoll mit allen um.", "Du begegnest den anderen Kindern aufmerksam und hilfsbereit.", "Du wirkst ausgleichend und trägst spürbar zu einer guten Atmosphäre bei.", "Konflikte löst du besonnen und suchst dabei von dir aus das Gespräch."]], ["B", "freundlich und kooperativ", ["{N} verhält sich freundlich und hält sich an die vereinbarten Regeln.", "Im Umgang mit anderen ist {N} meist rücksichtsvoll und kooperativ.", "{N} ist gut in die Gemeinschaft eingebunden und arbeitet bereitwillig mit anderen zusammen.", "In Gruppenarbeiten bringt sich {N} ein und nimmt Rücksicht auf die anderen.", "{N} begegnet {Mitschuelern} in der Regel wohlwollend.", "Das Sozialverhalten von {N} gibt keinen Anlass zur Beanstandung."], ["{N} verhielt sich freundlich und hielt sich an die vereinbarten Regeln.", "Im Umgang mit anderen war {N} meist rücksichtsvoll und kooperativ.", "{N} war gut in die Gemeinschaft eingebunden und arbeitete bereitwillig mit anderen zusammen.", "In Gruppenarbeiten brachte sich {N} ein und nahm Rücksicht auf die anderen.", "{N} begegnete {Mitschuelern} in der Regel wohlwollend.", "Das Sozialverhalten von {N} gab keinen Anlass zur Beanstandung."], ["Du verhältst dich freundlich und hältst dich an die vereinbarten Regeln.", "Du bist gut in die Gemeinschaft eingebunden und arbeitest bereitwillig mit anderen zusammen.", "Du begegnest den anderen Kindern in der Regel wohlwollend.", "In Gruppenarbeiten bringst du dich ein und nimmst Rücksicht auf die anderen."]], ["C", "überwiegend gut, mit Konflikten", ["Der Umgang mit anderen gelingt {N} meist gut; in Konflikten reagiert {er} jedoch noch schnell gereizt.", "{N} sucht den Kontakt zu {Mitschuelern}, überschreitet dabei aber gelegentlich Grenzen.", "In der Gruppe bringt sich {N} ein, tut sich jedoch schwer damit, eigene Interessen zurückzustellen.", "Vereinbarte Regeln hält {N} ein, wenn {er} daran erinnert wird.", "{N} reagiert auf Kritik noch empfindlich, zeigt aber die Bereitschaft, daran zu arbeiten.", "Im Miteinander ist {N} freundlich, in hitzigen Momenten jedoch noch impulsiv."], ["Der Umgang mit anderen gelang {N} meist gut; in Konflikten reagierte {er} jedoch noch schnell gereizt.", "{N} suchte den Kontakt zu {Mitschuelern}, überschritt dabei aber gelegentlich Grenzen.", "In der Gruppe brachte sich {N} ein, tat sich jedoch schwer damit, eigene Interessen zurückzustellen.", "Vereinbarte Regeln hielt {N} ein, wenn {er} daran erinnert wurde.", "{N} reagierte auf Kritik noch empfindlich, zeigte aber die Bereitschaft, daran zu arbeiten.", "Im Miteinander war {N} freundlich, in hitzigen Momenten jedoch noch impulsiv."], ["Du suchst den Kontakt zu den anderen Kindern, überschreitest dabei aber gelegentlich Grenzen.", "Du reagierst auf Kritik noch empfindlich, zeigst aber die Bereitschaft, daran zu arbeiten.", "Vereinbarte Regeln hältst du ein, wenn du daran erinnert wirst.", "Im Miteinander bist du freundlich, in hitzigen Momenten jedoch noch impulsiv."]], ["D", "braucht Begleitung", ["Im Umgang mit anderen gerät {N} häufiger in Konflikte; hier ist weiterhin Begleitung nötig.", "{N} fällt es schwer, sich an gemeinsame Regeln zu halten. Klare Absprachen helfen {ihm} dabei.", "Die Zusammenarbeit mit anderen gelingt {N} noch nicht verlässlich; in kleinen Gruppen klappt sie bereits besser.", "{N} benötigt Unterstützung dabei, Konflikte ohne Streit zu lösen.", "Ein respektvoller Umgangston gelingt {N} noch nicht in allen Situationen. Daran sollte weiter gearbeitet werden."], ["Im Umgang mit anderen geriet {N} häufiger in Konflikte; hier ist weiterhin Begleitung nötig.", "{N} fiel es schwer, sich an gemeinsame Regeln zu halten. Klare Absprachen halfen {ihm} dabei.", "Die Zusammenarbeit mit anderen gelang {N} noch nicht verlässlich; in kleinen Gruppen klappte sie bereits besser.", "{N} benötigte Unterstützung dabei, Konflikte ohne Streit zu lösen.", "Ein respektvoller Umgangston gelang {N} noch nicht in allen Situationen. Daran sollte weiter gearbeitet werden."], ["Du brauchst Unterstützung dabei, Konflikte ohne Streit zu lösen.", "Dir fällt es schwer, dich an gemeinsame Regeln zu halten. Klare Absprachen helfen dir dabei.", "Die Zusammenarbeit mit anderen gelingt dir noch nicht verlässlich; in kleinen Gruppen klappt sie schon besser.", "Ein respektvoller Umgangston gelingt dir noch nicht in allen Situationen. Daran solltest du weiter arbeiten."]]]}, "mitarbeit": {"label": "Mitarbeit im Unterricht", "frage": "Wie beteiligt sich die Person?", "stufen": [["A", "sehr aktiv und weiterführend", ["{N} beteiligt sich durchgehend aktiv am Unterricht und bringt eigene Gedanken ein.", "Mit {seinen} Beiträgen bereichert {N} den Unterricht regelmäßig.", "{N} meldet sich häufig und äußert sich dabei sachlich und weiterführend.", "Besonders hervorzuheben sind {seine} durchdachten Beiträge im Unterrichtsgespräch.", "{N} verfolgt den Unterricht aufmerksam und beteiligt sich aus eigenem Antrieb.", "{N} denkt im Unterricht mit und bringt das Gespräch mit {seinen} Fragen voran."], ["{N} beteiligte sich durchgehend aktiv am Unterricht und brachte eigene Gedanken ein.", "Mit {seinen} Beiträgen bereicherte {N} den Unterricht regelmäßig.", "{N} meldete sich häufig und äußerte sich dabei sachlich und weiterführend.", "Besonders hervorzuheben waren {seine} durchdachten Beiträge im Unterrichtsgespräch.", "{N} verfolgte den Unterricht aufmerksam und beteiligte sich aus eigenem Antrieb.", "{N} dachte im Unterricht mit und brachte das Gespräch mit {seinen} Fragen voran."], ["Du beteiligst dich durchgehend aktiv am Unterricht und bringst eigene Gedanken ein.", "Du meldest dich häufig und äußerst dich dabei sachlich und weiterführend.", "Du verfolgst den Unterricht aufmerksam und beteiligst dich aus eigenem Antrieb.", "Du denkst im Unterricht mit und bringst das Gespräch mit deinen Fragen voran."]], ["B", "regelmäßig und zuverlässig", ["{N} beteiligt sich regelmäßig am Unterricht.", "{N} bringt sich mit guten Beiträgen in das Unterrichtsgespräch ein.", "Im Unterricht arbeitet {N} zuverlässig mit.", "{N} meldet sich von sich aus und antwortet meist sicher.", "Die Mitarbeit von {N} ist verlässlich und sachbezogen.", "{N} folgt dem Unterricht aufmerksam und beteiligt sich angemessen."], ["{N} beteiligte sich regelmäßig am Unterricht.", "{N} brachte sich mit guten Beiträgen in das Unterrichtsgespräch ein.", "Im Unterricht arbeitete {N} zuverlässig mit.", "{N} meldete sich von sich aus und antwortete meist sicher.", "Die Mitarbeit von {N} war verlässlich und sachbezogen.", "{N} folgte dem Unterricht aufmerksam und beteiligte sich angemessen."], ["Du beteiligst dich regelmäßig am Unterricht.", "Du bringst dich mit guten Beiträgen in das Unterrichtsgespräch ein.", "Du meldest dich von dir aus und antwortest meist sicher.", "Du folgst dem Unterricht aufmerksam und beteiligst dich angemessen."]], ["C", "zurückhaltend", ["{N} beteiligt sich eher zurückhaltend; auf Nachfrage kommen jedoch gute Beiträge.", "Die Mitarbeit von {N} schwankt je nach Thema und Tagesform.", "{N} folgt dem Unterricht aufmerksam, meldet sich jedoch selten von sich aus.", "Mit Ermutigung beteiligt sich {N} gern; von sich aus hält {er} sich noch zurück.", "{N} verfügt über mehr Wissen, als {er} im Unterricht zeigt."], ["{N} beteiligte sich eher zurückhaltend; auf Nachfrage kamen jedoch gute Beiträge.", "Die Mitarbeit von {N} schwankte je nach Thema und Tagesform.", "{N} folgte dem Unterricht aufmerksam, meldete sich jedoch selten von sich aus.", "Mit Ermutigung beteiligte sich {N} gern; von sich aus hielt {er} sich noch zurück.", "{N} verfügte über mehr Wissen, als {er} im Unterricht zeigte."], ["Du beteiligst dich eher zurückhaltend; auf Nachfrage kommen jedoch gute Beiträge.", "Du folgst dem Unterricht aufmerksam, meldest dich jedoch selten von dir aus.", "Du weißt mehr, als du im Unterricht zeigst.", "Mit Ermutigung beteiligst du dich gern; von dir aus hältst du dich noch zurück."]], ["D", "selten", ["{N} beteiligt sich bislang nur selten am Unterrichtsgespräch; ermutigende Rückmeldung hilft {ihm} dabei.", "Eine aktivere Mitarbeit würde {N} helfen, {seine} Möglichkeiten besser zu zeigen.", "{N} meldet sich kaum; hier liegt ein wichtiger Ansatzpunkt für das kommende Halbjahr.", "Im Unterricht bleibt {N} meist still. Kleine, vorbereitete Redeanlässe können {ihm} den Einstieg erleichtern."], ["{N} beteiligte sich bislang nur selten am Unterrichtsgespräch; ermutigende Rückmeldung half {ihm} dabei.", "Eine aktivere Mitarbeit würde {N} helfen, {seine} Möglichkeiten besser zu zeigen.", "{N} meldete sich kaum; hier liegt ein wichtiger Ansatzpunkt für das kommende Halbjahr.", "Im Unterricht blieb {N} meist still. Kleine, vorbereitete Redeanlässe können {ihm} den Einstieg erleichtern."], ["Du beteiligst dich bislang nur selten am Unterrichtsgespräch; ermutigende Rückmeldung hilft dir dabei.", "Du meldest dich kaum. Hier liegt ein wichtiger Ansatzpunkt für das kommende Halbjahr.", "Eine aktivere Mitarbeit würde dir helfen, deine Möglichkeiten besser zu zeigen.", "Im Unterricht bleibst du meist still. Kleine, vorbereitete Redeanlässe können dir den Einstieg erleichtern."]]]}, "leistung": {"label": "Leistungsentwicklung", "frage": "Wie haben sich die Leistungen entwickelt?", "stufen": [["A", "deutlich verbessert", ["Im Verlauf des Schuljahres hat sich {N} deutlich gesteigert.", "{N} hat in diesem Halbjahr spürbare Fortschritte gemacht.", "Die Leistungen von {N} haben sich erfreulich entwickelt.", "Besonders erfreulich ist die positive Entwicklung, die {N} genommen hat.", "{N} konnte {seine} Ergebnisse gegenüber dem vorigen Halbjahr merklich verbessern."], ["Im Verlauf des Schuljahres steigerte sich {N} deutlich.", "{N} machte in diesem Halbjahr spürbare Fortschritte.", "Die Leistungen von {N} entwickelten sich erfreulich.", "Besonders erfreulich war die positive Entwicklung, die {N} nahm.", "{N} verbesserte {seine} Ergebnisse gegenüber dem vorigen Halbjahr merklich."], ["Im Verlauf des Schuljahres hast du dich deutlich gesteigert.", "Du hast in diesem Halbjahr spürbare Fortschritte gemacht.", "Du konntest deine Ergebnisse gegenüber dem vorigen Halbjahr merklich verbessern.", "Besonders erfreulich ist die Entwicklung, die du genommen hast."]], ["B", "gleichbleibend gut", ["{N} zeigt durchgehend gute und stabile Leistungen.", "Das Leistungsniveau von {N} ist gleichbleibend gut.", "{N} hält {seine} guten Ergebnisse verlässlich.", "Die Leistungen von {N} bewegen sich konstant auf gutem Niveau.", "{N} erfüllt die Anforderungen sicher und zuverlässig."], ["{N} zeigte durchgehend gute und stabile Leistungen.", "Das Leistungsniveau von {N} war gleichbleibend gut.", "{N} hielt {seine} guten Ergebnisse verlässlich.", "Die Leistungen von {N} bewegten sich konstant auf gutem Niveau.", "{N} erfüllte die Anforderungen sicher und zuverlässig."], ["Du zeigst durchgehend gute und stabile Leistungen.", "Du hältst deine guten Ergebnisse verlässlich.", "Du erfüllst die Anforderungen sicher und zuverlässig.", "Deine Leistungen bewegen sich konstant auf gutem Niveau."]], ["C", "schwankend", ["Die Leistungen von {N} schwanken zwischen den Fächern deutlich.", "{N} erzielt je nach Thema sehr unterschiedliche Ergebnisse.", "Das Leistungsbild von {N} ist uneinheitlich.", "Neben guten Ergebnissen stehen bei {N} auch schwächere Leistungen.", "{N} zeigt {sein} Können nicht durchgängig."], ["Die Leistungen von {N} schwankten zwischen den Fächern deutlich.", "{N} erzielte je nach Thema sehr unterschiedliche Ergebnisse.", "Das Leistungsbild von {N} war uneinheitlich.", "Neben guten Ergebnissen standen bei {N} auch schwächere Leistungen.", "{N} zeigte {sein} Können nicht durchgängig."], ["Deine Leistungen schwanken zwischen den Fächern deutlich.", "Du erzielst je nach Thema sehr unterschiedliche Ergebnisse.", "Du zeigst dein Können noch nicht durchgängig.", "Neben guten Ergebnissen stehen bei dir auch schwächere Leistungen."]], ["D", "Unterstützung nötig", ["Die Leistungen von {N} sind gegenüber dem letzten Halbjahr zurückgegangen; mit gezielter Übung ist eine Verbesserung gut möglich.", "{N} konnte die Anforderungen in diesem Halbjahr nur teilweise erfüllen und benötigt weiterhin Unterstützung.", "Um die Lernziele zu erreichen, benötigt {N} weiterhin gezielte Unterstützung.", "In mehreren Bereichen bleibt {N} hinter den Anforderungen zurück. Eine enge Begleitung ist hier wichtig."], ["Die Leistungen von {N} gingen gegenüber dem letzten Halbjahr zurück; mit gezielter Übung ist eine Verbesserung gut möglich.", "{N} konnte die Anforderungen in diesem Halbjahr nur teilweise erfüllen und benötigt weiterhin Unterstützung.", "Um die Lernziele zu erreichen, benötigte {N} weiterhin gezielte Unterstützung.", "In mehreren Bereichen blieb {N} hinter den Anforderungen zurück. Eine enge Begleitung ist hier wichtig."], ["Du konntest die Anforderungen in diesem Halbjahr nur teilweise erfüllen und brauchst weiterhin Unterstützung.", "Deine Leistungen sind gegenüber dem letzten Halbjahr zurückgegangen; mit gezielter Übung kannst du dich gut verbessern.", "Um die Lernziele zu erreichen, brauchst du weiterhin gezielte Unterstützung.", "In mehreren Bereichen bleibst du hinter den Anforderungen zurück. Eine enge Begleitung ist hier wichtig."]]]}, "organisation": {"label": "Selbstständigkeit & Material", "frage": "Wie organisiert sich die Person?", "stufen": [["A", "vorbildlich", ["{N} arbeitet selbstständig, hat {sein} Material stets vollständig dabei und erledigt Hausaufgaben zuverlässig.", "Arbeitsmaterial und Hausaufgaben verwaltet {N} vorbildlich.", "{N} organisiert {seine} Unterlagen sorgfältig und arbeitet eigenverantwortlich.", "Auf die Vollständigkeit {seiner} Materialien und Hausaufgaben ist bei {N} Verlass."], ["{N} arbeitete selbstständig, hatte {sein} Material stets vollständig dabei und erledigte Hausaufgaben zuverlässig.", "Arbeitsmaterial und Hausaufgaben verwaltete {N} vorbildlich.", "{N} organisierte {seine} Unterlagen sorgfältig und arbeitete eigenverantwortlich.", "Auf die Vollständigkeit {seiner} Materialien und Hausaufgaben war bei {N} Verlass."], ["Du arbeitest selbstständig, hast dein Material stets vollständig dabei und erledigst Hausaufgaben zuverlässig.", "Dein Arbeitsmaterial und deine Hausaufgaben verwaltest du vorbildlich.", "Du organisierst deine Unterlagen sorgfältig und arbeitest eigenverantwortlich.", "Auf die Vollständigkeit deiner Materialien und Hausaufgaben ist Verlass."]], ["B", "zuverlässig", ["{N} hat {sein} Material in der Regel dabei und erledigt die Hausaufgaben zuverlässig.", "Die Organisation {seiner} Unterlagen gelingt {N} gut.", "{N} arbeitet weitgehend selbstständig und hält Abgabetermine ein.", "Hausaufgaben erledigt {N} regelmäßig und ordentlich."], ["{N} hatte {sein} Material in der Regel dabei und erledigte die Hausaufgaben zuverlässig.", "Die Organisation {seiner} Unterlagen gelang {N} gut.", "{N} arbeitete weitgehend selbstständig und hielt Abgabetermine ein.", "Hausaufgaben erledigte {N} regelmäßig und ordentlich."], ["Du hast dein Material in der Regel dabei und erledigst die Hausaufgaben zuverlässig.", "Die Organisation deiner Unterlagen gelingt dir gut.", "Du arbeitest weitgehend selbstständig und hältst Abgabetermine ein.", "Hausaufgaben erledigst du regelmäßig und ordentlich."]], ["C", "gelegentlich unvollständig", ["Material und Hausaufgaben vergisst {N} gelegentlich.", "Bei der Organisation {seiner} Unterlagen braucht {N} noch gelegentliche Erinnerung.", "{N} arbeitet selbstständiger, wenn der Arbeitsauftrag klar gegliedert ist.", "Die Hausaufgaben erledigt {N} nicht immer vollständig."], ["Material und Hausaufgaben vergaß {N} gelegentlich.", "Bei der Organisation {seiner} Unterlagen brauchte {N} noch gelegentliche Erinnerung.", "{N} arbeitete selbstständiger, wenn der Arbeitsauftrag klar gegliedert war.", "Die Hausaufgaben erledigte {N} nicht immer vollständig."], ["Material und Hausaufgaben vergisst du gelegentlich.", "Bei der Organisation deiner Unterlagen brauchst du noch gelegentliche Erinnerung.", "Du arbeitest selbstständiger, wenn der Arbeitsauftrag klar gegliedert ist.", "Deine Hausaufgaben erledigst du nicht immer vollständig."]], ["D", "unzuverlässig", ["{N} fehlt häufig Arbeitsmaterial und Hausaufgaben werden unregelmäßig erledigt; eine feste Routine würde {ihm} helfen.", "Eine verlässlichere Organisation {seiner} Unterlagen bleibt ein wichtiges Ziel.", "{N} benötigt beim selbstständigen Arbeiten noch enge Begleitung.", "Ohne Erinnerung gelingt {N} die Vorbereitung auf den Unterricht selten. Eine Checkliste kann hier unterstützen."], ["{N} fehlte häufig Arbeitsmaterial und Hausaufgaben wurden unregelmäßig erledigt; eine feste Routine würde {ihm} helfen.", "Eine verlässlichere Organisation {seiner} Unterlagen bleibt ein wichtiges Ziel.", "{N} benötigte beim selbstständigen Arbeiten noch enge Begleitung.", "Ohne Erinnerung gelang {N} die Vorbereitung auf den Unterricht selten. Eine Checkliste kann hier unterstützen."], ["Dir fehlt häufig Arbeitsmaterial und Hausaufgaben erledigst du unregelmäßig; eine feste Routine würde dir helfen.", "Eine verlässlichere Organisation deiner Unterlagen bleibt ein wichtiges Ziel.", "Beim selbstständigen Arbeiten brauchst du noch enge Begleitung.", "Ohne Erinnerung gelingt dir die Vorbereitung auf den Unterricht selten. Eine Checkliste kann dir helfen."]]]}},STAERKEN=[["kreativ", "in kreativen Aufgaben"], ["sprachlich", "im sprachlichen Ausdruck"], ["mathematisch", "im logischen und mathematischen Denken"], ["praktisch", "bei praktisch-technischen Aufgaben"], ["kuenstlerisch", "im gestalterischen Arbeiten"], ["sportlich", "im sportlichen Bereich"], ["team", "in der Zusammenarbeit mit anderen"], ["hilfsbereit", "wenn es darum geht, anderen zu helfen"], ["zuverlaessig", "bei der Übernahme von Aufgaben und Ämtern"], ["ausdauernd", "bei langen und anspruchsvollen Aufgaben"], ["digital", "im Umgang mit digitalen Werkzeugen"], ["praesentieren", "beim Vortragen und Präsentieren"], ["naturwiss", "beim naturwissenschaftlichen Beobachten und Experimentieren"], ["musik", "im musikalischen Bereich"]],FOERDER=[["konzentration", "die Konzentration über längere Zeit", "der Konzentration über längere Zeit"], ["lesen", "das sinnentnehmende Lesen", "dem sinnentnehmenden Lesen"], ["rechtschreibung", "die Rechtschreibung", "der Rechtschreibung"], ["rechnen", "das sichere Rechnen", "dem sicheren Rechnen"], ["hausaufgaben", "die regelmäßige Erledigung der Hausaufgaben", "der regelmäßigen Erledigung der Hausaufgaben"], ["mitarbeit", "eine aktivere Beteiligung am Unterricht", "einer aktiveren Beteiligung am Unterricht"], ["ordnung", "das ordentliche Führen der Unterlagen", "dem ordentlichen Führen der Unterlagen"], ["kritik", "der Umgang mit Rückmeldungen", "dem Umgang mit Rückmeldungen"], ["tempo", "ein zügigeres Arbeitstempo", "einem zügigeren Arbeitstempo"], ["selbststaendig", "selbstständigeres Arbeiten", "selbstständigerem Arbeiten"], ["sorgfalt", "eine sorgfältigere Arbeitsweise", "einer sorgfältigeren Arbeitsweise"], ["regeln", "das Einhalten gemeinsamer Regeln", "dem Einhalten gemeinsamer Regeln"]],SCHLUSS={"positiv": ["Wir freuen uns auf die weitere Zusammenarbeit mit {N}.", "{N} kann mit Zuversicht auf das kommende Halbjahr blicken.", "Diese erfreuliche Entwicklung sollte {N} beibehalten.", "Weiter so, {N}!"], "ermutigend": ["Mit etwas mehr Beständigkeit wird {N} {seine} Ziele gut erreichen.", "{N} bringt alles mit, um im kommenden Halbjahr weitere Fortschritte zu machen.", "Wir trauen {N} zu, die genannten Ziele Schritt für Schritt zu erreichen.", "Bei weiterhin guter Mitarbeit wird sich {N} deutlich verbessern."], "klar": ["Für das kommende Halbjahr ist eine deutliche Steigerung erforderlich.", "Eine enge Zusammenarbeit zwischen Schule und Elternhaus ist weiterhin wichtig.", "Ohne zusätzliche Unterstützung wird {N} die Anforderungen nur schwer erfüllen."], "keiner": []},SCHLUSS_P={"positiv": ["Wir freuen uns auf die weitere Zusammenarbeit mit {N}.", "{N} kann mit Zuversicht auf das kommende Halbjahr blicken.", "Diese erfreuliche Entwicklung sollte {N} beibehalten.", "Weiter so, {N}!"], "ermutigend": ["Mit etwas mehr Beständigkeit wird {N} {seine} Ziele gut erreichen.", "{N} bringt alles mit, um im kommenden Halbjahr weitere Fortschritte zu machen.", "Wir trauen {N} zu, die genannten Ziele Schritt für Schritt zu erreichen.", "Bei weiterhin guter Mitarbeit wird sich {N} deutlich verbessern."], "klar": ["Für das kommende Halbjahr ist eine deutliche Steigerung erforderlich.", "Eine enge Zusammenarbeit zwischen Schule und Elternhaus ist weiterhin wichtig.", "Ohne zusätzliche Unterstützung wird {N} die Anforderungen nur schwer erfüllen."], "keiner": []},SCHLUSS_D={"positiv": ["Wir freuen uns auf die weitere Zusammenarbeit mit dir.", "Du kannst mit Zuversicht auf das kommende Halbjahr blicken.", "Diese erfreuliche Entwicklung solltest du beibehalten.", "Weiter so!"], "ermutigend": ["Mit etwas mehr Beständigkeit wirst du deine Ziele gut erreichen.", "Du bringst alles mit, um im kommenden Halbjahr weitere Fortschritte zu machen.", "Wir trauen dir zu, die genannten Ziele Schritt für Schritt zu erreichen.", "Bei weiterhin guter Mitarbeit wirst du dich deutlich verbessern."], "klar": ["Für das kommende Halbjahr ist eine deutliche Steigerung erforderlich.", "Eine enge Zusammenarbeit zwischen Schule und Elternhaus bleibt wichtig.", "Ohne zusätzliche Unterstützung wirst du die Anforderungen nur schwer erfüllen."], "keiner": []},
+      FAECHER={"deutsch": {"label": "Deutsch", "stufen": {"A": ["{N} liest flüssig und sinnentnehmend und gibt Inhalte sicher wieder.", "Eigene Texte verfasst {N} anschaulich, gegliedert und weitgehend fehlerfrei.", "{N} verfügt über einen reichen Wortschatz und drückt sich treffend aus."], "B": ["{N} liest flüssig und erfasst den Inhalt überwiegend sicher.", "Eigene Texte gelingen {N} verständlich und meist richtig geschrieben.", "{N} beteiligt sich gut an Gesprächen und hört anderen aufmerksam zu."], "C": ["Beim Lesen längerer Texte braucht {N} noch Zeit und gelegentlich Hilfe.", "In eigenen Texten gelingen {N} die Inhalte gut, die Rechtschreibung bleibt unsicher.", "{N} erfasst einfache Texte sicher, bei anspruchsvolleren ist Unterstützung nötig."], "D": ["Das sinnentnehmende Lesen fällt {N} noch schwer; regelmäßiges Üben ist wichtig.", "Beim Schreiben eigener Texte benötigt {N} durchgehend Unterstützung.", "Die Rechtschreibung bereitet {N} deutliche Schwierigkeiten."]}}, "mathe": {"label": "Mathematik", "stufen": {"A": ["{N} rechnet sicher und zügig und findet eigene Lösungswege.", "Sachaufgaben erfasst {N} schnell und löst sie nachvollziehbar.", "{N} erkennt mathematische Zusammenhänge und erklärt sie verständlich."], "B": ["{N} rechnet im geforderten Zahlenraum sicher.", "Sachaufgaben löst {N} überwiegend richtig.", "{N} wendet die gelernten Verfahren zuverlässig an."], "C": ["{N} rechnet richtig, benötigt dafür aber noch viel Zeit oder Hilfsmittel.", "Bei Sachaufgaben fällt {N} der Übergang vom Text zur Rechnung noch schwer.", "Die Rechenverfahren beherrscht {N} noch nicht durchgängig sicher."], "D": ["Grundlegende Rechenverfahren muss {N} weiter festigen.", "{N} benötigt beim Rechnen regelmäßig Unterstützung und Anschauungsmaterial.", "Sachaufgaben kann {N} bisher nur mit Hilfe lösen."]}}, "sachunterricht": {"label": "Sachunterricht", "stufen": {"A": ["{N} bringt umfangreiches Vorwissen ein und stellt weiterführende Fragen.", "Versuche plant und beschreibt {N} selbstständig und genau."], "B": ["{N} zeigt Interesse an den Themen und beteiligt sich gut.", "Beobachtungen beschreibt {N} nachvollziehbar."], "C": ["{N} interessiert sich für einzelne Themen besonders, bei anderen lässt die Aufmerksamkeit nach.", "Versuchsergebnisse festzuhalten gelingt {N} mit Unterstützung."], "D": ["{N} braucht beim selbstständigen Erarbeiten von Themen noch viel Anleitung."]}}, "englisch": {"label": "Englisch", "stufen": {"A": ["{N} versteht englische Äußerungen sicher und spricht frei und verständlich.", "{N} wendet den gelernten Wortschatz sicher an."], "B": ["{N} versteht einfache englische Äußerungen und beteiligt sich am Sprechen.", "Den gelernten Wortschatz kann {N} überwiegend anwenden."], "C": ["Beim freien Sprechen ist {N} noch zurückhaltend.", "Den Wortschatz muss {N} regelmäßiger üben."], "D": ["{N} benötigt beim Verstehen und Sprechen durchgehend Unterstützung."]}}, "sport": {"label": "Sport", "stufen": {"A": ["{N} zeigt großes Bewegungsgeschick und hohen Einsatz.", "{N} hält sich vorbildlich an Regeln und verhält sich fair."], "B": ["{N} nimmt motiviert am Sportunterricht teil.", "{N} verhält sich im Spiel fair und rücksichtsvoll."], "C": ["{N} nimmt teil, bei neuen Bewegungsaufgaben ist {er} noch unsicher."], "D": ["{N} benötigt Ermutigung, um sich auf Bewegungsaufgaben einzulassen."]}}, "kunst_musik": {"label": "Kunst / Musik", "stufen": {"A": ["{N} arbeitet ideenreich und setzt eigene Vorstellungen sorgfältig um.", "{N} bringt sich mit Freude und eigenen Ideen ein."], "B": ["{N} arbeitet gestalterisch sorgfältig und mit Freude."], "C": ["{N} braucht beim gestalterischen Arbeiten noch Anregungen."], "D": ["{N} benötigt klare Vorgaben, um gestalterische Aufgaben zu beginnen."]}}},UEB=[["stört den Unterricht", ["{N} sollte im Unterricht noch stärker auf eine ruhige Arbeitsatmosphäre achten.", "Es fällt {N} noch schwer, sich an Gesprächsregeln zu halten.", "{N} meldet sich häufig spontan; das Einhalten der Gesprächsregeln bleibt ein Ziel."]], ["ist faul / strengt sich nicht an", ["{N} nutzt {seine} Möglichkeiten noch nicht aus.", "Mit mehr Anstrengungsbereitschaft könnte {N} deutlich bessere Ergebnisse erzielen.", "{N} verfügt über mehr Können, als {er} im Unterricht zeigt."]], ["kommt ständig zu spät", ["{N} sollte auf einen pünktlichen Unterrichtsbeginn achten.", "Pünktlichkeit bleibt für {N} ein wichtiges Ziel."]], ["macht keine Hausaufgaben", ["Die Hausaufgaben erledigt {N} noch unregelmäßig.", "Eine verlässliche Erledigung der Hausaufgaben bleibt ein wichtiges Ziel."]], ["ist frech / respektlos", ["Im Umgang mit Erwachsenen sollte {N} auf einen respektvollen Ton achten.", "{N} sollte Kritik offener annehmen."]], ["schlägt / ist aggressiv", ["In Konfliktsituationen reagiert {N} noch impulsiv.", "{N} benötigt Unterstützung dabei, Konflikte ohne Körpereinsatz zu lösen."]], ["lügt", ["{N} sollte zu eigenen Fehlern offener stehen."]], ["ist unordentlich", ["Die Ordnung {seiner} Unterlagen sollte {N} verbessern.", "Eine sorgfältigere Heftführung bleibt ein Ziel."]], ["ist langsam", ["{N} arbeitet gründlich, benötigt dafür aber viel Zeit.", "Ein zügigeres Arbeitstempo würde {N} helfen."]], ["kann es einfach nicht", ["Die Anforderungen in diesem Bereich erfüllt {N} noch nicht.", "Hier benötigt {N} weiterhin gezielte Förderung."]], ["redet ständig dazwischen", ["{N} sollte anderen häufiger zuhören und sie ausreden lassen."]], ["träumt / ist abwesend", ["{N} verliert gelegentlich den Anschluss an das Unterrichtsgeschehen.", "Eine durchgehende Konzentration fällt {N} noch schwer."]], ["hat keine Freunde", ["{N} arbeitet gern für sich; der Kontakt zu anderen Kindern darf weiter wachsen."]], ["ist arrogant", ["{N} vertritt die eigene Meinung sehr selbstbewusst; die Sicht anderer darf {er} stärker einbeziehen."]], ["gibt schnell auf", ["Bei Schwierigkeiten benötigt {N} noch Ermutigung zum Weitermachen."]], ["schwätzt mit Nachbarn", ["{N} sollte in Arbeitsphasen die Gespräche mit Mitschülern zurückstellen."]], ["vergisst immer das Material", ["{N} hat {sein} Arbeitsmaterial noch nicht regelmäßig dabei."]], ["schummelt / schreibt ab", ["{N} sollte Aufgaben eigenständig bearbeiten."]], ["ist desinteressiert", ["{N} zeigt bislang wenig Eigeninteresse am Unterrichtsstoff.", "Für manche Themen lässt sich {N} noch schwer begeistern."]], ["weint schnell / ist empfindlich", ["{N} reagiert auf Rückmeldungen noch sehr empfindlich."]]],VERB={"neutral": ["Darüber hinaus ", "Außerdem ", "Auch ", "Daneben ", "Ebenso "], "positiv": ["Besonders erfreulich ist, dass ", "Hervorzuheben ist, dass ", "Erfreulicherweise "], "gegensatz": ["Allerdings ", "Demgegenüber ", "Gleichzeitig ", "Zugleich "]},LAENDER={"bw": ["Baden-Württemberg", "Text", "Text zu 3 Bereichen: Arbeitshaltung, Selbstständigkeit, Zusammenarbeit"], "by": ["Bayern", "Noten + Text", "Notensatz zu 2 Bereichen, Text zu 7 Bereichen · Personalform und Zeitform frei wählbar"], "be": ["Berlin", "Schulkonferenz entscheidet", "5 Bereiche vorgesehen, Ausgestaltung durch die Schulkonferenz"], "bb": ["Brandenburg", "Kopfnoten", "4 Notenstufen, 7 Kategorien"], "hb": ["Bremen", "Text", "Text zu 3 Bereichen: Methoden-, Sozial-, Personalkompetenz"], "hh": ["Hamburg", "Text", "Text zu 6 Bereichen; Kl. 3/4 zusätzlich fachbezogene Hinweise zur Lernentwicklung"], "he": ["Hessen", "Schulkonferenz entscheidet", "Noten oder Text, Kategorien per Beschluss"], "mv": ["Mecklenburg-Vorpommern", "Noten + Text", "4 Notenstufen, 2 Kategorien"], "ni": ["Niedersachsen", "Gesamtkonferenz entscheidet", "2 Bereiche, 5 festgelegte Abstufungen mit kurzer Begründung"], "nw": ["Nordrhein-Westfalen", "Kopfnoten", "4 Notenstufen, 3 Kategorien; ergänzende Beschreibung möglich"], "rp": ["Rheinland-Pfalz", "Text", "Text zu 2 Bereichen"], "sl": ["Saarland", "Kopfnoten", "5 Notenstufen, 2 Kategorien; Kl. 4 zusätzlich Lernentwicklungsbericht"], "sn": ["Sachsen", "Kopfnoten", "5 Notenstufen, 4 Kategorien; ergänzende Beschreibung zulässig"], "st": ["Sachsen-Anhalt", "Kopfnoten", "5 Notenstufen, 2 Kategorien"], "sh": ["Schleswig-Holstein", "keine Bewertung", "Arbeits- und Sozialverhalten wird nicht im Zeugnis bewertet"], "th": ["Thüringen", "Noten + Text", "Einschätzung zu Verhalten und Mitarbeit"]},NI={"A": "verdient besondere Anerkennung", "B": "entspricht den Erwartungen in vollem Umfang", "C": "entspricht den Erwartungen", "D": "entspricht den Erwartungen mit Einschränkungen", "E": "entspricht nicht den Erwartungen"};
+const $=s=>document.querySelector(s), KEY='berichtshelfer_v2';
+let S={leute:[],aktiv:null,land:'by',schulart:'gs',laenge:'mittel',zeit:'praesens',
+       anrede:'er',form:'fliess',seed:0,theme:'auto',sortiert:true,
+       klassen:['Meine Klasse'],klasse:'Meine Klasse',eigene:{},ausgabe:'bericht'};
+try{Object.assign(S,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){}
+const sichern=()=>localStorage.setItem(KEY,JSON.stringify(S));
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');
+  clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),2200);}
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ───────── Sprache ───────── */
+function fuellen(satz,p){
+  if(S.anrede==='du') return satz;            // Du-Sätze sind bereits ausformuliert
+  const w=p.sex==='w',n=p.sex==='n';
+  const M=n?{'{er}':p.name,'{ihm}':p.name,'{ihn}':p.name,'{sein}':'das eigene',
+    '{seine}':'die eigenen','{seinen}':'den eigenen','{seinem}':'dem eigenen',
+    '{seiner}':'der eigenen','{seines}':'des eigenen'}
+   :{'{er}':w?'sie':'er','{ihm}':w?'ihr':'ihm','{ihn}':w?'sie':'ihn','{sein}':w?'ihr':'sein',
+     '{seine}':w?'ihre':'seine','{seinen}':w?'ihren':'seinen','{seinem}':w?'ihrem':'seinem',
+     '{seiner}':w?'ihrer':'seiner','{seines}':w?'ihres':'seines'};
+  M['{N}']=p.name;
+  // Abwechslung statt Namensflut: Er/Sie bzw. "das Kind"
+  const kind=(S.schulart==='gs'||S.schulart==='foe');
+  M['{SUBJ}']=w?'Sie':n?(kind?'Das Kind':p.name):'Er';
+  M['{subj}']=w?'sie':n?(kind?'das Kind':p.name):'er';
+  M['{Seine}']=w?'Ihre':n?'Die eigenen':'Seine';
+  M['{Sein}'] =w?'Ihr' :n?'Das eigene' :'Sein';
+  M['{Mitschuelern}']=S.schulart==='gs'?'den anderen Kindern':'Mitschülerinnen und Mitschülern';
+  let t=satz; for(const k in M) t=t.split(k).join(M[k]);
+  return t.charAt(0).toUpperCase()+t.slice(1);
+}
+/* Satzverbinder mit korrekter Inversion: "Darüber hinaus arbeitet Mia …" */
+function verbinden(satz,typ){
+  const du=S.anrede==='du';
+  const re=du?/^Du (\S+) (.*)$/:/^(?:\{N\}|\{SUBJ\}) (\S+) (.*)$/;
+  const m=satz.match(re); if(!m) return null;
+  const subjekt=du?'du ':(satz.startsWith('{SUBJ}')?'{subj} ':'{N} ');
+  const liste=VERB[typ]||VERB.neutral;
+  const c=liste[Math.floor(Math.random()*liste.length)];
+  let verb=m[1],rest=m[2],refl='';
+  const rm=rest.match(/^(sich|dich) (.*)$/);
+  if(rm){refl=rm[1]+' ';rest=rm[2];}
+  // Bei pronominalem Subjekt steht das Subjekt VOR dem Reflexivpronomen:
+  // "Daneben beteiligt sie sich" – nicht "beteiligt sich sie".
+  const pronomen = du || subjekt.indexOf('{subj}')>=0;
+  return c+verb+' '+(pronomen ? subjekt+refl : refl+subjekt)+rest;
+}
+function aufzaehlen(t){return t.length===1?t[0]:t.length===2?t[0]+' und '+t[1]
+  :t.slice(0,-1).join(', ')+' sowie '+t[t.length-1];}
+
+const KATS={kurz:['arbeit','sozial'],mittel:['arbeit','mitarbeit','sozial','leistung'],
+            lang:['arbeit','mitarbeit','sozial','leistung','organisation']};
+function varianten(k,stufe){
+  const d=B[k].stufen.find(s=>s[0]===stufe); if(!d) return [];
+  const fest = S.anrede==='du' ? (d[4]||[])
+             : (S.zeit==='praeteritum' ? (d[3]||d[2]) : d[2]);
+  // Eigene Sätze der Lehrkraft werden gleichberechtigt mitgewürfelt
+  const eigen = ((S.eigene||{})[k]||{})[stufe]||[];
+  return fest.concat(eigen);
+}
+function textBauen(p){
+  let saetze=[];
+  for(const k of KATS[S.laenge]){
+    const stufe=(p.w||{})[k]; if(!stufe) continue;
+    const liste=varianten(k,stufe); if(!liste.length) continue;
+    const gleiche=meineKlasse().filter(x=>((x.w||{})[k])===stufe);
+    const idx=Math.max(0,gleiche.findIndex(x=>x.id===p.id));
+    saetze.push(liste[(idx+S.seed)%liste.length]);
+  }
+  // Fachhinweise (nur 3. Person verfügbar)
+  if(S.anrede!=='du'&&S.laenge==='lang'){
+    for(const [fid,fw] of Object.entries(p.faecher||{})){
+      const f=FAECHER[fid]; if(!f||!f.stufen[fw]) continue;
+      const l=f.stufen[fw]; saetze.push(l[(S.seed+p.name.length)%l.length]);
+    }
+  }
+  const st=(p.staerken||[]).map(id=>(STAERKEN.find(x=>x[0]===id)||[])[1]).filter(Boolean);
+  if(st.length){
+    const du=S.anrede==='du';
+    const vor=du?['Deine Stärken zeigst du vor allem ','Besonders stark bist du ',
+                  'Deine Fähigkeiten zeigst du insbesondere ','Auffällig sind deine Stärken ']
+      :['{Seine} Stärken zeigt {N} vor allem ','Besonders stark ist {N} ',
+        '{Seine} Fähigkeiten zeigt {N} insbesondere ','Auffällig sind {seine} Stärken '];
+    let v=vor[(S.seed+p.name.length)%vor.length];
+    if(!du) v=v.replace('{Seine}',p.sex==='w'?'Ihre':p.sex==='n'?'Die eigenen':'Seine');
+    saetze.push(v+aufzaehlen(st.slice(0,3))+'.');
+  }
+  if((p.frei||'').trim()) saetze.push(p.frei.trim());
+  const fIds=(p.foerder||[]).slice(0,3);
+  if(fIds.length){
+    const e=fIds.map(id=>FOERDER.find(x=>x[0]===id)).filter(Boolean);
+    const nom=aufzaehlen(e.map(x=>x[1])),dat=aufzaehlen(e.map(x=>x[2])),mz=e.length>1;
+    const du=S.anrede==='du';
+    const v=du?['Im kommenden Halbjahr solltest du vor allem an '+dat+' arbeiten.',
+        mz?'Wichtige Ziele für dich bleiben '+nom+'.':'Ein wichtiges Ziel für dich bleibt '+nom+'.',
+        'Für deine weitere Entwicklung empfiehlt sich die Arbeit an '+dat+'.',
+        'Woran du als Nächstes arbeiten solltest: '+nom+'.']
+      :['Im kommenden Halbjahr sollte {N} vor allem an '+dat+' arbeiten.',
+        mz?'Wichtige Ziele für {N} bleiben '+nom+'.':'Ein wichtiges Ziel für {N} bleibt '+nom+'.',
+        'Für die weitere Entwicklung empfiehlt sich die Arbeit an '+dat+'.',
+        'Woran {N} als Nächstes arbeiten sollte: '+nom+'.'];
+    saetze.push(v[(S.seed+p.name.length+1)%v.length]);
+  }
+  const sl=S.anrede==='du'?SCHLUSS_D:(S.zeit==='praeteritum'?SCHLUSS_P:SCHLUSS);
+  if(p.schluss&&sl[p.schluss]&&sl[p.schluss].length){
+    const l=sl[p.schluss]; saetze.push(l[(S.seed+p.name.length)%l.length]);
+  }
+  // Namenswiederholung vermeiden: steht der Name schon im Satz davor,
+  // beginnt dieser Satz mit einem Pronomen. Nur am Satzanfang — dort ist
+  // der Kasus eindeutig (Nominativ), die Ersetzung also grammatisch sicher.
+  if(S.anrede!=='du'){
+    // Der Name soll etwa jeden dritten Satz vorkommen - so schreiben es auch
+    // Lehrkräfte von Hand. Dazwischen steht ein Pronomen.
+    // Ersetzt wird nur, wo der Name eindeutig Subjekt im Nominativ ist.
+    const PRAEP=new Set(['von','bei','auf','mit','für','zu','an','in','über','unter','vor','nach']);
+    // Nach diesen Verben steht der Name im DATIV ("gelingt ihm", "fällt ihr schwer").
+    // Ein Nominativpronomen wäre hier falsch – deshalb bleibt der Name stehen.
+    const DATIV=new Set(['gelingt','gelang','gelingen','gelangen','fällt','fiel','fallen',
+                         'fielen','würde','hilft','half','helfen','genügt','reicht']);
+    const pronominal=s=>{
+      const anfang=s.match(/^\{N\} (\S+)/);
+      if(anfang) return DATIV.has(anfang[1].toLowerCase()) ? null : '{SUBJ}'+s.slice(3);
+      // "bringt sich {N} ein" -> "bringt {subj} sich ein" (Subjekt vor Reflexivpronomen)
+      if(s.includes('sich {N} ')) return s.replace('sich {N} ','{subj} sich ');
+      // "Die Leistungen von {N} schwanken" -> "Ihre Leistungen schwanken"
+      const pm=s.match(/^(Die|Das) ([A-Za-zÄÖÜäöüß]+) von \{N\} /);
+      if(pm) return (pm[1]==='Die'?'{Seine} ':'{Sein} ')+pm[2]+' '
+        +s.slice(pm[0].length);
+      // "bleibt {N} bei der Sache" -> "bleibt {subj} bei der Sache"
+      const m=s.match(/(\S+) \{N\}([ ,.;:])/);
+      const wort=m?m[1].toLowerCase().replace(/[^\wäöüß]/g,''):'';
+      if(m && !PRAEP.has(wort) && !DATIV.has(wort))
+        return s.replace(m[1]+' {N}', m[1]+' {subj}');
+      return null;   // z.B. "Die Konzentration von {N} schwankt" - hier ginge nur ein anderer Fall
+    };
+    let seitName=99;
+    saetze=saetze.map((s,i)=>{
+      if(!s.includes('{N}')){ seitName++; return s; }
+      if(i>0 && seitName<2){
+        const neu=pronominal(s);
+        if(neu){ seitName++; return neu; }
+      }
+      seitName=0; return s;
+    });
+  }
+  if(S.form==='stich')
+    return saetze.map(s=>'– '+fuellen(s,p)).join('\n');
+  // Flüssiger Text statt Aneinanderreihung: jeden zweiten Satz verbinden
+  let rng=(S.seed+p.name.length)%3;
+  saetze=saetze.map((s,i)=>{
+    if(i===0||i>=saetze.length-1) return s;
+    if((i+rng)%2!==0) return s;
+    const v=verbinden(s,i%3===0?'positiv':'neutral');
+    return v||s;
+  });
+  return saetze.map(s=>fuellen(s,p)).join(' ');
+}
+const textVon=p=>(p.manuell!=null&&p.manuell!=='')?p.manuell:textBauen(p);
+
+/* ───────── Oberfläche ───────── */
+const FARBEN=['#2f6bff','#7c4dff','#12a06a','#d98300','#d6365a','#0ea5a5','#c026d3'];
+const farbe=s=>{let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))>>>0;return FARBEN[h%FARBEN.length];};
+function listeZeichnen(){
+  const q=($('#suche').value||'').toLowerCase();
+  let sicht=meineKlasse().filter(p=>!q||anzeigeName(p).toLowerCase().includes(q));
+  if(S.sortiert) sicht=[...sicht].sort((a,b)=>
+    anzeigeName(a).localeCompare(anzeigeName(b),'de'));
+  $('#cnt').textContent=meineKlasse().length;
+  $('#plist').innerHTML=sicht.length?sicht.map(p=>{
+    const fertig=Object.keys(p.w||{}).length>0;
+    return `<div class="pitem ${p.id===S.aktiv?'on':''}" data-id="${p.id}">
+      <span class="pav" style="background:${farbe(p.name)}">${esc(p.name[0]||'?')}</span>
+      <span class="pname" title="${esc(anzeigeName(p))}">${esc(anzeigeName(p))}</span>
+      ${fertig?'<span class="pdone">fertig</span>':''}
+      <button class="pdel" data-copy="${p.id}" title="Text kopieren"
+        style="margin-left:auto;font-size:13px">⧉</button>
+      <button class="pdel" data-del="${p.id}" title="Entfernen" style="margin-left:0">×</button></div>`}).join('')
+   :'<div class="empty" style="padding:16px"><span class="ic">👤</span>'+
+    (S.leute.length?'Kein Treffer':'Noch niemand angelegt')+'</div>';
+}
+function formZeichnen(){
+  const p=S.leute.find(x=>x.id===S.aktiv);
+  $('#who').textContent=p?anzeigeName(p):'—';
+  if(!p){$('#formBox').innerHTML='<div class="empty"><span class="ic">👋</span>Lege links eine Person an.</div>';return;}
+  let h='';
+  for(const k of KATS[S.laenge]){
+    const b=B[k];
+    h+=`<div class="grp"><div class="q">${esc(b.label)}</div><div class="hint">${esc(b.frage)}</div><div class="opts">`;
+    for(const s of b.stufen){
+      const lbl=(S.land==='ni'&&NI[s[0]])?NI[s[0]]:s[1];
+      h+=`<button class="opt ${((p.w||{})[k]===s[0])?'on':''}" data-k="${k}" data-v="${s[0]}">${esc(lbl)}</button>`;
+    }
+    h+=`</div></div>`;
+  }
+  if(S.laenge==='lang'){
+    h+=`<div class="grp"><div class="q">Fachbezogene Hinweise</div><div class="hint">${
+      S.anrede==='du'?'In der Du-Form noch nicht verfügbar — bitte 3. Person wählen.'
+      :'Optional, je Fach eine Stufe'}</div>`;
+    if(S.anrede!=='du') for(const [fid,f] of Object.entries(FAECHER)){
+      h+=`<div style="display:flex;align-items:center;gap:7px;margin-bottom:5px">
+        <span style="font-size:12px;width:108px;color:var(--txt2)">${esc(f.label)}</span><div class="opts">`;
+      for(const code of Object.keys(f.stufen))
+        h+=`<button class="opt sm ${((p.faecher||{})[fid]===code)?'on':''}" data-fach="${fid}" data-v="${code}">${code}</button>`;
+      h+=`</div></div>`;
+    }
+    h+=`</div>`;
+  }
+  h+=`<div class="grp"><div class="q">Stärken</div><div class="hint">bis zu drei werden genannt</div><div class="opts">`;
+  for(const [id,txt] of STAERKEN)
+    h+=`<button class="opt multi ${(p.staerken||[]).includes(id)?'on':''}" data-m="staerken" data-v="${id}">${esc(txt.replace(/^(in|im|bei|beim|wenn) /,''))}</button>`;
+  h+=`</div></div><div class="grp"><div class="q">Woran gearbeitet werden sollte</div><div class="hint">bis zu drei werden genannt</div><div class="opts">`;
+  for(const e of FOERDER)
+    h+=`<button class="opt multi ${(p.foerder||[]).includes(e[0])?'on':''}" data-m="foerder" data-v="${e[0]}">${esc(e[1].replace(/^(die|das|der|den|ein|eine) /,''))}</button>`;
+  h+=`</div></div><div class="grp"><div class="q">Schlusssatz</div><div class="opts">`;
+  for(const [id,t] of [['keiner','keiner'],['positiv','lobend'],['ermutigend','ermutigend'],['klar','deutlich']])
+    h+=`<button class="opt ${((p.schluss||'keiner')===id)?'on':''}" data-s="${id}">${t}</button>`;
+  h+=`</div></div>`;
+  const nz=(p.notizen||[]);
+  h+=`<div class="grp"><div class="q">Beobachtungen</div>
+    <div class="hint">Übers Jahr sammeln — am Zeugnistag sind sie da</div>
+    ${nz.length?`<div style="margin-bottom:8px">${nz.map((x,i)=>
+      `<div style="display:flex;gap:7px;align-items:flex-start;font-size:12.5px;
+        padding:5px 0;border-bottom:1px solid var(--line)">
+        <span style="color:var(--ink-faint);font-family:var(--mono);flex:none">${esc(x.d)}</span>
+        <span style="flex:1">${esc(x.t)}</span>
+        <button class="opt sm" data-notiz-use="${i}" title="In den Bericht übernehmen"
+          style="padding:2px 8px">↑</button>
+        <button class="opt sm" data-notiz-weg="${i}" style="padding:2px 8px">×</button>
+      </div>`).join('')}</div>`:''}
+    <div class="row"><input id="notizNeu" placeholder="z.B. hat Streit selbst geschlichtet">
+      <button class="sec sm" id="notizAdd" style="max-width:78px">Merken</button></div></div>`;
+  h+=`<div class="grp"><div class="q">Eigener Satz</div>
+    <div class="hint">wird in den Text eingefügt, z.B. Ämter oder AGs</div>
+    <textarea id="frei" rows="2">${esc(p.frei||'')}</textarea></div>`;
+  $('#formBox').innerHTML=h;
+}
+function statsZeichnen(){
+  const p=S.leute.find(x=>x.id===S.aktiv);
+  if(!p){$('#stats').innerHTML='';return;}
+  const t=$('#out').textContent;
+  const w=t.trim()?t.trim().split(/\s+/).length:0;
+  const sz=t.trim()?(t.match(/[.!?](\s|$)/g)||[]).length:0;
+  const ziel=+(S.zeichenZiel||0);
+  const zu=ziel&&t.length>ziel;
+  const lang=t.split(/(?<=[.!?])\s+/).filter(x=>x.trim().split(/\s+/).length>20).length;
+  const nameN=(t.match(new RegExp('\\b'+p.name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b','g'))||[]).length;
+  $('#stats').innerHTML=`<div><b>${w}</b> Wörter</div><div><b>${sz}</b> Sätze</div>
+    <div style="${zu?'color:var(--coral-deep);font-weight:700':''}"><b>${t.length}</b> Zeichen${
+      ziel?` von ${ziel}`:''}</div>
+    <div${nameN>3?' style="color:var(--coral-deep)"':''}><b>${nameN}</b>× Name</div>
+    ${lang?`<div style="color:var(--gold)"><b>${lang}</b> lange Sätze</div>`:''}
+    <div>${(p.manuell!=null&&p.manuell!=='')?'✎ von Hand bearbeitet':'automatisch erzeugt'}</div>`;
+}
+const meineKlasse=()=>S.leute.filter(p=>(p.klasse||S.klasse)===S.klasse);
+const fertigeLeute=()=>meineKlasse().filter(p=>Object.keys(p.w||{}).length);
+function alleZeichnen(){
+  const f=fertigeLeute();
+  $('#allCnt').textContent=`${f.length} / ${meineKlasse().length}`;
+  if(S.ausgabe==='leg'){
+    $('#all').innerHTML=meineKlasse().length
+      ? meineKlasse().map(legHTML).join('')
+      : '<div class="empty" style="padding:18px">Noch niemand in dieser Klasse.</div>';
+    return;
+  }
+  const kopf=[S.dSchule,S.dKlasse&&'Klasse '+S.dKlasse,S.dJahr&&'Schuljahr '+S.dJahr]
+    .filter(Boolean).join(' · ');
+  $('#all').innerHTML=f.length?f.map(p=>{
+    const fehl=(p.fehl||p.fehlU)
+      ? `<p class="fehlzeile" style="font-size:12px;color:var(--ink-faint);margin-top:4px">
+         Versäumte Unterrichtstage: ${p.fehl||0}${p.fehlU?`, davon unentschuldigt: ${p.fehlU}`:''}</p>`:'';
+    return `<div class="one">
+      ${kopf?`<div class="druckkopf" style="font-size:11px;color:var(--ink-faint);
+        letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px">${esc(kopf)}</div>`:''}
+      <h4>${esc(anzeigeName(p))}</h4><p>${esc(textVon(p))}</p>${fehl}
+      <div class="unterschrift" style="display:none;margin-top:30px;font-size:11.5px;color:#444">
+        <div style="display:flex;gap:40px">
+          <div style="flex:1;border-top:1px solid #999;padding-top:4px">Klassenlehrkraft</div>
+          <div style="flex:1;border-top:1px solid #999;padding-top:4px">Erziehungsberechtigte</div>
+        </div></div></div>`}).join('')
+   :'<div class="empty" style="padding:18px">Noch keine Einschätzung ausgefüllt.</div>';
+}
+function ausgabeZeichnen(){
+  const p=S.leute.find(x=>x.id===S.aktiv);
+  if(!p){$('#out').textContent='';$('#stats').innerHTML='';$('#meta').textContent='';alleZeichnen();return;}
+  $('#out').textContent=textVon(p);
+  statsZeichnen(); $('#meta').textContent=anzeigeName(p); alleZeichnen();
+}
+function landInfo(){
+  const l=LAENDER[S.land];
+  $('#landInfo').innerHTML=`<b>${esc(l[0])}:</b> ${esc(l[1])} — ${esc(l[2])}`;
+}
+function druckFelder(){
+  const p=S.leute.find(x=>x.id===S.aktiv);
+  $('#fehlWer').textContent=p?anzeigeName(p):'—';
+  $('#dFehl').value=p&&p.fehl?p.fehl:'';
+  $('#dFehlU').value=p&&p.fehlU?p.fehlU:'';
+}
+function alles(){listeZeichnen();formZeichnen();ausgabeZeichnen();landInfo();
+  druckFelder();sicherungPruefen();sichern();}
+
+/* ───────── Ereignisse ───────── */
+// Gleiche Vornamen kommen in fast jeder Klasse vor. Zur Unterscheidung dient ein
+// Kennzeichen (Nachname oder Buchstabe) — im Zeugnistext steht weiterhin nur der Vorname.
+const anzeigeName=p=>p.name+(p.zusatz?' '+p.zusatz:'');
+function hinzu(name,sex,zusatz){
+  name=(name||'').trim(); zusatz=(zusatz||'').trim(); if(!name) return false;
+  const gleich=meineKlasse().filter(p=>p.name.toLowerCase()===name.toLowerCase());
+  if(gleich.length&&!zusatz){
+    // automatisch unterscheiden statt ablehnen
+    zusatz=String.fromCharCode(65+gleich.length);
+    if(gleich.length===1&&!gleich[0].zusatz) gleich[0].zusatz='A';
+    toast(`„${name}" gibt es schon — als „${name} ${zusatz}" angelegt`);
+  } else if(gleich.some(p=>(p.zusatz||'').toLowerCase()===zusatz.toLowerCase())){
+    toast(`„${name} ${zusatz}" gibt es schon`); return false;
+  }
+  const p={id:Date.now()+''+Math.random().toString(36).slice(2,6),name,zusatz,sex:sex||'m',
+    klasse:S.klasse,w:{},faecher:{},staerken:[],foerder:[],schluss:'keiner',frei:'',
+    manuell:null,notizen:[]};
+  S.leute.push(p);S.aktiv=p.id;return true;
+}
+$('#addBtn').onclick=()=>{if(hinzu($('#newName').value,$('#newSex').value,$('#newZusatz').value)){
+  $('#newName').value='';$('#newZusatz').value='';$('#newName').focus();alles();}};
+$('#newName').addEventListener('keydown',e=>{if(e.key==='Enter')$('#addBtn').click()});
+$('#suche').addEventListener('input',listeZeichnen);
+function klassenZeichnen(){
+  $('#klasseWahl').innerHTML=S.klassen.map(k=>
+    `<option value="${esc(k)}"${k===S.klasse?' selected':''}>${esc(k)}</option>`).join('');
+}
+$('#klasseWahl').onchange=e=>{S.klasse=e.target.value;
+  S.aktiv=meineKlasse()[0]?.id||null; alles();};
+$('#klasseNeu').onclick=()=>{
+  const n=prompt('Name der neuen Klasse:','Klasse '+(S.klassen.length+1));
+  if(!n||!n.trim()) return;
+  if(S.klassen.includes(n.trim())){toast('Gibt es schon');return;}
+  S.klassen.push(n.trim()); S.klasse=n.trim(); S.aktiv=null;
+  klassenZeichnen(); alles(); toast('Klasse angelegt');};
+$('#klasseWeg').onclick=()=>{
+  if(S.klassen.length<2){toast('Die letzte Klasse bleibt');return;}
+  const n=meineKlasse().length;
+  if(!confirm(`Klasse „${S.klasse}" mit ${n} Personen entfernen?`)) return;
+  S.leute=S.leute.filter(p=>(p.klasse||S.klasse)!==S.klasse);
+  S.klassen=S.klassen.filter(k=>k!==S.klasse);
+  S.klasse=S.klassen[0]; S.aktiv=meineKlasse()[0]?.id||null;
+  klassenZeichnen(); alles(); toast('Klasse entfernt');};
+$('#sortBtn').onclick=()=>{S.sortiert=!S.sortiert;
+  $('#sortBtn').classList.toggle('acc',!!S.sortiert);
+  listeZeichnen();sichern();
+  toast(S.sortiert?'Alphabetisch sortiert':'Eingabereihenfolge');};
+$('#nextOpen').onclick=()=>{
+  const offen=meineKlasse().filter(p=>!Object.keys(p.w||{}).length);
+  if(!offen.length){toast('Alle Einschätzungen sind ausgefüllt');return;}
+  const i=offen.findIndex(p=>p.id===S.aktiv);
+  S.aktiv=offen[(i+1)%offen.length].id; alles();
+  $('#formBox').scrollIntoView({block:'nearest'});};
+$('#sicherJetzt').onclick=()=>$('#saveBtn').click();
+
+/* Erinnerung an die Sicherung: ab 5 Personen, wenn länger als 7 Tage keine */
+function sicherungPruefen(){
+  const faellig=S.leute.length>=5 &&
+    (!S.letzteSicherung || Date.now()-S.letzteSicherung > 7*864e5);
+  $('#sicherHinweis').style.display=faellig?'block':'none';
+}
+
+/* Tastaturbedienung: 1–4 füllt den nächsten offenen Bereich, Enter springt weiter */
+document.addEventListener('keydown',e=>{
+  if(/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
+  if(document.getElementById('dlg').open) return;
+  const p=S.leute.find(x=>x.id===S.aktiv); if(!p) return;
+  if(/^[1-4]$/.test(e.key)){
+    const naechste=KATS[S.laenge].find(k=>!(p.w||{})[k]);
+    if(!naechste){toast('Alle Bereiche ausgefüllt');return;}
+    e.preventDefault();
+    p.w=p.w||{}; p.w[naechste]='ABCD'[+e.key-1]; p.manuell=null; alles();
+    toast(B[naechste].label+': '+B[naechste].stufen[+e.key-1][1]);
+  } else if(e.key==='Backspace'){
+    const gefuellt=KATS[S.laenge].filter(k=>(p.w||{})[k]);
+    if(!gefuellt.length) return;
+    e.preventDefault(); delete p.w[gefuellt[gefuellt.length-1]]; p.manuell=null; alles();
+  } else if(e.key==='Enter'){ e.preventDefault(); $('#nextOpen').click(); }
+});
+$('#bulkBtn').onclick=()=>{let n=0;
+  for(const z of $('#bulk').value.split('\n')){
+    const t=z.trim(); if(!t) continue;
+    // "Leon B m" → Vorname Leon, Kennzeichen B, männlich
+    const m=t.match(/^(.+?)[\s,;]+([mwn])$/i);
+    const voll=(m?m[1]:t).replace(/[,;]+$/,'').trim();
+    const teile=voll.split(/\s+/);
+    if(hinzu(teile[0],m?m[2].toLowerCase():'m',teile.slice(1).join(' ')))n++;
+  }
+  $('#bulk').value='';alles();toast(`${n} Personen hinzugefügt`);};
+$('#plist').addEventListener('click',async e=>{
+  const cp=e.target.closest('[data-copy]');
+  if(cp){e.stopPropagation();
+    const pp=S.leute.find(x=>x.id===cp.dataset.copy);
+    if(pp){try{await navigator.clipboard.writeText(textVon(pp));}catch(err){}
+      toast(`Text von ${anzeigeName(pp)} kopiert`);}
+    return;}
+  const d=e.target.closest('[data-del]');
+  if(d){e.stopPropagation();S.leute=S.leute.filter(p=>p.id!==d.dataset.del);
+    if(S.aktiv===d.dataset.del)S.aktiv=S.leute[0]?.id||null;alles();return;}
+  const it=e.target.closest('.pitem'); if(it){S.aktiv=it.dataset.id;alles();}});
+$('#formBox').addEventListener('click',e=>{
+  const b=e.target.closest('.opt'); if(!b) return;
+  const p=S.leute.find(x=>x.id===S.aktiv); if(!p) return;
+  p.manuell=null;
+  if(b.dataset.k){p.w=p.w||{};
+    p.w[b.dataset.k]=(p.w[b.dataset.k]===b.dataset.v)?undefined:b.dataset.v;
+    if(!p.w[b.dataset.k])delete p.w[b.dataset.k];}
+  else if(b.dataset.fach){p.faecher=p.faecher||{};
+    p.faecher[b.dataset.fach]=(p.faecher[b.dataset.fach]===b.dataset.v)?undefined:b.dataset.v;
+    if(!p.faecher[b.dataset.fach])delete p.faecher[b.dataset.fach];}
+  else if(b.dataset.m){const a=p[b.dataset.m]=p[b.dataset.m]||[];
+    const i=a.indexOf(b.dataset.v); if(i>=0)a.splice(i,1);else a.push(b.dataset.v);}
+  else if(b.dataset.s){p.schluss=b.dataset.s;}
+  alles();});
+$('#formBox').addEventListener('click',e=>{
+  const p=S.leute.find(x=>x.id===S.aktiv); if(!p) return;
+  const add=e.target.closest('#notizAdd');
+  if(add){const v=$('#notizNeu').value.trim(); if(!v) return;
+    p.notizen=p.notizen||[];
+    p.notizen.push({d:new Date().toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'}),t:v});
+    alles(); toast('Beobachtung gemerkt'); return;}
+  const use=e.target.closest('[data-notiz-use]');
+  if(use){const x=p.notizen[+use.dataset.notizUse];
+    p.frei=((p.frei||'')+' '+x.t).trim(); p.manuell=null; alles();
+    toast('In den Bericht übernommen'); return;}
+  const weg=e.target.closest('[data-notiz-weg]');
+  if(weg){p.notizen.splice(+weg.dataset.notizWeg,1); alles(); return;}
+});
+$('#formBox').addEventListener('keydown',e=>{
+  if(e.target.id==='notizNeu'&&e.key==='Enter'){e.preventDefault();$('#notizAdd').click();}});
+$('#formBox').addEventListener('input',e=>{if(e.target.id==='frei'){
+  const p=S.leute.find(x=>x.id===S.aktiv);
+  if(p){p.frei=e.target.value;p.manuell=null;ausgabeZeichnen();sichern();}}});
+$('#out').addEventListener('input',()=>{const p=S.leute.find(x=>x.id===S.aktiv);
+  if(p){p.manuell=$('#out').textContent;sichern();statsZeichnen();alleZeichnen();}});
+for(const [id,key] of [['#schulart','schulart'],['#laenge','laenge'],['#zeit','zeit'],
+                       ['#anrede','anrede'],['#form','form'],['#land','land'],['#ausgabe','ausgabe']])
+  $(id).onchange=e=>{S[key]=e.target.value;S.leute.forEach(p=>p.manuell=null);alles();};
+for(const [id,key] of [['#dSchule','dSchule'],['#dKlasse','dKlasse'],['#dJahr','dJahr']])
+  $(id).addEventListener('input',e=>{S[key]=e.target.value;alleZeichnen();sichern();});
+for(const [id,key] of [['#dFehl','fehl'],['#dFehlU','fehlU']])
+  $(id).addEventListener('input',e=>{
+    const pp=S.leute.find(x=>x.id===S.aktiv);
+    if(pp){pp[key]=e.target.value?+e.target.value:0;alleZeichnen();sichern();}});
+$('#zeichenZiel').addEventListener('input',e=>{
+  S.zeichenZiel=e.target.value?+e.target.value:0; statsZeichnen(); sichern();});
+$('#reroll').onclick=()=>{S.seed++;S.leute.forEach(p=>p.manuell=null);alles();toast('Neue Formulierungen');};
+$('#rerollOne').onclick=()=>{const p=S.leute.find(x=>x.id===S.aktiv);if(!p)return;
+  p.manuell=null;S.seed++;ausgabeZeichnen();sichern();};
+$('#resetOne').onclick=()=>{const p=S.leute.find(x=>x.id===S.aktiv);if(!p)return;
+  p.manuell=null;ausgabeZeichnen();sichern();toast('Zurückgesetzt');};
+$('#copyBtn').onclick=async()=>{const t=$('#out').textContent;
+  try{await navigator.clipboard.writeText(t);toast('Kopiert');}
+  catch(e){const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);
+    a.select();document.execCommand('copy');a.remove();toast('Kopiert');}};
+$('#wipe').onclick=()=>{if(!confirm('Wirklich alle Namen und Texte löschen?'))return;
+  S={...S,leute:[],aktiv:null,seed:0};localStorage.removeItem(KEY);alles();toast('Alles gelöscht');};
+$('#printBtn').onclick=()=>window.print();
+function lade(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=name;document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},800);}
+$('#txtBtn').onclick=()=>{const t=fertigeLeute().map(p=>p.name+'\n'+'-'.repeat(p.name.length)+'\n'+textVon(p)).join('\n\n');
+  lade(new Blob([t],{type:'text/plain;charset=utf-8'}),'berichte.txt');};
+$('#saveBtn').onclick=()=>{lade(new Blob([JSON.stringify(S,null,1)],{type:'application/json'}),
+  'berichtshelfer-sicherung.json');
+  S.letzteSicherung=Date.now();sicherungPruefen();sichern();toast('Sicherung gespeichert');};
+$('#loadBtn').onclick=()=>$('#fileIn').click();
+$('#fileIn').onchange=e=>{const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{try{const d=JSON.parse(r.result);
+    if(!Array.isArray(d.leute)) throw new Error('kein gültiges Format');
+    S=Object.assign(S,d);alles();toast(`${d.leute.length} Personen geladen`);}
+    catch(err){toast('Datei nicht lesbar: '+err.message);}};
+  r.readAsText(f);e.target.value='';};
+/* Theme */
+function themeSetzen(){
+  const d=S.theme==='dark'||(S.theme==='auto'&&matchMedia('(prefers-color-scheme:dark)').matches);
+  document.documentElement.dataset.theme=d?'dark':'light';}
+$('#themeBtn').onclick=()=>{S.theme=S.theme==='dark'?'light':'dark';themeSetzen();sichern();};
+
+/* ───────── Dialoge ───────── */
+function dialog(titel,html){$('#dlgT').textContent=titel;$('#dlgB').innerHTML=html;$('#dlg').showModal();}
+$('#eigenBtn').onclick=()=>{
+  const bau=()=>{
+    const kat=$('#eKat')?.value||Object.keys(B)[0];
+    const stufe=$('#eStufe')?.value||'A';
+    const liste=((S.eigene||{})[kat]||{})[stufe]||[];
+    return `<div class="row">
+        <div><label class="f">Bereich</label><select id="eKat">${Object.entries(B).map(([k,v])=>
+          `<option value="${k}"${k===kat?' selected':''}>${esc(v.label)}</option>`).join('')}</select></div>
+        <div><label class="f">Stufe</label><select id="eStufe">${B[kat].stufen.map(x=>
+          `<option value="${x[0]}"${x[0]===stufe?' selected':''}>${esc(x[1])}</option>`).join('')}</select></div>
+      </div>
+      <label class="f mt">Eigener Satz</label>
+      <textarea id="eText" rows="2" placeholder="{N} bringt sich im Morgenkreis zuverlässig ein."></textarea>
+      <div class="hint" style="margin-top:6px">Platzhalter: <b>{N}</b> Name ·
+        <b>{er}</b> er/sie · <b>{ihm}</b> ihm/ihr · <b>{seine}</b> seine/ihre ·
+        <b>{sein}</b> sein/ihr</div>
+      <button class="acc mt" id="eAdd" style="width:100%">Satz hinzufügen</button>
+      <div class="mt2">${liste.length?liste.map((t,i)=>`<div class="uz"
+        style="display:flex;gap:9px;align-items:flex-start">
+        <span style="flex:1;font-size:13.5px">${esc(t)}</span>
+        <button class="opt sm" data-eweg="${i}" style="padding:3px 9px">×</button></div>`).join('')
+        :'<div class="empty" style="padding:14px">Für diese Stufe noch keine eigenen Sätze.</div>'}</div>
+      <div class="note" style="font-size:12px">Eigene Sätze werden zusammen mit den
+        ${/* Anzahl */''}eingebauten Formulierungen gewürfelt und sind in der Sicherung enthalten.</div>`;
+  };
+  const zeichne=()=>{
+    $('#dlgB').innerHTML=bau();
+    $('#eKat').onchange=zeichne; $('#eStufe').onchange=zeichne;
+    $('#eAdd').onclick=()=>{
+      let t=$('#eText').value.trim(); if(!t) return;
+      if(!/[.!?]$/.test(t)) t+='.';
+      t=t.charAt(0).toUpperCase()+t.slice(1);
+      const kat=$('#eKat').value, st=$('#eStufe').value;
+      S.eigene=S.eigene||{}; S.eigene[kat]=S.eigene[kat]||{};
+      S.eigene[kat][st]=S.eigene[kat][st]||[];
+      S.eigene[kat][st].push(t);
+      sichern(); zeichne(); ausgabeZeichnen(); toast('Satz übernommen');
+    };
+    $('#dlgB').querySelectorAll('[data-eweg]').forEach(b=>b.onclick=()=>{
+      S.eigene[$('#eKat').value][$('#eStufe').value].splice(+b.dataset.eweg,1);
+      sichern(); zeichne(); ausgabeZeichnen();});
+  };
+  dialog('Eigene Textbausteine',''); zeichne();
+};
+$('#uebBtn').onclick=()=>{
+  dialog('Zeugnissprache-Übersetzer',
+    `<p style="font-size:13px;color:var(--txt2);margin-bottom:12px">
+      Klartext eingeben — das Werkzeug schlägt zeugnistaugliche Formulierungen vor.
+      Ein Klick übernimmt den Satz in das Feld „Eigener Satz".</p>
+     <input id="uq" placeholder="z.B. stört, faul, unordentlich …" autocomplete="off">
+     <div id="ur" class="mt"></div>`);
+  const zeichne=()=>{
+    const q=($('#uq').value||'').toLowerCase().trim();
+    const tr=UEB.filter(e=>!q||e[0].toLowerCase().includes(q)||
+      e[1].some(v=>v.toLowerCase().includes(q)));
+    $('#ur').innerHTML=tr.length?tr.map(e=>`<div class="uz">
+      <div class="klar">„${esc(e[0])}"</div>
+      ${e[1].map(v=>`<div class="vor" data-v="${esc(v)}">→ ${esc(v.replace(/\{N\}/g,'[Name]')
+        .replace(/\{seine?r?\}/g,'sein/ihr').replace(/\{er\}/g,'er/sie'))}</div>`).join('')}
+      </div>`).join(''):'<div class="empty">Kein Eintrag gefunden.</div>';
+  };
+  $('#uq').addEventListener('input',zeichne); zeichne();
+  $('#ur').addEventListener('click',e=>{
+    const v=e.target.closest('[data-v]'); if(!v) return;
+    const p=S.leute.find(x=>x.id===S.aktiv);
+    if(!p){toast('Zuerst eine Person auswählen');return;}
+    p.frei=((p.frei||'')+' '+v.dataset.v).trim(); p.manuell=null;
+    $('#dlg').close(); alles(); toast('Satz übernommen');});
+};
+/* ── Lernentwicklungsgespräch: Kinderbogen, Lehrkraftbogen, Zielvereinbarung ── */
+const LEG_FRAGEN={
+  arbeit:['Ich arbeite konzentriert.','Ich bleibe dran, auch wenn es schwer wird.'],
+  mitarbeit:['Ich melde mich im Unterricht.','Ich höre gut zu.'],
+  sozial:['Ich gehe freundlich mit anderen um.','Ich halte mich an unsere Regeln.'],
+  leistung:['Ich habe dazugelernt.','Ich traue mir neue Aufgaben zu.'],
+  organisation:['Ich habe mein Material dabei.','Ich mache meine Hausaufgaben.']};
+const LEG_SKALA=[['A','das kann ich gut'],['B','das gelingt mir meistens'],
+                 ['C','das übe ich noch'],['D','da brauche ich Hilfe']];
+function legHTML(p){
+  const kopf=[S.dSchule,S.dKlasse&&'Klasse '+S.dKlasse,S.dJahr&&'Schuljahr '+S.dJahr]
+    .filter(Boolean).join(' · ');
+  const kats=KATS[S.laenge];
+  const kaestchen=(aktiv)=>LEG_SKALA.map(([c,t])=>
+    `<span style="display:inline-block;margin-right:12px;font-size:11.5px">
+      <span style="display:inline-block;width:13px;height:13px;border:1.5px solid #888;
+        border-radius:3px;vertical-align:-2px;margin-right:4px;
+        background:${aktiv===c?'#444':'transparent'}"></span>${t}</span>`).join('');
+  const bereiche=kats.map(k=>`
+    <div style="margin-bottom:11px">
+      <div style="font-weight:700;font-size:13px">${esc(B[k].label)}</div>
+      ${(LEG_FRAGEN[k]||[]).map(f=>`<div style="font-size:12.5px;margin:3px 0 1px">${esc(f)}</div>
+        <div style="margin-bottom:5px">${kaestchen(null)}</div>`).join('')}
+    </div>`).join('');
+  const lehrkraft=kats.map(k=>{
+    const st=(p.w||{})[k]; if(!st) return '';
+    const liste=varianten(k,st);
+    const satz=liste.length?fuellen(liste[(S.seed+p.name.length)%liste.length],p):'';
+    return `<div style="margin-bottom:9px"><div style="font-weight:700;font-size:12.5px">
+      ${esc(B[k].label)}</div><div>${kaestchen(st)}</div>
+      <div style="font-size:12.5px;margin-top:3px">${esc(satz)}</div></div>`;}).join('');
+  const ziele=(p.foerder||[]).slice(0,3).map(id=>{
+    const e=FOERDER.find(x=>x[0]===id); return e?e[1]:'';}).filter(Boolean);
+  const zielBlock=(ziele.length?ziele:['','','']).slice(0,3).map((z,i)=>
+    `<div style="display:flex;gap:9px;align-items:baseline;margin-bottom:9px">
+      <span style="font-family:var(--mono);color:#888">${i+1}.</span>
+      <span style="flex:1;border-bottom:1px dotted #999;min-height:19px;font-size:13px">
+        ${esc(z?'Ich arbeite an: '+z:'')}</span></div>`).join('');
+  return `<div class="one legbogen">
+    ${kopf?`<div class="druckkopf" style="font-size:11px;color:var(--ink-faint);
+      letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px">${esc(kopf)}</div>`:''}
+    <h4>Lernentwicklungsgespräch — ${esc(anzeigeName(p))}</h4>
+    <div style="font-size:11.5px;color:var(--ink-faint);margin-bottom:12px">
+      Dieses dokumentierte Gespräch ersetzt das Zwischenzeugnis.</div>
+
+    <div style="font-weight:700;font-size:13.5px;margin:14px 0 7px;color:var(--coral)">
+      1 · Das sage ich über mich</div>
+    ${bereiche}
+
+    <div style="font-weight:700;font-size:13.5px;margin:16px 0 7px;color:var(--coral)">
+      2 · Das sagt die Lehrkraft</div>
+    ${lehrkraft||'<div style="font-size:12.5px;color:#888">Noch keine Einschätzung ausgefüllt.</div>'}
+
+    <div style="font-weight:700;font-size:13.5px;margin:16px 0 7px;color:var(--coral)">
+      3 · Das nehme ich mir vor</div>
+    ${zielBlock}
+
+    <div class="unterschrift" style="display:none;margin-top:26px;font-size:11px;color:#444">
+      <div style="display:flex;gap:26px">
+        <div style="flex:1;border-top:1px solid #999;padding-top:4px">Kind</div>
+        <div style="flex:1;border-top:1px solid #999;padding-top:4px">Erziehungsberechtigte</div>
+        <div style="flex:1;border-top:1px solid #999;padding-top:4px">Lehrkraft</div>
+      </div></div></div>`;
+}
+const KOPFNOTEN={
+  A:['sehr gut','1','verdient besondere Anerkennung'],
+  B:['gut','2','entspricht den Erwartungen in vollem Umfang'],
+  C:['befriedigend','3','entspricht den Erwartungen'],
+  D:['nicht befriedigend','4','entspricht den Erwartungen mit Einschränkungen']};
+$('#kopfBtn').onclick=()=>{
+  const f=fertigeLeute();
+  if(!f.length){toast('Noch keine Einschätzungen');return;}
+  const land=LAENDER[S.land];
+  const spalte=S.land==='ni'?2:(/Kopfnoten|Noten/.test(land[1])?0:1);
+  const hinweis=S.land==='sh'
+    ? '<div class="note warn">In Schleswig-Holstein wird das Arbeits- und Sozialverhalten nicht im Zeugnis bewertet.</div>'
+    : `<div class="note">Regelung in ${esc(land[0])}: ${esc(land[1])} — ${esc(land[2])}</div>`;
+  const zeilen=f.map(p=>{
+    const av=(p.w||{}).arbeit, sv=(p.w||{}).sozial;
+    const n=c=>c?KOPFNOTEN[c][spalte]:'—';
+    return `<tr><td style="padding:6px 10px;border-bottom:1px solid var(--line)">${esc(anzeigeName(p))}</td>
+      <td style="padding:6px 10px;border-bottom:1px solid var(--line)">${esc(n(av))}</td>
+      <td style="padding:6px 10px;border-bottom:1px solid var(--line)">${esc(n(sv))}</td></tr>`;}).join('');
+  dialog('Kopfnoten-Vorschlag', hinweis+
+    `<p style="font-size:12.5px;color:var(--ink-soft);margin:12px 0">Abgeleitet aus den
+      Einstufungen für Arbeits- und Sozialverhalten. <b>Nur ein Vorschlag</b> — die Note
+      setzt die Lehrkraft.</p>
+     <table style="width:100%;border-collapse:collapse;font-size:13.5px">
+      <tr><th style="text-align:left;padding:6px 10px;font-size:11px;letter-spacing:.1em;
+        text-transform:uppercase;color:var(--coral)">Name</th>
+        <th style="text-align:left;padding:6px 10px;font-size:11px;letter-spacing:.1em;
+        text-transform:uppercase;color:var(--coral)">Arbeitsverhalten</th>
+        <th style="text-align:left;padding:6px 10px;font-size:11px;letter-spacing:.1em;
+        text-transform:uppercase;color:var(--coral)">Sozialverhalten</th></tr>${zeilen}</table>`);
+};
+$('#statBtn').onclick=()=>{
+  if(!meineKlasse().length){toast('Noch keine Personen');return;}
+  let h='';
+  for(const k of KATS[S.laenge]){
+    h+=`<h4 style="font-size:13px;margin:12px 0 7px">${esc(B[k].label)}</h4>`;
+    const max=meineKlasse().length;
+    for(const s of B[k].stufen){
+      const n=meineKlasse().filter(p=>((p.w||{})[k])===s[0]).length;
+      h+=`<div class="sbar"><span style="color:var(--txt2);text-align:right">${esc(s[1])}</span>
+        <span class="strack"><span class="sfill" style="width:${max?n/max*100:0}%"></span></span>
+        <span style="font-family:var(--mono);font-size:12px">${n}</span></div>`;
+    }
+  }
+  const offen=meineKlasse().length-fertigeLeute().length;
+  h+=`<div class="note ${offen?'warn':'ok'} mt2">${offen?`Noch ${offen} Person(en) ohne Einschätzung.`
+    :'Alle Einschätzungen sind ausgefüllt.'}</div>`;
+  dialog('Klassenstatistik',h);
+};
+$('#dupBtn').onclick=()=>{
+  const f=fertigeLeute();
+  if(f.length<2){toast('Mindestens zwei Texte nötig');return;}
+  const woerter=t=>new Set(t.toLowerCase().match(/[a-zäöüß]{4,}/g)||[]);
+  const paare=[];
+  for(let i=0;i<f.length;i++)for(let j=i+1;j<f.length;j++){
+    const a=woerter(textVon(f[i])),b=woerter(textVon(f[j]));
+    const schnitt=[...a].filter(x=>b.has(x)).length;
+    const q=schnitt/(a.size+b.size-schnitt||1);
+    if(q>0.72) paare.push([f[i].name,f[j].name,q]);
+  }
+  paare.sort((x,y)=>y[2]-x[2]);
+  dialog('Ähnlichkeitsprüfung', paare.length
+    ? `<div class="note warn">Diese Texte ähneln sich stark. „Formulierungen neu würfeln"
+        oder einzelne Sätze von Hand anpassen.</div>`
+      +paare.map(p=>`<div class="uz"><b>${esc(p[0])}</b> und <b>${esc(p[1])}</b>
+        — ${(p[2]*100).toFixed(0)} % gemeinsame Wörter</div>`).join('')
+    : `<div class="note ok">Kein Textpaar ist auffällig ähnlich. ${f.length} Texte geprüft.</div>`);
+};
+
+/* ───────── .docx ───────── */
+const CRC=(()=>{const t=new Uint32Array(256);
+  for(let i=0;i<256;i++){let c=i;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[i]=c>>>0;}
+  return b=>{let c=0xFFFFFFFF;for(let i=0;i<b.length;i++)c=t[(c^b[i])&255]^(c>>>8);
+    return (c^0xFFFFFFFF)>>>0;};})();
+function zip(dateien){
+  const te=new TextEncoder(),teile=[],zentral=[];let off=0;
+  for(const [name,inhalt] of dateien){
+    const nb=te.encode(name),db=te.encode(inhalt),crc=CRC(db);
+    const lok=new Uint8Array(30+nb.length),dv=new DataView(lok.buffer);
+    dv.setUint32(0,0x04034b50,true);dv.setUint16(4,20,true);dv.setUint32(14,crc,true);
+    dv.setUint32(18,db.length,true);dv.setUint32(22,db.length,true);dv.setUint16(26,nb.length,true);
+    lok.set(nb,30);teile.push(lok,db);
+    const zen=new Uint8Array(46+nb.length),zv=new DataView(zen.buffer);
+    zv.setUint32(0,0x02014b50,true);zv.setUint16(4,20,true);zv.setUint16(6,20,true);
+    zv.setUint32(16,crc,true);zv.setUint32(20,db.length,true);zv.setUint32(24,db.length,true);
+    zv.setUint16(28,nb.length,true);zv.setUint32(42,off,true);zen.set(nb,46);
+    zentral.push(zen);off+=lok.length+db.length;}
+  const zl=zentral.reduce((s,z)=>s+z.length,0);
+  const end=new Uint8Array(22),ev=new DataView(end.buffer);
+  ev.setUint32(0,0x06054b50,true);ev.setUint16(8,dateien.length,true);
+  ev.setUint16(10,dateien.length,true);ev.setUint32(12,zl,true);ev.setUint32(16,off,true);
+  return new Blob([...teile,...zentral,end],
+    {type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});}
+const xe=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
+$('#docxBtn').onclick=()=>{
+  const l=fertigeLeute(); if(!l.length){toast('Noch keine Texte');return;}
+  const abs=l.map((p,i)=>{
+    const zeilen=textVon(p).split('\n');
+    const body=zeilen.map(z=>`<w:p><w:pPr><w:spacing w:after="120" w:line="320" w:lineRule="auto"/></w:pPr>`
+      +`<w:r><w:rPr><w:sz w:val="22"/></w:rPr><w:t xml:space="preserve">${xe(z)}</w:t></w:r></w:p>`).join('');
+    const kopf=[S.dSchule,S.dKlasse&&'Klasse '+S.dKlasse,S.dJahr&&'Schuljahr '+S.dJahr]
+      .filter(Boolean).join(' · ');
+    const kopfP=kopf?`<w:p><w:pPr><w:spacing w:after="60"/></w:pPr><w:r><w:rPr><w:sz w:val="16"/>`
+      +`<w:color w:val="777777"/></w:rPr><w:t xml:space="preserve">${xe(kopf)}</w:t></w:r></w:p>`:'';
+    const fehlP=(p.fehl||p.fehlU)?`<w:p><w:pPr><w:spacing w:before="120"/></w:pPr><w:r>`
+      +`<w:rPr><w:sz w:val="18"/></w:rPr><w:t xml:space="preserve">Versäumte Unterrichtstage: `
+      +`${p.fehl||0}${p.fehlU?', davon unentschuldigt: '+p.fehlU:''}</w:t></w:r></w:p>`:'';
+    return kopfP+`<w:p><w:pPr><w:spacing w:after="160"/></w:pPr><w:r><w:rPr><w:b/><w:sz w:val="28"/></w:rPr>`
+      +`<w:t xml:space="preserve">${xe(anzeigeName(p))}</w:t></w:r></w:p>`+body+fehlP
+      +(i<l.length-1?'<w:p><w:r><w:br w:type="page"/></w:r></w:p>':'');}).join('');
+  const doc=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>${abs}
+<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1418" w:right="1418" w:bottom="1418" w:left="1418"/></w:sectPr></w:body></w:document>`;
+  const ct=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+<Default Extension="xml" ContentType="application/xml"/>
+<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>`;
+  const rels=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>`;
+  lade(zip([['[Content_Types].xml',ct],['_rels/.rels',rels],['word/document.xml',doc]]),'berichte.docx');
+  toast(`${l.length} Texte als Word-Datei gespeichert`);};
+
+/* ───────── Start ───────── */
+$('#land').innerHTML=Object.entries(LAENDER).map(([k,v])=>`<option value="${k}">${esc(v[0])}</option>`).join('');
+for(const [id,key] of [['#land','land'],['#schulart','schulart'],['#laenge','laenge'],
+                       ['#zeit','zeit'],['#anrede','anrede'],['#form','form'],
+                       ['#ausgabe','ausgabe']]) $(id).value=S[key];
+if(S.zeichenZiel) $('#zeichenZiel').value=S.zeichenZiel;
+for(const [id,key] of [['#dSchule','dSchule'],['#dKlasse','dKlasse'],['#dJahr','dJahr']])
+  if(S[key]) $(id).value=S[key];
+if(S.sortiert) $('#sortBtn').classList.add('acc');
+if(!S.leute.length){
+  hinzu('Mia','w');Object.assign(S.leute[0],{w:{arbeit:'B',mitarbeit:'A',sozial:'A',leistung:'A'},
+    staerken:['sprachlich','team'],foerder:['tempo'],schluss:'positiv'});
+  hinzu('Noah','m');Object.assign(S.leute[1],{w:{arbeit:'C',mitarbeit:'C',sozial:'B',leistung:'C'},
+    staerken:['praktisch','sportlich'],foerder:['konzentration','hausaufgaben'],schluss:'ermutigend'});
+  S.aktiv=S.leute[0].id;
+}
+function netz(){$('#netBadge').textContent=navigator.onLine
+  ?'● offline nutzbar · keine Datenübertragung':'● kein Internet — funktioniert trotzdem';}
+addEventListener('online',netz);addEventListener('offline',netz);
+// Bestehende Personen der Startklasse zuordnen (Umstieg von der alten Fassung)
+S.leute.forEach(p=>{if(!p.klasse)p.klasse=S.klassen[0];if(!p.notizen)p.notizen=[];});
+klassenZeichnen();
+themeSetzen();netz();alles();
+</script>
+</body></html>
