@@ -178,7 +178,7 @@ let progPunkte=null, progLinien=null;
 if(gl){
   progPunkte=programm(`
     attribute vec3 ort; attribute vec3 farbe;
-    uniform mat4 mvp; uniform float groesse; uniform int modus;
+    uniform mat4 mvp; uniform float groesse; uniform float pixelSkala; uniform int modus;
     uniform vec3 min3, max3; uniform vec3 auge;
     varying vec3 vFarbe;
     vec3 regenbogen(float t){
@@ -189,7 +189,9 @@ if(gl){
     void main(){
       vec4 p = mvp * vec4(ort,1.0);
       gl_Position = p;
-      gl_PointSize = max(1.0, groesse * (300.0 / max(p.w, 0.1)));
+      // Groesse in Weltmass umrechnen: so wirkt der Regler bei jeder
+      // Szenengroesse gleich, egal ob Zimmer oder Stadtteil.
+      gl_PointSize = clamp(groesse * pixelSkala / max(p.w, 0.001), 1.0, 64.0);
       if(modus==1){ vFarbe = regenbogen((ort.y-min3.y)/max(max3.y-min3.y,0.001)); }
       else if(modus==2){ vFarbe = regenbogen(1.0 - clamp(length(ort-auge)/ (length(max3-min3)+0.001),0.0,1.0)); }
       else { vFarbe = farbe; }
@@ -530,6 +532,8 @@ function zeichnen(){
     gl.useProgram(progPunkte);
     gl.uniformMatrix4fv(gl.getUniformLocation(progPunkte,'mvp'),false,mvp);
     gl.uniform1f(gl.getUniformLocation(progPunkte,'groesse'),S.groesse);
+    gl.uniform1f(gl.getUniformLocation(progPunkte,'pixelSkala'),
+                 S.spanne*0.004*(cv.height/2/0.546));
     gl.uniform1i(gl.getUniformLocation(progPunkte,'modus'),S.modus);
     gl.uniform3fv(gl.getUniformLocation(progPunkte,'min3'),S.min);
     gl.uniform3fv(gl.getUniformLocation(progPunkte,'max3'),S.max);

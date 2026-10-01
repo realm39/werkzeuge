@@ -9,9 +9,11 @@ def chk(n,c,i=""):
 
 # Statisch ausliefern – genau wie GitHub Pages es täte
 H=functools.partial(http.server.SimpleHTTPRequestHandler, directory="docs")
-srv=socketserver.TCPServer(("127.0.0.1",8099),H); srv.allow_reuse_address=True
+socketserver.TCPServer.allow_reuse_address = True
+srv=socketserver.TCPServer(("127.0.0.1",0),H)
+PORT=srv.server_address[1]
 threading.Thread(target=srv.serve_forever,daemon=True).start()
-BASIS="http://127.0.0.1:8099"
+BASIS=f"http://127.0.0.1:{PORT}"
 
 with sync_playwright() as pw:
     b=pw.chromium.launch(args=["--no-sandbox","--use-fake-ui-for-media-stream",
